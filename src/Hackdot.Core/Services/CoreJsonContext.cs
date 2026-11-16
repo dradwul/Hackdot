@@ -1,6 +1,8 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Hackdot.Core.Models.Definitions;
+using Hackdot.Core.Models.Missions;
+using Hackdot.Core.Services.Missions;
 
 namespace Hackdot.Core.Services;
 
@@ -14,4 +16,6 @@ namespace Hackdot.Core.Services;
     AllowTrailingCommas = true,
     UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow)]
 [JsonSerializable(typeof(FileSystemDefinition))]
+[JsonSerializable(typeof(MissionDefinition))]
+[JsonSerializable(typeof(GameProgressSnapshot))]
 internal sealed partial class CoreJsonContext : JsonSerializerContext;

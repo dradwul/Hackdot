@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "id": "hidden-in-the-shadows",
+  "order": 2,
+  "difficulty": "medium",
+  "points": 200,
+  "title": "Hidden in the Shadows",
+  "summary": "The web admin swears the web server has no secrets. But not every file shows up at first glance.",
+  "briefing": "Thanks to your report, NovaTech changed the admin password. Now they want you to check their web server, novatech-web.\n\nThe website's files live in `/var/www`. The web admin promises that nothing secret is stored there: \"I checked it myself – it's clean!\"\n\nOn Linux, though, some files are hidden. Prove the admin wrong.",
+  "objective": "Find the secret file hidden in /var/www and read the flag inside it.",
+  "debrief": "Nice work! On Linux, any file whose name starts with a dot – like `.secret_flag` – is hidden from a normal `ls`.\n\nWith `ls -a` (or `ls -la` for details) you can see everything. Hidden files are not a security feature: they just keep folders tidy. Attackers always look for them.\n\nThe lesson for NovaTech: if a file is secret, protect it with permissions – or don't put it on a web server at all.",
+  "flag": "FLAG{d0t_f1l3s_4r3_n0t_s3cr3t}",
+  "hints": [
+    "On Linux, files whose names start with a dot (`.`) are hidden. They don't show up when you just type `ls`.",
+    "Go to the folder with `cd /var/www`, then list everything – hidden files too – with `ls -a` or `ls -la`. In the Files app, turn on \"Show hidden files\".",
+    "The flag is in `/var/www/.secret_flag`. Run `cat /var/www/.secret_flag`."
+  ],
+  "skills": [ "cd", "ls -a", "cat" ],
+  "fileSystem": {
+    "hostname": "novatech-web",
+    "files": [
+      {
+        "path": "/var/www/html/index.html",
+        "lines": [
+          "<!DOCTYPE html>",
+          "<html>",
+          "  <head><title>NovaTech – Innovation for tomorrow</title></head>",
+          "  <body>",
+          "    <h1>Welcome to NovaTech</h1>",
+          "    <p>We build the future. Securely.</p>",
+          "    <!-- TODO: remove the old backup files from /var/www -->",
+          "  </body>",
+          "</html>"
+        ]
+      },
+      {
+        "path": "/var/www/html/about.html",
+        "lines": [
+          "<!DOCTYPE html>",
+          "<html>",
+          "  <body><h1>About us</h1><p>NovaTech has 12 employees and 1 coffee machine.</p></body>",
+          "</html>"
+        ]
+      },
+      {
+        "path": "/var/www/README.txt",
+        "lines": [
+          "Note from the web admin:",
+          "",
+          "The web root is clean. There are no secret files here.",
+          "I checked with ls myself. Trust me!"
+        ]
+      },
+      {
+        "path": "/var/www/.secret_flag",
+        "lines": [
+          "Well spotted! Hidden files are only hidden from a plain 'ls'.",
+          "",
+          "FLAG{d0t_f1l3s_4r3_n0t_s3cr3t}"
+        ]
+      },
+      {
+        "path": "/var/www/.backup_old",
+        "lines": [
+          "Old site backup – nothing interesting here.",
+          "(But you were right to check!)"
+        ]
+      }
+    ]
+  }
+}

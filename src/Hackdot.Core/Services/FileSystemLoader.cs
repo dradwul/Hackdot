@@ -79,12 +79,19 @@ public static class FileSystemLoader
 
         foreach (var file in layer.Files)
         {
-            if (file.Content is not null && file.Lines is not null)
+            var sources = (file.Content is not null ? 1 : 0) + (file.Lines is not null ? 1 : 0) + (file.Generate is not null ? 1 : 0);
+
+            if (sources > 1)
             {
-                throw new InvalidDataException($"'{file.Path}': use either 'content' or 'lines', not both.");
+                throw new InvalidDataException($"'{file.Path}': use either 'content', 'lines' or 'generate', not several.");
             }
 
-            var content = file.Lines is not null ? string.Join('\n', file.Lines) : file.Content ?? "";
+            var content = file switch
+            {
+                { Lines: not null } => string.Join('\n', file.Lines),
+                { Generate: not null } => ContentGenerator.Generate(file.Generate, fileSystem.Hostname),
+                _ => file.Content ?? "",
+            };
 
             fileSystem.WriteFile(
                 file.Path,

@@ -54,7 +54,7 @@ public class FileSystemLoaderTests
     [InlineData("""{ "files": [ { "path": "/a", "owner": "ghost" } ] }""", "unknown user 'ghost'")]
     [InlineData("""{ "defaultUser": "ghost" }""", "unknown user 'ghost'")]
     [InlineData("""{ "files": [ { "path": "/a", "mode": "999" } ] }""", "Invalid file mode")]
-    [InlineData("""{ "files": [ { "path": "/a", "content": "x", "lines": [] } ] }""", "either 'content' or 'lines'")]
+    [InlineData("""{ "files": [ { "path": "/a", "content": "x", "lines": [] } ] }""", "use either 'content', 'lines' or 'generate'")]
     [InlineData("""{ "filez": [] }""", "Invalid file system definition")]
     [InlineData("""{ "schemaVersion": 2 }""", "Unsupported file system schema version")]
     public void InvalidDefinitions_FailWithHelpfulMessage(string json, string expectedMessage)

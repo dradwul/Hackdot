@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "id": "sloppy-intern",
+  "order": 1,
+  "difficulty": "easy",
+  "points": 100,
+  "title": "The Sloppy Intern",
+  "summary": "An intern at NovaTech has been careless with passwords. Find out what they left behind.",
+  "briefing": "NovaTech has hired you as an ethical hacker. Your job is to find security holes before the bad guys do – and you have written permission to look around.\n\nYou have been handed the old laptop of Max, a summer intern who set up NovaTech's new web server. Max was in a hurry and is known for writing things down… everywhere.\n\nHave a look through Max's files. If a password was written down somewhere, NovaTech needs to know.",
+  "objective": "Find the admin password Max wrote down. It is the flag.",
+  "debrief": "Well done! You found a password stored in a plain text file – one of the most common security mistakes there is.\n\nYou used `ls` to see what's in a folder, `cd` to move around and `cat` to read files. Real attackers start exactly like this: by looking for low-hanging fruit.\n\nThe lesson for NovaTech: never write passwords in files. Use a password manager instead.",
+  "flag": "FLAG{n3v3r_wr1t3_p4ssw0rds_d0wn}",
+  "hints": [
+    "People tend to keep their notes in the `Documents` folder. Start by looking around your home folder.",
+    "Use `cd Documents` to go into the folder, `ls` to list the files and `cat <file>` to read one. In the Files app, just open the Documents folder.",
+    "The flag is in `/home/user/Documents/server_setup.txt`. Run `cat ~/Documents/server_setup.txt`."
+  ],
+  "skills": [ "ls", "cd", "cat" ],
+  "fileSystem": {
+    "hostname": "novatech-laptop",
+    "files": [
+      {
+        "path": "/home/user/Documents/todo.txt",
+        "lines": [
+          "TODO – Max (intern)",
+          "",
+          "[x] Find out how the coffee machine works",
+          "[x] Set up the new web server (novatech-web)",
+          "[ ] Change the default admin password (later...)",
+          "[ ] Delete my setup notes before I leave",
+          "[ ] Return the laptop"
+        ]
+      },
+      {
+        "path": "/home/user/Documents/meeting_notes.txt",
+        "lines": [
+          "Monday meeting",
+          "",
+          "- Boss says the new web server must be online by Friday.",
+          "- IT reminded everyone: NEVER write passwords down!",
+          "- Free pizza on Thursday."
+        ]
+      },
+      {
+        "path": "/home/user/Documents/server_setup.txt",
+        "lines": [
+          "Server setup notes – do NOT share!",
+          "",
+          "Hostname:       novatech-web",
+          "Web root:       /var/www",
+          "Admin user:     admin",
+          "Admin password: FLAG{n3v3r_wr1t3_p4ssw0rds_d0wn}",
+          "",
+          "(I will delete this file when I'm done. Probably.)"
+        ]
+      },
+      {
+        "path": "/home/user/Downloads/funny_cats.jpg",
+        "content": "ÿØÿà JFIF (this is an image, not a text file)"
+      }
+    ]
+  }
+}

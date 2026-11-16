@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "id": "needle-in-the-log-stack",
+  "order": 3,
+  "difficulty": "hard",
+  "points": 300,
+  "title": "Needle in the Log Stack",
+  "summary": "Someone is trying to break into NovaTech's server. The answer is hidden in a log file with 1,500 lines.",
+  "briefing": "Alarm bells at NovaTech! Someone has been trying to log in to the main server, novatech-srv, all night long.\n\nEvery login attempt is written to the server's log file, `/var/log/auth.log`. The problem: it has 1,500 lines. Reading it line by line would take forever.\n\nIT believes the attacker slipped up and left a clue in the log. Your job is to find that one line – without reading them all.",
+  "objective": "Search /var/log/auth.log and find the line that contains the flag.",
+  "debrief": "Excellent detective work! `grep` searches inside files and only shows the lines that match – it found one line among 1,500 in an instant.\n\nSecurity analysts use `grep` every day to dig through logs. Try `grep -i` to ignore case, `grep -n` to see line numbers, or a pipe: `cat /var/log/auth.log | grep Failed`.\n\nThe lesson for NovaTech: logs are gold. Keep them, and learn how to search them.",
+  "flag": "FLAG{gr3p_f1nds_th3_n33dl3}",
+  "hints": [
+    "A log file records events, one per line. This one is far too long to read by hand – you need a tool that searches inside files.",
+    "Use `grep <text> <file>` to show only the lines that contain some text. Think about it: what does every flag start with?",
+    "Run `grep FLAG /var/log/auth.log`."
+  ],
+  "skills": [ "grep", "cat", "pipes" ],
+  "fileSystem": {
+    "hostname": "novatech-srv",
+    "files": [
+      {
+        "path": "/home/user/Documents/incident_ticket.txt",
+        "lines": [
+          "TICKET #4521 – Suspicious SSH activity",
+          "Priority: HIGH",
+          "",
+          "Thousands of failed logins on novatech-srv since midnight.",
+          "Log file: /var/log/auth.log",
+          "",
+          "Please investigate. Tip from IT: don't read the whole file – search it!"
+        ]
+      },
+      {
+        "path": "/var/log/auth.log",
+        "mode": "644",
+        "generate": {
+          "kind": "authLog",
+          "lines": 1500,
+          "seed": 4521,
+          "inserts": [
+            { "at": 412, "text": "{timestamp} {host} sshd[2718]: Failed password for invalid user flag from 198.51.100.23 port 51515 ssh2" },
+            { "at": 903, "text": "{timestamp} {host} sshd[8080]: Failed password for invalid user flagpole from 192.0.2.77 port 40404 ssh2" },
+            { "at": 1137, "text": "{timestamp} {host} sshd[31337]: Invalid user FLAG{gr3p_f1nds_th3_n33dl3} from 203.0.113.66 port 4444" }
+          ]
+        }
+      }
+    ]
+  }
+}

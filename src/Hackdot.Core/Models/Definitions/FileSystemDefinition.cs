@@ -59,11 +59,14 @@ public sealed class FileDefinition
 {
     public required string Path { get; set; }
 
-    /// <summary>The file content. Use either this or <see cref="Lines"/>.</summary>
+    /// <summary>The file content. Use exactly one of <see cref="Content"/>, <see cref="Lines"/> or <see cref="Generate"/>.</summary>
     public string? Content { get; set; }
 
     /// <summary>The file content as lines – easier to read and write in JSON for longer files.</summary>
     public List<string>? Lines { get; set; }
+
+    /// <summary>Generated content, e.g. a server log with thousands of lines.</summary>
+    public GeneratorDefinition? Generate { get; set; }
 
     public string? Owner { get; set; }
 
@@ -71,4 +74,29 @@ public sealed class FileDefinition
     public string? Mode { get; set; }
 
     public DateTime? Modified { get; set; }
+}
+
+/// <summary>
+/// Generates long, realistic file content deterministically (same seed = same file), so mission files
+/// stay small. Extra lines – like the one with the flag – are inserted at fixed positions.
+/// </summary>
+public sealed class GeneratorDefinition
+{
+    /// <summary>The kind of content. Supported: <c>authLog</c>.</summary>
+    public required string Kind { get; set; }
+
+    public int Lines { get; set; } = 1000;
+
+    public int Seed { get; set; } = 1;
+
+    public List<GeneratedLine> Inserts { get; set; } = [];
+}
+
+public sealed class GeneratedLine
+{
+    /// <summary>1-based line number where the text is inserted.</summary>
+    public int At { get; set; }
+
+    /// <summary>The line. <c>{timestamp}</c> and <c>{host}</c> are replaced to blend in with the surrounding lines.</summary>
+    public required string Text { get; set; }
 }
