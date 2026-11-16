@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- General -->
+  <data name="Welcome.Title" xml:space="preserve"><value>Welcome to HackOS!</value></data>
+  <data name="Welcome.Hint" xml:space="preserve"><value>Type 'help' to see what you can do – or tap a shortcut below.</value></data>
+  <data name="Help.Header" xml:space="preserve"><value>Available commands:</value></data>
+  <data name="Help.Footer" xml:space="preserve"><value>Tip: type 'help' followed by a command to learn more, e.g. 'help grep'.</value></data>
+  <data name="Help.Usage" xml:space="preserve"><value>Usage:</value></data>
+  <data name="Help.Examples" xml:space="preserve"><value>Examples:</value></data>
+
+  <!-- Errors. {0} is usually the command name, {1} the path the player typed. -->
+  <data name="Error.CommandNotFound" xml:space="preserve"><value>{0}: command not found. Type 'help' to see the available commands.</value></data>
+  <data name="Error.NoSuchFile" xml:space="preserve"><value>{0}: {1}: No such file or directory</value></data>
+  <data name="Error.CannotAccess" xml:space="preserve"><value>{0}: cannot access '{1}': No such file or directory</value></data>
+  <data name="Error.CannotOpenDirectory" xml:space="preserve"><value>{0}: cannot open directory '{1}': Permission denied</value></data>
+  <data name="Error.NotADirectory" xml:space="preserve"><value>{0}: {1}: Not a directory</value></data>
+  <data name="Error.IsADirectory" xml:space="preserve"><value>{0}: {1}: Is a directory</value></data>
+  <data name="Error.PermissionDenied" xml:space="preserve"><value>{0}: {1}: Permission denied</value></data>
+  <data name="Error.InvalidOption" xml:space="preserve"><value>{0}: invalid option -- '{1}'. Try 'help {0}'.</value></data>
+  <data name="Error.MissingOperand" xml:space="preserve"><value>{0}: missing operand. Try 'help {0}'.</value></data>
+  <data name="Error.MissingArgument" xml:space="preserve"><value>{0}: missing argument to '{1}'</value></data>
+  <data name="Error.TooManyArguments" xml:space="preserve"><value>{0}: too many arguments</value></data>
+  <data name="Error.UnterminatedQuote" xml:space="preserve"><value>syntax error: a quote (" or ') was opened but never closed</value></data>
+  <data name="Error.UnexpectedPipe" xml:space="preserve"><value>syntax error near '|': a pipe needs a command on both sides</value></data>
+  <data name="Error.NoHelpTopic" xml:space="preserve"><value>help: no help topics match '{0}'. Type 'help' to see all commands.</value></data>
+  <data name="Error.GrepNoInput" xml:space="preserve"><value>grep: no file to search. Try 'grep {0} &lt;file&gt;', or send text into grep with a pipe: 'cat &lt;file&gt; | grep {0}'.</value></data>
+  <data name="Error.FindInvalidType" xml:space="preserve"><value>find: -type must be followed by f (file) or d (directory)</value></data>
+  <data name="Error.FindUnknownPredicate" xml:space="preserve"><value>find: unknown option '{0}'. Try 'help find'.</value></data>
+  <data name="Error.Unexpected" xml:space="preserve"><value>{0}: something went wrong</value></data>
+
+  <!-- help -->
+  <data name="Cmd.help.Summary" xml:space="preserve"><value>Show the available commands, or explain one of them</value></data>
+  <data name="Cmd.help.Details" xml:space="preserve"><value>Shows every command you can use. Add the name of a command to get a longer explanation with examples.</value></data>
+  <data name="Cmd.help.Example1" xml:space="preserve"><value>List all commands</value></data>
+  <data name="Cmd.help.Example2" xml:space="preserve"><value>Explain the grep command</value></data>
+
+  <!-- ls -->
+  <data name="Cmd.ls.Summary" xml:space="preserve"><value>List the files and folders in a folder</value></data>
+  <data name="Cmd.ls.Details" xml:space="preserve"><value>Lists what is inside a folder. Without a path it lists the folder you are in.
+
+  -a  also show hidden files (names starting with a dot)
+  -l  long format: permissions, owner, size and date
+
+Flags can be combined: 'ls -la' shows everything in long format.</value></data>
+  <data name="Cmd.ls.Example1" xml:space="preserve"><value>List the current folder</value></data>
+  <data name="Cmd.ls.Example2" xml:space="preserve"><value>Include hidden files</value></data>
+  <data name="Cmd.ls.Example3" xml:space="preserve"><value>Everything in /var/www, in long format</value></data>
+
+  <!-- cd -->
+  <data name="Cmd.cd.Summary" xml:space="preserve"><value>Change directory – move into another folder</value></data>
+  <data name="Cmd.cd.Details" xml:space="preserve"><value>Moves you into another folder.
+
+  cd &lt;folder&gt;  move into a folder
+  cd ..        go up one level
+  cd ~         go back to your home folder (so does plain 'cd')
+  cd /         go to the very top of the file system (the root)</value></data>
+  <data name="Cmd.cd.Example1" xml:space="preserve"><value>Move into the Documents folder</value></data>
+  <data name="Cmd.cd.Example2" xml:space="preserve"><value>Go up one level</value></data>
+  <data name="Cmd.cd.Example3" xml:space="preserve"><value>Jump straight to /var/log using an absolute path</value></data>
+
+  <!-- pwd -->
+  <data name="Cmd.pwd.Summary" xml:space="preserve"><value>Print working directory – show where you are</value></data>
+  <data name="Cmd.pwd.Details" xml:space="preserve"><value>Shows the full path of the folder you are in right now. Paths starting with / are absolute: they start at the very top of the file system.</value></data>
+  <data name="Cmd.pwd.Example1" xml:space="preserve"><value>Show the current folder</value></data>
+
+  <!-- cat -->
+  <data name="Cmd.cat.Summary" xml:space="preserve"><value>Show what is inside a file</value></data>
+  <data name="Cmd.cat.Details" xml:space="preserve"><value>Prints the contents of one or more files. The name is short for 'concatenate' – it can glue several files together.
+
+  -n  number every line</value></data>
+  <data name="Cmd.cat.Example1" xml:space="preserve"><value>Show notes.txt</value></data>
+  <data name="Cmd.cat.Example2" xml:space="preserve"><value>Show /etc/passwd with line numbers</value></data>
+
+  <!-- grep -->
+  <data name="Cmd.grep.Summary" xml:space="preserve"><value>Search for text inside files</value></data>
+  <data name="Cmd.grep.Details" xml:space="preserve"><value>Prints every line that contains the text you are looking for. Perfect for digging through big log files.
+
+  -i  ignore upper and lower case
+  -n  show line numbers
+  -v  invert: show the lines that do NOT match
+  -r  search every file in a folder and its subfolders
+
+You can also send the output of another command into grep with a pipe (|).</value></data>
+  <data name="Cmd.grep.Example1" xml:space="preserve"><value>Find the lines containing FLAG in notes.txt</value></data>
+  <data name="Cmd.grep.Example2" xml:space="preserve"><value>Find errors in the system log, with line numbers</value></data>
+  <data name="Cmd.grep.Example3" xml:space="preserve"><value>Search every file under /home for 'password', in any case</value></data>
+  <data name="Cmd.grep.Example4" xml:space="preserve"><value>Send a file through a pipe into grep</value></data>
+
+  <!-- find -->
+  <data name="Cmd.find.Summary" xml:space="preserve"><value>Search for files and folders by name</value></data>
+  <data name="Cmd.find.Details" xml:space="preserve"><value>Searches through folders for files and folders.
+
+  find &lt;name&gt;               quick search everywhere for names containing &lt;name&gt;
+  find &lt;path&gt; -name &lt;pat&gt;   search below &lt;path&gt;; * matches anything, ? one character
+  -iname &lt;pat&gt;              like -name, but ignores upper and lower case
+  -type f / -type d         only files / only folders
+
+Folders you are not allowed to open are reported as 'Permission denied'.</value></data>
+  <data name="Cmd.find.Example1" xml:space="preserve"><value>Find everything with 'flag' in its name</value></data>
+  <data name="Cmd.find.Example2" xml:space="preserve"><value>Find all .txt files on the system</value></data>
+  <data name="Cmd.find.Example3" xml:space="preserve"><value>List every file below /var</value></data>
+  <data name="Cmd.find.Example4" xml:space="preserve"><value>Find hidden files in your home folder</value></data>
+
+  <!-- whoami -->
+  <data name="Cmd.whoami.Summary" xml:space="preserve"><value>Show which user you are logged in as</value></data>
+  <data name="Cmd.whoami.Details" xml:space="preserve"><value>Prints the name of the current user. Different users may open different files – 'root' is the administrator who can open everything.</value></data>
+  <data name="Cmd.whoami.Example1" xml:space="preserve"><value>Show your user name</value></data>
+
+  <!-- clear -->
+  <data name="Cmd.clear.Summary" xml:space="preserve"><value>Clear the screen</value></data>
+  <data name="Cmd.clear.Details" xml:space="preserve"><value>Removes everything from the terminal window. Your files are not affected.</value></data>
+  <data name="Cmd.clear.Example1" xml:space="preserve"><value>Clear the screen</value></data>
+</root>
