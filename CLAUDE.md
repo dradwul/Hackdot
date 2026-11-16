@@ -23,7 +23,8 @@ Spelaren använder ett simulerat skrivbords-OS ("HackOS") med terminal, filutfor
 Allt körs i webbläsaren – inget riktigt nätverk eller filsystem används.
 
 - **Stack:** .NET 10 (LTS), Blazor WebAssembly Standalone, PWA. Inga tunga UI-bibliotek – egen, lättviktig CSS.
-- **Språk:** UI-texter på svenska, kod/identifierare på engelska. Kommentarer får vara på svenska.
+- **Språk:** Appen är på **engelska** (UI, terminalutskrifter, uppdrag, filinnehåll). Kod, identifierare och
+  kodkommentarer skrivs också på engelska. Svenska ska kunna läggas till senare – se *Lokalisering* nedan.
 
 ```
 Hackdot.slnx
@@ -48,6 +49,21 @@ dotnet build Hackdot.slnx
 dotnet test Hackdot.slnx
 dotnet watch --project src/Hackdot      # http://localhost:5282
 ```
+
+## Lokalisering
+
+Engelska (`en`) är standardspråk och fallback. Bygg allt så att fler språk – först svenska (`sv`) – kan läggas
+till utan kodändringar, i första hand för uppdragsbeskrivningar, ledtrådar och UI.
+
+- **Inga hårdkodade användartexter** i komponenter eller tjänster. Använd `IStringLocalizer<T>` med `.resx`:
+  - UI: `src/Hackdot/Resources/SharedResource.resx` via `IStringLocalizer<SharedResource>`.
+  - Core (terminalens meddelanden, hjälptexter, felmeddelanden): `.resx` under `src/Hackdot.Core/Resources/`.
+  - Ett nytt språk = en ny `*.sv.resx` bredvid den engelska. Nycklar namnges hierarkiskt, t.ex. `App.Terminal.Title`.
+- **Uppdrag i JSON:** textfält (titel, berättelse, ledtrådar, m.m.) är *lokaliserbar text* – antingen en vanlig
+  sträng (= engelska) eller ett objekt per språk: `{ "en": "…", "sv": "…" }`. Saknas språket används engelska.
+- **Översätts aldrig:** kommandonamn och flaggor (`ls -la`), fil- och mappnamn, flaggor (`FLAG{…}`), lösenord och
+  Linux-formaterad utdata (t.ex. kolumnerna i `ls -l`). Förklarande meddelanden och hjälptexter översätts.
+- Formatera datum/tal kulturmedvetet där de visas för spelaren; i simulerad Linux-utdata används invariant format.
 
 ## Riktlinjer
 
