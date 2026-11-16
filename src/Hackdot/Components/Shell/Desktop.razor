@@ -1,5 +1,6 @@
 @implements IDisposable
 @inject ShellService Shell
+@inject GameService Game
 
 <div class="os">
     <main class="workspace">
@@ -40,7 +41,16 @@
 </div>
 
 @code {
-    protected override void OnInitialized() => Shell.Changed += OnShellChanged;
+    protected override void OnInitialized()
+    {
+        Shell.Changed += OnShellChanged;
+
+        // New players land straight in their first mission briefing.
+        if (Game.IsFirstLaunch && Shell.OpenApps.Count == 0)
+        {
+            Shell.Open(AppId.Mission);
+        }
+    }
 
     private void OnShellChanged() => InvokeAsync(StateHasChanged);
 

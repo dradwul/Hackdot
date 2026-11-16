@@ -35,5 +35,5 @@ dotnet test
 - [x] Virtual file system defined in JSON (users, owners, permissions)
 - [x] Terminal with command interpreter, pipes and shortcut buttons
 - [ ] File explorer with "show hidden files"
-- [ ] Mission app with flag submission and three-step hints
-- [ ] Three starter missions
+- [x] Mission app with flag submission, three-step hints, score and saved progress
+- [x] Three starter missions

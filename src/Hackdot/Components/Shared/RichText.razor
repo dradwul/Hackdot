@@ -1,0 +1,27 @@
+@* Renders mission text: blank lines separate paragraphs and `backticks` mark commands and paths. *@
+@foreach (var paragraph in Paragraphs)
+{
+    <p class="rich-text">@foreach (var (text, isCode) in Segments(paragraph)){@if (isCode){<code>@text</code>}else{@text}}</p>
+}
+
+@code {
+    [Parameter, EditorRequired] public string Text { get; set; } = "";
+
+    private IEnumerable<string> Paragraphs =>
+        Text.Replace("\r\n", "\n")
+            .Split("\n\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+    private static IEnumerable<(string Text, bool IsCode)> Segments(string paragraph)
+    {
+        var parts = paragraph.Split('`');
+
+        for (var i = 0; i < parts.Length; i++)
+        {
+            if (parts[i].Length > 0)
+            {
+                // Odd parts are between backticks.
+                yield return (parts[i], i % 2 == 1);
+            }
+        }
+    }
+}

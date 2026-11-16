@@ -1,1 +1,267 @@
-<AppPlaceholder App="AppId.Mission" />
+@using Hackdot.Core.Models.Missions
+@using Hackdot.Core.Services.Missions
+@implements IDisposable
+@inject GameService Game
+@inject ShellService Shell
+
+<div class="mission-app">
+    <div class="toolbar">
+        <div class="tabs" role="tablist">
+            <button type="button" role="tab" class="tab" aria-selected="@Aria(_view == View.Briefing)"
+                    @onclick="() => _view = View.Briefing">@L["Mission.Tab.Briefing"]</button>
+            <button type="button" role="tab" class="tab" aria-selected="@Aria(_view == View.List)"
+                    @onclick="() => _view = View.List">
+                @L["Mission.Tab.All"]
+                <span class="tab-count">@State.CompletedCount/@State.Catalog.Missions.Count</span>
+            </button>
+        </div>
+        <span class="score" title="@L["Mission.Score"]">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3 6.6 7 .8-5.2 4.8 1.4 7L12 17.8 5.8 21.2l1.4-7L2 9.4l7-.8z" /></svg>
+            @State.TotalScore
+        </span>
+    </div>
+
+    <div class="content">
+        @if (_view == View.Briefing)
+        {
+            <article class="briefing">
+                <header>
+                    <div class="meta">
+                        <span>@L["Mission.Counter", Index + 1, State.Catalog.Missions.Count]</span>
+                        <span class="difficulty difficulty-@Mission.Difficulty.ToString().ToLowerInvariant()">@L[$"Mission.Difficulty.{Mission.Difficulty}"]</span>
+                        <span class="points">@L["Mission.Points", State.AvailablePoints(Mission)]</span>
+                    </div>
+                    <h2>@Mission.Title.Get()</h2>
+                </header>
+
+                <RichText Text="@Mission.Briefing.Get()" />
+
+                <section class="objective">
+                    <h3>@L["Mission.Objective"]</h3>
+                    <RichText Text="@Mission.Objective.Get()" />
+                    @if (Mission.Skills.Count > 0)
+                    {
+                        <div class="skills">
+                            <span class="skills-label">@L["Mission.Skills"]</span>
+                            @foreach (var skill in Mission.Skills)
+                            {
+                                <code>@skill</code>
+                            }
+                        </div>
+                    }
+                </section>
+
+                <div class="actions">
+                    <button type="button" class="button primary" @onclick="() => Shell.Open(AppId.Terminal)">
+                        <AppIcon App="AppId.Terminal" Size="18" /> @L["Mission.OpenTerminal"]
+                    </button>
+                    <button type="button" class="button" @onclick="() => Shell.Open(AppId.Files)">
+                        <AppIcon App="AppId.Files" Size="18" /> @L["Mission.OpenFiles"]
+                    </button>
+                </div>
+
+                @if (Progress.Completed)
+                {
+                    <section class="solved @(_justSolved ? "celebrate" : null)" role="status">
+                        <div class="solved-header">
+                            <span class="solved-icon" aria-hidden="true">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"
+                                     stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7" /></svg>
+                            </span>
+                            <div>
+                                <h3>@L["Mission.Solved.Title"]</h3>
+                                <span class="solved-points">@L["Mission.Solved.Points", Progress.PointsEarned]</span>
+                            </div>
+                        </div>
+                        <RichText Text="@Mission.Debrief.Get()" />
+                        <div class="solved-flag"><span>@L["Mission.Solved.Flag"]</span><code>@Mission.Flag</code></div>
+                        @if (State.NextMission is { } next)
+                        {
+                            <button type="button" class="button primary wide" @onclick="() => Start(next)">
+                                @L["Mission.Solved.Next"]: @next.Title.Get()
+                            </button>
+                        }
+                        else
+                        {
+                            <p class="all-done">@L["Mission.Solved.AllDone"]</p>
+                        }
+                    </section>
+                }
+                else
+                {
+                    <form class="flag-form @(_shake ? "shake" : null)" @onsubmit="SubmitFlag">
+                        <label for="flag-input">@L["Mission.Flag.Label"]</label>
+                        <div class="flag-row">
+                            <input id="flag-input" @bind="_answer" @bind:event="oninput" type="text"
+                                   placeholder="@L["Mission.Flag.Placeholder"]" autocomplete="off" autocapitalize="off"
+                                   autocorrect="off" spellcheck="false" enterkeyhint="done"
+                                   aria-invalid="@Aria(_feedback is FlagCheckResult.Incorrect or FlagCheckResult.WrongFormat)"
+                                   aria-describedby="flag-feedback" />
+                            <button type="submit" class="button primary">@L["Mission.Flag.Submit"]</button>
+                        </div>
+                        <p id="flag-feedback" class="feedback" role="status">@FeedbackText</p>
+                    </form>
+                }
+
+                <section class="hints">
+                    <h3>@L["Mission.Hints.Title"]</h3>
+                    @if (Progress.HintsUnlocked == 0)
+                    {
+                        <p class="muted">@L["Mission.Hints.Intro"]</p>
+                    }
+                    @for (var i = 0; i < Progress.HintsUnlocked; i++)
+                    {
+                        <div class="hint">
+                            <span class="hint-level">@L[$"Mission.Hints.Level{i + 1}"]</span>
+                            <RichText Text="@Mission.Hints[i].Get()" />
+                        </div>
+                    }
+                    @if (State.NextHintCost() is { } cost)
+                    {
+                        <button type="button" class="button hint-button" @onclick="Game.UnlockNextHint">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z" /></svg>
+                            @(cost > 0 ? L["Mission.Hints.Get", cost] : L["Mission.Hints.GetFree"])
+                        </button>
+                    }
+                    else
+                    {
+                        <p class="muted">@L["Mission.Hints.NoMore"]</p>
+                    }
+                </section>
+            </article>
+        }
+        else
+        {
+            <ol class="mission-list">
+                @foreach (var mission in State.Catalog.Missions)
+                {
+                    var progress = State.Progress(mission);
+                    var unlocked = State.IsUnlocked(mission);
+                    var active = mission == Mission;
+                    <li>
+                        <button type="button" class="mission-card @(active ? "active" : null) @(progress.Completed ? "completed" : null)"
+                                disabled="@(!unlocked)" @onclick="() => Select(mission)">
+                            <span class="status" aria-hidden="true">
+                                @if (progress.Completed)
+                                {
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"
+                                         stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7" /></svg>
+                                }
+                                else if (!unlocked)
+                                {
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                         stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>
+                                }
+                                else
+                                {
+                                    @(State.Catalog.IndexOf(mission) + 1)
+                                }
+                            </span>
+                            <span class="card-body">
+                                <span class="card-title">@mission.Title.Get()</span>
+                                <span class="card-meta">
+                                    <span class="difficulty difficulty-@mission.Difficulty.ToString().ToLowerInvariant()">@L[$"Mission.Difficulty.{mission.Difficulty}"]</span>
+                                    @if (progress.Completed)
+                                    {
+                                        <span>@L["Mission.List.Completed", progress.PointsEarned]</span>
+                                    }
+                                    else if (!unlocked)
+                                    {
+                                        <span>@L["Mission.List.Locked"]</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@L["Mission.Points", mission.Points]</span>
+                                        @if (active)
+                                        {
+                                            <span class="active-label">@L["Mission.List.Active"]</span>
+                                        }
+                                    }
+                                </span>
+                                @if (unlocked)
+                                {
+                                    <span class="card-summary">@mission.Summary.Get()</span>
+                                }
+                            </span>
+                        </button>
+                    </li>
+                }
+            </ol>
+            <p class="muted list-footer">@L["Mission.List.Footer"]</p>
+        }
+    </div>
+</div>
+
+@code {
+    private enum View
+    {
+        Briefing,
+        List,
+    }
+
+    private View _view = View.Briefing;
+    private string _answer = "";
+    private FlagCheckResult? _feedback;
+    private bool _shake;
+    private bool _justSolved;
+
+    private GameState State => Game.State;
+
+    private MissionDefinition Mission => Game.ActiveMission;
+
+    private MissionProgress Progress => State.ActiveProgress;
+
+    private int Index => State.Catalog.IndexOf(Mission);
+
+    private string? FeedbackText => _feedback switch
+    {
+        FlagCheckResult.Empty => L["Mission.Flag.Empty"].Value,
+        FlagCheckResult.WrongFormat => L["Mission.Flag.WrongFormat"].Value,
+        FlagCheckResult.Incorrect => L["Mission.Flag.Incorrect"].Value,
+        _ => null,
+    };
+
+    protected override void OnInitialized() => Game.Changed += OnGameChanged;
+
+    private async Task SubmitFlag()
+    {
+        _feedback = Game.SubmitFlag(_answer);
+
+        if (_feedback == FlagCheckResult.Correct)
+        {
+            _justSolved = true;
+            _answer = "";
+            return;
+        }
+
+        // Restart the shake animation on every wrong answer.
+        _shake = false;
+        StateHasChanged();
+        await Task.Delay(10);
+        _shake = true;
+    }
+
+    private void Select(MissionDefinition mission)
+    {
+        if (mission != Mission)
+        {
+            Start(mission);
+        }
+
+        _view = View.Briefing;
+    }
+
+    private void Start(MissionDefinition mission)
+    {
+        _answer = "";
+        _feedback = null;
+        _shake = false;
+        _justSolved = false;
+        Game.StartMission(mission);
+    }
+
+    private void OnGameChanged() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => Game.Changed -= OnGameChanged;
+}

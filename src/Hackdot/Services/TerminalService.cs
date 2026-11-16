@@ -1,24 +1,31 @@
+using Hackdot.Core;
 using Hackdot.Core.Services.Terminal;
+using Microsoft.Extensions.Localization;
 
 namespace Hackdot.Services;
 
 /// <summary>
 /// Keeps the terminal's scrollback and command history alive while the window is minimized or closed.
+/// Starting a new mission connects the terminal to that mission's machine.
 /// </summary>
 public sealed class TerminalService
 {
     private const int MaxLines = 2000;
 
+    private readonly GameService _game;
+    private readonly IStringLocalizer<TerminalResources> _text;
     private readonly List<OutputLine> _lines = [];
     private readonly List<string> _history = [];
 
-    public TerminalService(CommandInterpreter interpreter)
+    public TerminalService(GameService game, IStringLocalizer<TerminalResources> text)
     {
-        Interpreter = interpreter;
-        _lines.AddRange(interpreter.Welcome());
+        _game = game;
+        _text = text;
+        Interpreter = Connect();
+        _game.MissionStarted += OnMissionStarted;
     }
 
-    public CommandInterpreter Interpreter { get; }
+    public CommandInterpreter Interpreter { get; private set; }
 
     public IReadOnlyList<OutputLine> Lines => _lines;
 
@@ -57,6 +64,25 @@ public sealed class TerminalService
             _lines.RemoveRange(0, _lines.Count - MaxLines);
         }
 
+        Changed?.Invoke();
+    }
+
+    private CommandInterpreter Connect()
+    {
+        var interpreter = new CommandInterpreter(_game.Session, _text);
+
+        _lines.Clear();
+        _lines.AddRange(interpreter.Welcome());
+        _lines.Insert(1, OutputLine.Plain(
+            _text["Welcome.Mission", _game.FileSystem.Hostname, _game.ActiveMission.Title.Get()],
+            OutputStyle.Success));
+
+        return interpreter;
+    }
+
+    private void OnMissionStarted()
+    {
+        Interpreter = Connect();
         Changed?.Invoke();
     }
 }

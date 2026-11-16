@@ -2,7 +2,7 @@
 @inject ShellService Shell
 
 <nav class="dock" aria-label="@L["Shell.Taskbar"]">
-    <button type="button" class="start @(_menuOpen ? "open" : null)" aria-expanded="@_menuOpen"
+    <button type="button" class="start @(_menuOpen ? "open" : null)" aria-expanded="@Aria(_menuOpen)"
             aria-haspopup="menu" title="@L["Shell.Start"]" @onclick="ToggleMenu">
         <Logo />
     </button>
@@ -12,7 +12,7 @@
         {
             var app = Shell.Get(id);
             <button type="button" class="task @(Shell.ActiveApp == id ? "active" : null)"
-                    style="--app-accent: @app.Accent" title="@L[app.TitleKey]" aria-pressed="@(Shell.ActiveApp == id)"
+                    style="--app-accent: @app.Accent" title="@L[app.TitleKey]" aria-pressed="@Aria(Shell.ActiveApp == id)"
                     @onclick="() => Shell.ToggleFromDock(id)">
                 <AppIcon App="id" Size="20" />
                 <span class="task-label">@L[app.TitleKey]</span>

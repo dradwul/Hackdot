@@ -65,6 +65,20 @@ till utan kodändringar, i första hand för uppdragsbeskrivningar, ledtrådar o
   Linux-formaterad utdata (t.ex. kolumnerna i `ls -l`). Förklarande meddelanden och hjälptexter översätts.
 - Formatera datum/tal kulturmedvetet där de visas för spelaren; i simulerad Linux-utdata används invariant format.
 
+## Banor (uppdrag)
+
+En bana = en JSON-fil i `src/Hackdot.Core/Data/Missions/` (`NN-namn.json`), modell: `MissionDefinition`.
+
+- `id` är stabilt (sparade framsteg använder det) – ändra aldrig ett släppt id. `order` styr ordning och upplåsning.
+- Exakt **3 ledtrådar**: 1) begreppet/idén, 2) vilket kommando/verktyg, 3) exakt var flaggan finns.
+- `fileSystem` läggs ovanpå basen (`Data/FileSystems/base.json`). Långa filer genereras med
+  `"generate": { "kind": "authLog", "lines": 1500, "seed": 1, "inserts": [...] }`.
+- Texter får innehålla `` `backticks` `` för kommandon/sökvägar och tomrad för nytt stycke.
+- `MissionCatalog.Validate` + testerna i `MissionTests` kontrollerar att flaggan finns i en fil som spelaren kan läsa.
+  Lägg till banans lösning i `EmbeddedMissions_CanBeSolvedInTheTerminal`.
+- Allt som spelet gör är fiktivt (NovaTech, dokumentations-IP:n enligt RFC 5737). Framställ alltid hackning som
+  något man gör med tillstånd.
+
 ## Riktlinjer
 
 - **Mobile-first:** designa för ~360–430 px bredd först, förbättra sedan för ≥768 px.

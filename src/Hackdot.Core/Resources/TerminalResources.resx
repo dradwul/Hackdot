@@ -16,6 +16,7 @@
   <!-- General -->
   <data name="Welcome.Title" xml:space="preserve"><value>Welcome to HackOS!</value></data>
   <data name="Welcome.Hint" xml:space="preserve"><value>Type 'help' to see what you can do – or tap a shortcut below.</value></data>
+  <data name="Welcome.Mission" xml:space="preserve"><value>Connected to {0} · Mission: {1}</value></data>
   <data name="Help.Header" xml:space="preserve"><value>Available commands:</value></data>
   <data name="Help.Footer" xml:space="preserve"><value>Tip: type 'help' followed by a command to learn more, e.g. 'help grep'.</value></data>
   <data name="Help.Usage" xml:space="preserve"><value>Usage:</value></data>

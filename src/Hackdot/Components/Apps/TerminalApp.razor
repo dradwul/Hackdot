@@ -7,7 +7,7 @@
         <div class="lines">
             @foreach (var line in Terminal.Lines)
             {
-                <TerminalLine Line="line" />
+                <TerminalLine @key="line" Line="line" />
             }
         </div>
     </div>

@@ -5,6 +5,14 @@
 @code {
     [Parameter, EditorRequired] public OutputLine Line { get; set; } = default!;
 
+    private OutputLine? _renderedLine;
+
+    // Output lines never change, so only re-render when we get a different line. Without this, every
+    // keystroke in the terminal would re-render the whole scrollback (thousands of lines after a big 'cat').
+    protected override bool ShouldRender() => !ReferenceEquals(_renderedLine, Line);
+
+    protected override void OnAfterRender(bool firstRender) => _renderedLine = Line;
+
     // In a monospace font, 1ch is exactly one character column.
     private string? IndentStyle => Line.HangingIndent > 0
         ? $"padding-left: {Line.HangingIndent}ch; text-indent: -{Line.HangingIndent}ch"

@@ -36,7 +36,6 @@
 
   <!-- Placeholders -->
   <data name="Placeholder.Badge" xml:space="preserve"><value>Coming soon</value></data>
-  <data name="Placeholder.Mission" xml:space="preserve"><value>Your mission briefing, a field to submit the flag (FLAG{...}) and a three-step hint system will live here.</value></data>
   <data name="Placeholder.Files" xml:space="preserve"><value>A visual file explorer showing exactly the same file system as the terminal – with a toggle to show hidden files.</value></data>
   <data name="Placeholder.Guide" xml:space="preserve"><value>Notes and a cheat sheet that explain commands and ethical hacking concepts in plain language.</value></data>
 
@@ -47,4 +46,40 @@
   <data name="Terminal.Shortcuts" xml:space="preserve"><value>Command shortcuts</value></data>
   <data name="Terminal.Run" xml:space="preserve"><value>Run</value></data>
   <data name="Terminal.PreviousCommand" xml:space="preserve"><value>Previous command</value></data>
+  <!-- Mission app -->
+  <data name="Mission.Tab.Briefing" xml:space="preserve"><value>Briefing</value></data>
+  <data name="Mission.Tab.All" xml:space="preserve"><value>Missions</value></data>
+  <data name="Mission.Score" xml:space="preserve"><value>Score</value></data>
+  <data name="Mission.Counter" xml:space="preserve"><value>Mission {0} of {1}</value></data>
+  <data name="Mission.Difficulty.Easy" xml:space="preserve"><value>Easy</value></data>
+  <data name="Mission.Difficulty.Medium" xml:space="preserve"><value>Medium</value></data>
+  <data name="Mission.Difficulty.Hard" xml:space="preserve"><value>Hard</value></data>
+  <data name="Mission.Points" xml:space="preserve"><value>{0} pts</value></data>
+  <data name="Mission.Objective" xml:space="preserve"><value>Objective</value></data>
+  <data name="Mission.Skills" xml:space="preserve"><value>You will practise</value></data>
+  <data name="Mission.OpenTerminal" xml:space="preserve"><value>Open Terminal</value></data>
+  <data name="Mission.OpenFiles" xml:space="preserve"><value>Open Files</value></data>
+  <data name="Mission.Flag.Label" xml:space="preserve"><value>Found the flag?</value></data>
+  <data name="Mission.Flag.Placeholder" xml:space="preserve"><value>FLAG{...}</value></data>
+  <data name="Mission.Flag.Submit" xml:space="preserve"><value>Submit</value></data>
+  <data name="Mission.Flag.Empty" xml:space="preserve"><value>Type or paste the flag first.</value></data>
+  <data name="Mission.Flag.WrongFormat" xml:space="preserve"><value>Flags look like FLAG{...} – include the FLAG{ } part too.</value></data>
+  <data name="Mission.Flag.Incorrect" xml:space="preserve"><value>Not quite! Check for typos and try again.</value></data>
+  <data name="Mission.Solved.Title" xml:space="preserve"><value>Mission complete!</value></data>
+  <data name="Mission.Solved.Points" xml:space="preserve"><value>+{0} points</value></data>
+  <data name="Mission.Solved.Flag" xml:space="preserve"><value>Flag</value></data>
+  <data name="Mission.Solved.Next" xml:space="preserve"><value>Next mission</value></data>
+  <data name="Mission.Solved.AllDone" xml:space="preserve"><value>You have completed every mission. More are on the way!</value></data>
+  <data name="Mission.Hints.Title" xml:space="preserve"><value>Need help?</value></data>
+  <data name="Mission.Hints.Intro" xml:space="preserve"><value>Hints get more specific each time. Each one lowers the points you can earn – but asking for help is part of learning.</value></data>
+  <data name="Mission.Hints.Get" xml:space="preserve"><value>Get a hint (−{0} pts)</value></data>
+  <data name="Mission.Hints.GetFree" xml:space="preserve"><value>Show the next hint</value></data>
+  <data name="Mission.Hints.Level1" xml:space="preserve"><value>Hint 1 · The idea</value></data>
+  <data name="Mission.Hints.Level2" xml:space="preserve"><value>Hint 2 · The tool</value></data>
+  <data name="Mission.Hints.Level3" xml:space="preserve"><value>Hint 3 · The answer</value></data>
+  <data name="Mission.Hints.NoMore" xml:space="preserve"><value>That is every hint. You have got this!</value></data>
+  <data name="Mission.List.Completed" xml:space="preserve"><value>Completed · {0} pts</value></data>
+  <data name="Mission.List.Locked" xml:space="preserve"><value>Finish the previous mission to unlock</value></data>
+  <data name="Mission.List.Active" xml:space="preserve"><value>In progress</value></data>
+  <data name="Mission.List.Footer" xml:space="preserve"><value>More missions are coming soon.</value></data>
 </root>
