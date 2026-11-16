@@ -1,15 +1,10 @@
-@* Tillfällig vy tills respektive app är byggd. *@
+@* Temporary view until the app is built. *@
 <div class="placeholder">
-    <span class="badge">Under uppbyggnad</span>
-    <h2>@Heading</h2>
-    <p>@Description</p>
-    @ChildContent
+    <span class="badge">@L["Placeholder.Badge"]</span>
+    <h2>@L[$"App.{App}.Title"]</h2>
+    <p>@L[$"Placeholder.{App}"]</p>
 </div>
 
 @code {
-    [Parameter, EditorRequired] public string Heading { get; set; } = "";
-
-    [Parameter, EditorRequired] public string Description { get; set; } = "";
-
-    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter, EditorRequired] public AppId App { get; set; }
 }

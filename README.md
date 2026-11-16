@@ -1,37 +1,39 @@
 # hack.
 
-**Hackdot** är ett pedagogiskt hackerspel i fickformat. Du får ett simulerat skrivbords-OS – *HackOS* – i mobilen
-och löser uppdrag i stil med Capture The Flag: leta efter flaggor (`FLAG{...}`) genom att klicka runt i filutforskaren
-eller genom att använda riktiga kommandon som `ls -la`, `cat` och `grep` i terminalen.
+**Hackdot** is a pocket-sized, educational hacking game. You get a simulated desktop OS – *HackOS* – on your phone
+and solve Capture The Flag–style missions: hunt for flags (`FLAG{...}`) by clicking around in the file explorer
+or by using real commands like `ls -la`, `cat` and `grep` in the terminal.
 
-Byggt för alla åldrar och nivåer. Fastnar du finns ett ledtrådssystem i tre steg.
+Made for all ages and skill levels. Stuck? There's a three-step hint system.
 
-## Kom igång
+## Getting started
 
-Kräver [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0).
+Requires the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0).
 
 ```bash
 dotnet watch --project src/Hackdot
 ```
 
-Öppna <http://localhost:5282>. För mobilvy: öppna utvecklarverktygen (F12) och slå på enhetsläget
-(Ctrl+Shift+M i Chrome/Edge).
+Open <http://localhost:5282>. For a mobile view, open the developer tools (F12) and toggle device mode
+(Ctrl+Shift+M in Chrome/Edge).
 
 ```bash
 dotnet test
 ```
 
-## Teknik
+## Tech
 
-- Blazor WebAssembly Standalone (.NET 10) som PWA – kan installeras och fungerar offline
-- `Hackdot.Core` – spelmotor i ren C# (virtuellt filsystem, kommandotolk, uppdrag) med xUnit-tester
-- Lättviktig, egen CSS – inga externa UI-bibliotek
+- Blazor WebAssembly Standalone (.NET 10) as a PWA – installable and works offline
+- `Hackdot.Core` – game engine in plain C# (virtual file system, command interpreter, missions) with xUnit tests
+- Lightweight custom CSS – no external UI libraries
+- English by default, resx-based localization so more languages (Swedish first) can be added
 
 ## Status
 
-- [x] Grund: projektstruktur, PWA, HackOS-skal (skrivbord, fönster, docka, startmeny)
-- [ ] Virtuellt filsystem och banor i JSON
-- [ ] Terminal med kommandotolk och snabbknappar
-- [ ] Filutforskare med "visa dolda filer"
-- [ ] Uppdragsapp med flagginlämning och 3-stegs ledtrådar
-- [ ] Tre startbanor
+- [x] Foundation: project structure, PWA, HackOS shell (desktop, windows, dock, start menu)
+- [x] Localization infrastructure
+- [ ] Virtual file system defined in JSON
+- [ ] Terminal with command interpreter and shortcut buttons
+- [ ] File explorer with "show hidden files"
+- [ ] Mission app with flag submission and three-step hints
+- [ ] Three starter missions

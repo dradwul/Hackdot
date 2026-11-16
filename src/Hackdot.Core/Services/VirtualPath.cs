@@ -1,8 +1,8 @@
 namespace Hackdot.Core.Services;
 
 /// <summary>
-/// Sökvägshjälp för det virtuella filsystemet. Alla sökvägar är Unix-liknande
-/// (<c>/</c> som separator) och returneras normaliserade och absoluta.
+/// Path helpers for the virtual file system. All paths are Unix-style
+/// (<c>/</c> separator) and are returned normalized and absolute.
 /// </summary>
 public static class VirtualPath
 {
@@ -11,8 +11,8 @@ public static class VirtualPath
     public const string DefaultHome = "/home/user";
 
     /// <summary>
-    /// Löser <paramref name="path"/> relativt <paramref name="currentDirectory"/>.
-    /// Stöder absoluta sökvägar, <c>.</c>, <c>..</c> och <c>~</c>.
+    /// Resolves <paramref name="path"/> relative to <paramref name="currentDirectory"/>.
+    /// Supports absolute paths, <c>.</c>, <c>..</c> and <c>~</c>.
     /// </summary>
     public static string Resolve(string currentDirectory, string? path, string homeDirectory = DefaultHome)
     {
@@ -34,7 +34,7 @@ public static class VirtualPath
         return Normalize(combined);
     }
 
-    /// <summary>Tar bort tomma segment, <c>.</c> och löser upp <c>..</c>. Går aldrig ovanför roten.</summary>
+    /// <summary>Removes empty segments and <c>.</c>, and resolves <c>..</c>. Never goes above the root.</summary>
     public static string Normalize(string path)
     {
         var parts = new List<string>();
@@ -76,11 +76,11 @@ public static class VirtualPath
         return normalized == Root ? Root : normalized[(normalized.LastIndexOf(Separator) + 1)..];
     }
 
-    /// <summary>Filer och mappar som börjar med punkt är dolda (som i Linux).</summary>
+    /// <summary>Files and directories starting with a dot are hidden (like in Linux).</summary>
     public static bool IsHidden(string name) =>
         name.Length > 1 && name[0] == '.' && name != "..";
 
-    /// <summary>Visar hemkatalogen som <c>~</c>, t.ex. <c>/home/user/Documents</c> → <c>~/Documents</c>.</summary>
+    /// <summary>Shows the home directory as <c>~</c>, e.g. <c>/home/user/Documents</c> → <c>~/Documents</c>.</summary>
     public static string ToDisplayPath(string path, string homeDirectory = DefaultHome)
     {
         var normalized = Normalize(path);

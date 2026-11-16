@@ -7,21 +7,21 @@
             <Logo Class="wallpaper-logo" />
         </div>
 
-        <ul class="desktop-icons" aria-label="Appar">
+        <ul class="desktop-icons" aria-label="@L["Shell.Apps"]">
             @foreach (var app in Shell.Apps)
             {
                 <li>
                     <button type="button" class="desktop-icon" style="--app-accent: @app.Accent"
                             @onclick="() => Shell.Open(app.Id)">
                         <span class="icon-tile"><AppIcon App="app.Id" Size="30" /></span>
-                        <span class="icon-label">@app.Title</span>
+                        <span class="icon-label">@L[app.TitleKey]</span>
                     </button>
                 </li>
             }
         </ul>
 
-        @* Alla öppna appar renderas, men bara den aktiva visas. Då behåller
-           minimerade appar sitt tillstånd (t.ex. terminalhistorik). *@
+        @* Every open app is rendered but only the active one is visible, so minimized
+           apps keep their state (e.g. terminal history). *@
         @foreach (var id in Shell.OpenApps)
         {
             <AppWindow @key="id" App="Shell.Get(id)" Active="Shell.ActiveApp == id">

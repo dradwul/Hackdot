@@ -11,7 +11,7 @@
     padding-top: var(--safe-top);
 }
 
-/* ---------- Bakgrund ---------- */
+/* ---------- Wallpaper ---------- */
 
 .wallpaper {
     position: absolute;
@@ -33,7 +33,7 @@
     transform: translateY(8vh);
 }
 
-/* ---------- Skrivbordsikoner ---------- */
+/* ---------- Desktop icons ---------- */
 
 .desktop-icons {
     position: relative;
@@ -91,7 +91,7 @@
     }
 }
 
-/* Större skärmar: ikoner i en kolumn till vänster, som ett klassiskt skrivbord. */
+/* Larger screens: icons in a column on the left, like a classic desktop. */
 @media (min-width: 768px) {
     .desktop-icons {
         grid-template-columns: 96px;

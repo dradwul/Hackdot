@@ -1,4 +1,4 @@
-/* Mobil: fönstret täcker hela arbetsytan. */
+/* Mobile: the window covers the whole workspace. */
 .window {
     position: absolute;
     inset: var(--safe-top) 0 0 0;
@@ -75,7 +75,7 @@
     overscroll-behavior: contain;
 }
 
-/* Större skärmar: ett flytande, centrerat fönster med ram. */
+/* Larger screens: a floating, centered window with a frame. */
 @media (min-width: 768px) {
     .window {
         inset: 1.5rem auto 1.5rem 50%;

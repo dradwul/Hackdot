@@ -1,12 +1,12 @@
-@* Ordmärke: "hack." (kort) eller "hackdot" (lång). Stilarna ligger globalt i app.css
-   eftersom samma logga även används i laddningsskärmen i index.html. *@
+@* Wordmark: "hack." (short) or "hackdot" (full). Styles are global in app.css because the
+   same logo is used by the loading screen in index.html. *@
 <span class="logo @Class" role="img" aria-label="Hackdot">@if (Full)
     {<span aria-hidden="true">hack<span class="logo-dot">dot</span></span>}
     else
     {<span aria-hidden="true">hack<span class="logo-dot">.</span></span>}</span>
 
 @code {
-    /// <summary>Visa "hackdot" i stället för "hack.".</summary>
+    /// <summary>Show "hackdot" instead of "hack.".</summary>
     [Parameter] public bool Full { get; set; }
 
     [Parameter] public string? Class { get; set; }

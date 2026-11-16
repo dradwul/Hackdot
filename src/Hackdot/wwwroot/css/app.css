@@ -1,6 +1,6 @@
 /* =========================================================
-   Hackdot – globala tokens och basstilar.
-   Komponentspecifika stilar ligger i *.razor.css (scoped CSS).
+   Hackdot – global design tokens and base styles.
+   Component styles live in *.razor.css (scoped CSS).
    ========================================================= */
 
 :root {
@@ -18,7 +18,7 @@
     --text-muted: #8b9bab;
 
     --accent: #22d3ee;   /* cyan */
-    --accent-2: #4ade80; /* grön */
+    --accent-2: #4ade80; /* green */
     --danger: #f87171;
     --warning: #fbbf24;
 
@@ -75,7 +75,7 @@ select {
     color: inherit;
 }
 
-/* 16px förhindrar att iOS zoomar in när man fokuserar ett fält. */
+/* 16px prevents iOS from zooming in when an input is focused. */
 input,
 textarea,
 select {
@@ -91,7 +91,7 @@ select {
     background: rgb(34 211 238 / 0.3);
 }
 
-/* ---------- Logga: "hack." / "hackdot" ---------- */
+/* ---------- Logo: "hack." / "hackdot" ---------- */
 
 .logo {
     display: inline-block;
@@ -107,7 +107,7 @@ select {
     color: var(--accent);
 }
 
-/* ---------- Laddningsskärm (index.html) ---------- */
+/* ---------- Loading screen (index.html) ---------- */
 
 .boot {
     display: grid;
@@ -149,7 +149,7 @@ select {
 }
 
 .boot-text::after {
-    content: var(--blazor-load-percentage-text, "Startar HackOS…");
+    content: var(--blazor-load-percentage-text, "Booting HackOS…");
 }
 
 @keyframes dot-pulse {
@@ -160,7 +160,7 @@ select {
     .boot .logo-dot { animation: none; }
 }
 
-/* ---------- Felhantering ---------- */
+/* ---------- Error UI ---------- */
 
 #blazor-error-ui {
     position: fixed;
@@ -194,5 +194,5 @@ select {
 }
 
 .blazor-error-boundary::after {
-    content: "Något gick fel.";
+    content: "Something went wrong.";
 }

@@ -1,9 +1,9 @@
 @implements IDisposable
 @inject ShellService Shell
 
-<nav class="dock" aria-label="Aktivitetsfält">
+<nav class="dock" aria-label="@L["Shell.Taskbar"]">
     <button type="button" class="start @(_menuOpen ? "open" : null)" aria-expanded="@_menuOpen"
-            aria-haspopup="menu" title="Start" @onclick="ToggleMenu">
+            aria-haspopup="menu" title="@L["Shell.Start"]" @onclick="ToggleMenu">
         <Logo />
     </button>
 
@@ -12,10 +12,10 @@
         {
             var app = Shell.Get(id);
             <button type="button" class="task @(Shell.ActiveApp == id ? "active" : null)"
-                    style="--app-accent: @app.Accent" title="@app.Title" aria-pressed="@(Shell.ActiveApp == id)"
+                    style="--app-accent: @app.Accent" title="@L[app.TitleKey]" aria-pressed="@(Shell.ActiveApp == id)"
                     @onclick="() => Shell.ToggleFromDock(id)">
                 <AppIcon App="id" Size="20" />
-                <span class="task-label">@app.Title</span>
+                <span class="task-label">@L[app.TitleKey]</span>
             </button>
         }
     </div>
@@ -29,7 +29,7 @@
     <div class="start-menu" role="menu">
         <div class="menu-header">
             <Logo Full="true" Class="menu-logo" />
-            <span class="menu-subtitle">HackOS · lär dig etisk hackning</span>
+            <span class="menu-subtitle">@L["Shell.StartMenu.Subtitle"]</span>
         </div>
         <ul>
             @foreach (var app in Shell.Apps)
@@ -39,14 +39,14 @@
                             @onclick="() => OpenFromMenu(app.Id)">
                         <span class="menu-icon"><AppIcon App="app.Id" Size="20" /></span>
                         <span class="menu-text">
-                            <span class="menu-title">@app.Title</span>
-                            <span class="menu-description">@app.Description</span>
+                            <span class="menu-title">@L[app.TitleKey]</span>
+                            <span class="menu-description">@L[app.DescriptionKey]</span>
                         </span>
                     </button>
                 </li>
             }
         </ul>
-        <button type="button" role="menuitem" class="menu-footer" @onclick="ShowDesktop">Visa skrivbordet</button>
+        <button type="button" role="menuitem" class="menu-footer" @onclick="ShowDesktop">@L["Shell.ShowDesktop"]</button>
     </div>
 }
 

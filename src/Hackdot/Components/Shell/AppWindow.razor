@@ -1,18 +1,18 @@
 @inject ShellService Shell
 
-<section class="window" hidden="@(!Active)" aria-label="@App.Title" style="--app-accent: @App.Accent">
+<section class="window" hidden="@(!Active)" aria-label="@Title" style="--app-accent: @App.Accent">
     <header class="titlebar">
         <span class="title">
             <span class="title-icon"><AppIcon App="App.Id" Size="18" /></span>
-            <span>@App.Title</span>
+            <span>@Title</span>
         </span>
         <div class="controls">
-            <button type="button" class="control" title="Minimera" aria-label="Minimera @App.Title"
+            <button type="button" class="control" title="@L["Window.Minimize"]" aria-label="@L["Window.MinimizeApp", Title]"
                     @onclick="() => Shell.Minimize(App.Id)">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
                      stroke-linecap="round" aria-hidden="true"><path d="M6 12h12" /></svg>
             </button>
-            <button type="button" class="control close" title="Stäng" aria-label="Stäng @App.Title"
+            <button type="button" class="control close" title="@L["Window.Close"]" aria-label="@L["Window.CloseApp", Title]"
                     @onclick="() => Shell.Close(App.Id)">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
                      stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
@@ -30,4 +30,6 @@
     [Parameter] public bool Active { get; set; }
 
     [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    private string Title => L[App.TitleKey];
 }

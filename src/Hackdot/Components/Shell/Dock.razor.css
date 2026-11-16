@@ -81,7 +81,7 @@
     background: var(--app-accent);
 }
 
-/* På smala skärmar visas bara ikoner i dockan. */
+/* Narrow screens: icons only in the dock. */
 .task-label {
     display: none;
     font-size: 0.85rem;
@@ -96,7 +96,7 @@
     font-variant-numeric: tabular-nums;
 }
 
-/* ---------- Startmeny ---------- */
+/* ---------- Start menu ---------- */
 
 .scrim {
     position: fixed;

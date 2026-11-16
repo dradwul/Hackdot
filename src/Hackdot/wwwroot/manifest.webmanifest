@@ -1,8 +1,8 @@
 {
   "name": "Hackdot",
   "short_name": "Hackdot",
-  "description": "Ett pedagogiskt hackerspel i fickformat – lär dig terminalen och etisk hackning.",
-  "lang": "sv",
+  "description": "A pocket-sized hacking game – learn the terminal and ethical hacking.",
+  "lang": "en",
   "id": "./",
   "start_url": "./",
   "scope": "./",

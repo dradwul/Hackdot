@@ -8,13 +8,20 @@ public enum AppId
     Guide,
 }
 
-/// <param name="Accent">CSS-färg (eller variabel) som används för appens ikon.</param>
-public sealed record AppInfo(AppId Id, string Title, string Description, string Accent);
+/// <param name="Accent">CSS color (or variable) used for the app's icon.</param>
+public sealed record AppInfo(AppId Id, string Accent)
+{
+    /// <summary>Resource key for the app title, e.g. <c>App.Terminal.Title</c>.</summary>
+    public string TitleKey => $"App.{Id}.Title";
+
+    /// <summary>Resource key for the short app description.</summary>
+    public string DescriptionKey => $"App.{Id}.Description";
+}
 
 /// <summary>
-/// Fönsterhanterare för HackOS-skalet. Håller reda på vilka appar som är öppna
-/// och vilken som visas. Max ett synligt fönster åt gången (mobile-first);
-/// minimerade appar ligger kvar i dockan och behåller sitt tillstånd.
+/// Window manager for the HackOS shell. Tracks which apps are open and which one is visible.
+/// At most one window is visible at a time (mobile-first); minimized apps stay in the dock
+/// and keep their state.
 /// </summary>
 public sealed class ShellService
 {
@@ -22,10 +29,10 @@ public sealed class ShellService
 
     public IReadOnlyList<AppInfo> Apps { get; } =
     [
-        new(AppId.Mission, "Uppdrag", "Bakgrund, flaggor och ledtrådar", "var(--app-mission)"),
-        new(AppId.Terminal, "Terminal", "Kommandon som ls, cd, cat och grep", "var(--app-terminal)"),
-        new(AppId.Files, "Filer", "Utforska filsystemet visuellt", "var(--app-files)"),
-        new(AppId.Guide, "Guide", "Anteckningar och fusklapp", "var(--app-guide)"),
+        new(AppId.Mission, "var(--app-mission)"),
+        new(AppId.Terminal, "var(--app-terminal)"),
+        new(AppId.Files, "var(--app-files)"),
+        new(AppId.Guide, "var(--app-guide)"),
     ];
 
     public IReadOnlyList<AppId> OpenApps => _openApps;
@@ -73,7 +80,7 @@ public sealed class ShellService
         Changed?.Invoke();
     }
 
-    /// <summary>Dockknapp: visa appen, eller minimera den om den redan visas.</summary>
+    /// <summary>Dock button: show the app, or minimize it if it is already visible.</summary>
     public void ToggleFromDock(AppId id)
     {
         if (ActiveApp == id)
