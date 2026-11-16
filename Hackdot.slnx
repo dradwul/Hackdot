@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Hackdot.Core/Hackdot.Core.csproj" />
+    <Project Path="src/Hackdot/Hackdot.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Hackdot.Core.Tests/Hackdot.Core.Tests.csproj" />
+  </Folder>
+</Solution>

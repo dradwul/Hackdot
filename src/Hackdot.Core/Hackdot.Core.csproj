@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Hackdot.Core</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Banor/uppdrag definieras som JSON och bäddas in i assemblyn (fungerar offline i PWA:n). -->
+    <EmbeddedResource Include="Data\Missions\*.json" />
+  </ItemGroup>
+
+</Project>

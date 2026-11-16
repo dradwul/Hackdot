@@ -1,0 +1,15 @@
+@* Tillfällig vy tills respektive app är byggd. *@
+<div class="placeholder">
+    <span class="badge">Under uppbyggnad</span>
+    <h2>@Heading</h2>
+    <p>@Description</p>
+    @ChildContent
+</div>
+
+@code {
+    [Parameter, EditorRequired] public string Heading { get; set; } = "";
+
+    [Parameter, EditorRequired] public string Description { get; set; } = "";
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

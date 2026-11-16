@@ -1,0 +1,48 @@
+@implements IDisposable
+@inject ShellService Shell
+
+<div class="os">
+    <main class="workspace">
+        <div class="wallpaper" aria-hidden="true">
+            <Logo Class="wallpaper-logo" />
+        </div>
+
+        <ul class="desktop-icons" aria-label="Appar">
+            @foreach (var app in Shell.Apps)
+            {
+                <li>
+                    <button type="button" class="desktop-icon" style="--app-accent: @app.Accent"
+                            @onclick="() => Shell.Open(app.Id)">
+                        <span class="icon-tile"><AppIcon App="app.Id" Size="30" /></span>
+                        <span class="icon-label">@app.Title</span>
+                    </button>
+                </li>
+            }
+        </ul>
+
+        @* Alla öppna appar renderas, men bara den aktiva visas. Då behåller
+           minimerade appar sitt tillstånd (t.ex. terminalhistorik). *@
+        @foreach (var id in Shell.OpenApps)
+        {
+            <AppWindow @key="id" App="Shell.Get(id)" Active="Shell.ActiveApp == id">
+                @switch (id)
+                {
+                    case AppId.Mission: <MissionApp /> break;
+                    case AppId.Terminal: <TerminalApp /> break;
+                    case AppId.Files: <FilesApp /> break;
+                    case AppId.Guide: <GuideApp /> break;
+                }
+            </AppWindow>
+        }
+    </main>
+
+    <Dock />
+</div>
+
+@code {
+    protected override void OnInitialized() => Shell.Changed += OnShellChanged;
+
+    private void OnShellChanged() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => Shell.Changed -= OnShellChanged;
+}

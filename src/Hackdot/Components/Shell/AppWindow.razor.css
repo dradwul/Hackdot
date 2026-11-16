@@ -1,0 +1,102 @@
+/* Mobil: fönstret täcker hela arbetsytan. */
+.window {
+    position: absolute;
+    inset: var(--safe-top) 0 0 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-elev);
+    animation: window-in 160ms ease-out;
+}
+
+.window[hidden] {
+    display: none;
+}
+
+.titlebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    min-height: 48px;
+    padding: 0 0.25rem 0 max(0.9rem, var(--safe-left));
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+}
+
+.title {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-width: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.title-icon {
+    display: grid;
+    color: var(--app-accent);
+}
+
+.controls {
+    display: flex;
+    padding-right: var(--safe-right);
+}
+
+.control {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.control:hover,
+.control:active {
+    background: var(--surface-2);
+    color: var(--text);
+}
+
+.control.close:hover,
+.control.close:active {
+    background: color-mix(in srgb, var(--danger) 22%, transparent);
+    color: var(--danger);
+}
+
+.window-body {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+}
+
+/* Större skärmar: ett flytande, centrerat fönster med ram. */
+@media (min-width: 768px) {
+    .window {
+        inset: 1.5rem auto 1.5rem 50%;
+        width: min(960px, calc(100% - 3rem));
+        transform: translateX(-50%);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--shadow-window);
+        animation-name: window-in-desktop;
+    }
+}
+
+@keyframes window-in {
+    from { opacity: 0; transform: translateY(12px); }
+}
+
+@keyframes window-in-desktop {
+    from { opacity: 0; transform: translate(-50%, 12px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .window { animation: none; }
+}

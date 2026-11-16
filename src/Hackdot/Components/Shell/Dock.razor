@@ -1,0 +1,91 @@
+@implements IDisposable
+@inject ShellService Shell
+
+<nav class="dock" aria-label="Aktivitetsfält">
+    <button type="button" class="start @(_menuOpen ? "open" : null)" aria-expanded="@_menuOpen"
+            aria-haspopup="menu" title="Start" @onclick="ToggleMenu">
+        <Logo />
+    </button>
+
+    <div class="tasks">
+        @foreach (var id in Shell.OpenApps)
+        {
+            var app = Shell.Get(id);
+            <button type="button" class="task @(Shell.ActiveApp == id ? "active" : null)"
+                    style="--app-accent: @app.Accent" title="@app.Title" aria-pressed="@(Shell.ActiveApp == id)"
+                    @onclick="() => Shell.ToggleFromDock(id)">
+                <AppIcon App="id" Size="20" />
+                <span class="task-label">@app.Title</span>
+            </button>
+        }
+    </div>
+
+    <time class="clock" datetime="@_now.ToString("HH:mm")">@_now.ToString("HH:mm")</time>
+</nav>
+
+@if (_menuOpen)
+{
+    <div class="scrim" @onclick="CloseMenu"></div>
+    <div class="start-menu" role="menu">
+        <div class="menu-header">
+            <Logo Full="true" Class="menu-logo" />
+            <span class="menu-subtitle">HackOS · lär dig etisk hackning</span>
+        </div>
+        <ul>
+            @foreach (var app in Shell.Apps)
+            {
+                <li>
+                    <button type="button" role="menuitem" class="menu-item" style="--app-accent: @app.Accent"
+                            @onclick="() => OpenFromMenu(app.Id)">
+                        <span class="menu-icon"><AppIcon App="app.Id" Size="20" /></span>
+                        <span class="menu-text">
+                            <span class="menu-title">@app.Title</span>
+                            <span class="menu-description">@app.Description</span>
+                        </span>
+                    </button>
+                </li>
+            }
+        </ul>
+        <button type="button" role="menuitem" class="menu-footer" @onclick="ShowDesktop">Visa skrivbordet</button>
+    </div>
+}
+
+@code {
+    private bool _menuOpen;
+    private DateTime _now = DateTime.Now;
+    private Timer? _clock;
+
+    protected override void OnInitialized()
+    {
+        Shell.Changed += OnShellChanged;
+        _clock = new Timer(_ => InvokeAsync(() =>
+        {
+            _now = DateTime.Now;
+            StateHasChanged();
+        }), null, TimeSpan.FromSeconds(60 - DateTime.Now.Second), TimeSpan.FromMinutes(1));
+    }
+
+    private void ToggleMenu() => _menuOpen = !_menuOpen;
+
+    private void CloseMenu() => _menuOpen = false;
+
+    private void OpenFromMenu(AppId id)
+    {
+        _menuOpen = false;
+        Shell.Open(id);
+    }
+
+    private void ShowDesktop()
+    {
+        _menuOpen = false;
+        Shell.ShowDesktop();
+    }
+
+    private void OnShellChanged() => InvokeAsync(StateHasChanged);
+
+    public void Dispose()
+    {
+        Shell.Changed -= OnShellChanged;
+        _clock?.Dispose();
+    }
+}

@@ -1,0 +1,198 @@
+/* =========================================================
+   Hackdot – globala tokens och basstilar.
+   Komponentspecifika stilar ligger i *.razor.css (scoped CSS).
+   ========================================================= */
+
+:root {
+    color-scheme: dark;
+
+    --bg: #0b1016;
+    --bg-elev: #0f161e;
+    --surface: #151e28;
+    --surface-2: #1c2834;
+    --border: #243241;
+    --grid-line: rgb(148 163 184 / 0.05);
+    --terminal-bg: #070b10;
+
+    --text: #e6edf3;
+    --text-muted: #8b9bab;
+
+    --accent: #22d3ee;   /* cyan */
+    --accent-2: #4ade80; /* grön */
+    --danger: #f87171;
+    --warning: #fbbf24;
+
+    --app-mission: #4ade80;
+    --app-terminal: #22d3ee;
+    --app-files: #60a5fa;
+    --app-guide: #c084fc;
+
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow-window: 0 24px 60px -20px rgb(0 0 0 / 0.75), 0 0 0 1px rgb(255 255 255 / 0.02);
+
+    --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: ui-monospace, "Cascadia Code", "JetBrains Mono", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+    --dock-h: 60px;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    overflow: hidden;
+    overscroll-behavior: none;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+    color: inherit;
+}
+
+/* 16px förhindrar att iOS zoomar in när man fokuserar ett fält. */
+input,
+textarea,
+select {
+    font-size: max(16px, 1em);
+}
+
+:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+::selection {
+    background: rgb(34 211 238 / 0.3);
+}
+
+/* ---------- Logga: "hack." / "hackdot" ---------- */
+
+.logo {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--text);
+    white-space: nowrap;
+}
+
+.logo-dot {
+    color: var(--accent);
+}
+
+/* ---------- Laddningsskärm (index.html) ---------- */
+
+.boot {
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 1.5rem;
+    height: 100vh;
+    height: 100dvh;
+}
+
+.boot .logo {
+    font-size: clamp(2.75rem, 12vw, 4.5rem);
+}
+
+.boot .logo-dot {
+    animation: dot-pulse 1.2s ease-in-out infinite;
+}
+
+.boot-bar {
+    width: min(220px, 60vw);
+    height: 3px;
+    border-radius: 3px;
+    background: var(--surface-2);
+    overflow: hidden;
+}
+
+.boot-bar span {
+    display: block;
+    width: var(--blazor-load-percentage, 0%);
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-2), var(--accent));
+    transition: width 0.1s ease-out;
+}
+
+.boot-text {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.boot-text::after {
+    content: var(--blazor-load-percentage-text, "Startar HackOS…");
+}
+
+@keyframes dot-pulse {
+    50% { opacity: 0.25; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .boot .logo-dot { animation: none; }
+}
+
+/* ---------- Felhantering ---------- */
+
+#blazor-error-ui {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    display: none;
+    padding: 0.8rem 3rem calc(0.8rem + var(--safe-bottom)) 1.25rem;
+    border-top: 1px solid var(--danger);
+    background: #2a1416;
+    color: var(--text);
+}
+
+#blazor-error-ui .reload {
+    color: var(--accent);
+}
+
+#blazor-error-ui .dismiss {
+    position: absolute;
+    top: 0.6rem;
+    right: 1rem;
+    cursor: pointer;
+}
+
+.blazor-error-boundary {
+    padding: 1rem;
+    border-left: 3px solid var(--danger);
+    background: #2a1416;
+    color: var(--text);
+}
+
+.blazor-error-boundary::after {
+    content: "Något gick fel.";
+}

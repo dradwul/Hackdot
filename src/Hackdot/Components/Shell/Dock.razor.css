@@ -1,0 +1,219 @@
+.dock {
+    position: relative;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: calc(var(--dock-h) + var(--safe-bottom));
+    padding: 0 max(0.6rem, var(--safe-right)) var(--safe-bottom) max(0.6rem, var(--safe-left));
+    border-top: 1px solid var(--border);
+    background: rgb(18 26 35 / 0.88);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+.start {
+    flex: none;
+    height: 44px;
+    padding: 0 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    font-size: 1.05rem;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.start.open,
+.start:active {
+    border-color: var(--accent);
+}
+
+.tasks {
+    flex: 1;
+    display: flex;
+    gap: 0.35rem;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.tasks::-webkit-scrollbar {
+    display: none;
+}
+
+.task {
+    position: relative;
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    height: 44px;
+    padding: 0 0.7rem;
+    border: 0;
+    border-radius: 12px;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.task::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 3px;
+    width: 6px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--text-muted);
+    transform: translateX(-50%);
+    transition: width 150ms ease, background 150ms ease;
+}
+
+.task.active {
+    background: var(--surface-2);
+    color: var(--app-accent);
+}
+
+.task.active::after {
+    width: 18px;
+    background: var(--app-accent);
+}
+
+/* På smala skärmar visas bara ikoner i dockan. */
+.task-label {
+    display: none;
+    font-size: 0.85rem;
+    color: var(--text);
+}
+
+.clock {
+    flex: none;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Startmeny ---------- */
+
+.scrim {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background: rgb(0 0 0 / 0.35);
+}
+
+.start-menu {
+    position: fixed;
+    left: max(0.6rem, var(--safe-left));
+    right: max(0.6rem, var(--safe-right));
+    bottom: calc(var(--dock-h) + var(--safe-bottom) + 0.5rem);
+    z-index: 50;
+    padding: 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow-window);
+    animation: menu-in 140ms ease-out;
+}
+
+.menu-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.75rem 0.75rem 0.85rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0.4rem;
+}
+
+.menu-header ::deep .menu-logo {
+    font-size: 1.5rem;
+}
+
+.menu-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.start-menu ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.menu-item,
+.menu-footer {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    width: 100%;
+    min-height: 52px;
+    padding: 0.5rem 0.75rem;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+}
+
+.menu-item:hover,
+.menu-item:active,
+.menu-footer:hover,
+.menu-footer:active {
+    background: var(--surface-2);
+}
+
+.menu-icon {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--app-accent) 16%, transparent);
+    color: var(--app-accent);
+}
+
+.menu-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-title {
+    font-weight: 600;
+}
+
+.menu-description {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.menu-footer {
+    justify-content: center;
+    min-height: 44px;
+    margin-top: 0.4rem;
+    border-top: 1px solid var(--border);
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+@media (min-width: 768px) {
+    .task-label {
+        display: inline;
+    }
+
+    .start-menu {
+        right: auto;
+        width: 340px;
+    }
+}
+
+@keyframes menu-in {
+    from { opacity: 0; transform: translateY(8px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .start-menu { animation: none; }
+}
