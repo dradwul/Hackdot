@@ -5,15 +5,20 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>Hackdot.Core</RootNamespace>
+    <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
 
   <ItemGroup>
     <!-- Missions and file systems are defined as JSON and embedded in the assembly (works offline in the PWA). -->
-    <EmbeddedResource Include="Data\Missions\*.json" />
+    <EmbeddedResource Include="Data\**\*.json" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Localization" Version="10.0.15" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Hackdot.Core.Tests" />
   </ItemGroup>
 
 </Project>

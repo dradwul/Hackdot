@@ -1,0 +1,86 @@
+// The shared HackOS base system. Missions add their own files on top of this layer.
+{
+  "schemaVersion": 1,
+  "hostname": "hackos",
+  "users": [
+    { "name": "user", "home": "/home/user" }
+  ],
+  "defaultUser": "user",
+  "directories": [
+    { "path": "/home/user/Downloads" },
+    { "path": "/tmp", "mode": "777" },
+    { "path": "/var/www/html" }
+  ],
+  "files": [
+    { "path": "/etc/hostname", "content": "hackos" },
+    {
+      "path": "/etc/passwd",
+      "lines": [
+        "root:x:0:0:root:/root:/bin/bash",
+        "user:x:1000:1000:HackOS User:/home/user:/bin/bash"
+      ]
+    },
+    {
+      "path": "/etc/motd",
+      "lines": [
+        "Welcome to HackOS 1.0",
+        "Remember: only hack systems you have permission to hack."
+      ]
+    },
+    {
+      "path": "/home/user/.bashrc",
+      "lines": [
+        "# ~/.bashrc: runs every time you open a terminal.",
+        "# Files starting with a dot are hidden. Use 'ls -a' to see them!",
+        "export PS1='\\u@\\h:\\w\\$ '",
+        "alias ll='ls -la'"
+      ]
+    },
+    {
+      "path": "/home/user/Documents/welcome.txt",
+      "lines": [
+        "Welcome to HackOS!",
+        "",
+        "This is a safe practice computer. Nothing you do here can break anything.",
+        "",
+        "A few commands to get you started:",
+        "  ls          list the files in the current folder",
+        "  cd <folder> move into a folder (cd .. goes back up)",
+        "  cat <file>  show what is inside a file",
+        "  help        list every command",
+        "",
+        "Good luck, agent."
+      ]
+    },
+    {
+      "path": "/var/www/html/index.html",
+      "lines": [
+        "<!DOCTYPE html>",
+        "<html>",
+        "  <head><title>HackOS Web Server</title></head>",
+        "  <body><h1>It works!</h1></body>",
+        "</html>"
+      ]
+    },
+    {
+      "path": "/var/log/syslog",
+      "lines": [
+        "Mar 14 09:00:01 hackos systemd[1]: Starting HackOS...",
+        "Mar 14 09:00:02 hackos kernel: Memory: 4096MB available",
+        "Mar 14 09:00:03 hackos systemd[1]: Started Network Manager.",
+        "Mar 14 09:00:04 hackos sshd[412]: Server listening on 0.0.0.0 port 22.",
+        "Mar 14 09:00:05 hackos apache2[433]: Web server started.",
+        "Mar 14 09:12:00 hackos systemd[1]: Reached target Graphical Interface."
+      ]
+    },
+    {
+      "path": "/root/top_secret.txt",
+      "owner": "root",
+      "mode": "600",
+      "lines": [
+        "If you can read this, you are root.",
+        "With great power comes great responsibility."
+      ]
+    }
+  ]
+}
