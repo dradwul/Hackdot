@@ -24,10 +24,10 @@ public class LsTests
         var lines = terminal.Run("ls -la /var/www").Split('\n');
 
         Assert.Equal("total 16", lines[0]);
-        Assert.Equal("drwxr-xr-x 3 root root 4096 Mar 14 09:12 .", lines[1]);
-        Assert.Equal("drwxr-xr-x 4 root root 4096 Mar 14 09:12 ..", lines[2]);
-        Assert.Equal("drwxr-xr-x 2 root root 4096 Mar 14 09:12 html", lines[3]);
-        Assert.Equal("-rw-r--r-- 1 root root   12 Mar 14 09:12 .secret_flag", lines[4]);
+        Assert.Equal("drwxr-xr-x 3 root 4096 Mar 14 09:12 .", lines[1]);
+        Assert.Equal("drwxr-xr-x 4 root 4096 Mar 14 09:12 ..", lines[2]);
+        Assert.Equal("drwxr-xr-x 2 root 4096 Mar 14 09:12 html", lines[3]);
+        Assert.Equal("-rw-r--r-- 1 root   12 Mar 14 09:12 .secret_flag", lines[4]);
     }
 
     [Fact]

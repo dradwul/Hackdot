@@ -1,0 +1,173 @@
+.terminal {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--terminal-bg);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    line-height: 1.5;
+}
+
+.scrollback {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column-reverse;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 0.75rem max(0.9rem, var(--safe-left)) 0.5rem max(0.9rem, var(--safe-right));
+}
+
+/* In a column-reverse container the auto margin pushes short output to the top,
+   while long output stays scrolled to the newest line. */
+.lines {
+    margin-bottom: auto;
+}
+
+/* ---------- Shortcut chips ---------- */
+
+.shortcuts {
+    flex: none;
+    display: flex;
+    gap: 0.4rem;
+    padding: 0.5rem max(0.75rem, var(--safe-left));
+    overflow-x: auto;
+    border-top: 1px solid var(--border);
+    background: var(--bg-elev);
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.shortcuts::-webkit-scrollbar {
+    display: none;
+}
+
+.chip {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 36px;
+    padding: 0 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    white-space: pre;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.chip:active {
+    border-color: var(--accent);
+    background: var(--surface-2);
+}
+
+/* Chips that only type a command (the player adds the rest) look a little lighter. */
+.chip-insert {
+    border-style: dashed;
+    color: var(--accent);
+}
+
+.chip-icon {
+    padding: 0;
+    color: var(--text-muted);
+}
+
+.chip:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+@media (hover: hover) {
+    .chip:not(:disabled):hover {
+        border-color: var(--accent);
+    }
+}
+
+/* ---------- Input ---------- */
+
+.input-row {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem max(0.5rem, var(--safe-right)) 0.5rem max(0.9rem, var(--safe-left));
+    background: var(--bg-elev);
+}
+
+.prompt {
+    flex: none;
+    display: flex;
+    max-width: 40%;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.prompt-path {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--accent);
+    /* Truncate the start of long paths so the current folder stays visible.
+       The markup wraps the text in LRM marks so it still reads left to right. */
+    direction: rtl;
+    text-align: left;
+}
+
+.prompt-sign {
+    margin-left: 0.15em;
+}
+
+input {
+    flex: 1;
+    min-width: 0;
+    height: 44px;
+    padding: 0 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    outline: none;
+    background: var(--terminal-bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    caret-color: var(--accent);
+}
+
+input:focus {
+    border-color: var(--accent);
+}
+
+input::placeholder {
+    color: var(--text-muted);
+    opacity: 0.6;
+}
+
+.run {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: var(--accent);
+    color: var(--bg);
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.run:active {
+    filter: brightness(0.9);
+}
+
+@media (min-width: 768px) {
+    .terminal {
+        font-size: 0.9rem;
+    }
+
+    .prompt {
+        max-width: 50%;
+    }
+}

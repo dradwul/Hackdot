@@ -102,6 +102,9 @@ public class CommandInterpreterTests
         Assert.StartsWith("Available commands:", output);
         Assert.All(terminal.Commands, command => Assert.Contains(command.Name, output));
         Assert.DoesNotContain("Cmd.", output);
+
+        var lsLine = terminal.Execute("help").Lines.Single(line => line.Text.StartsWith("  ls "));
+        Assert.Equal(10, lsLine.HangingIndent);
     }
 
     [Fact]

@@ -1,0 +1,25 @@
+@using Hackdot.Core.Services.Terminal
+@* Kept on one line on purpose: whitespace inside a pre-wrap line would be rendered. *@
+<div class="line@(Line.IsError ? " error" : null)" style="@IndentStyle">@foreach (var segment in Line.Segments){<span class="@StyleClass(segment.Style)">@segment.Text</span>}</div>
+
+@code {
+    [Parameter, EditorRequired] public OutputLine Line { get; set; } = default!;
+
+    // In a monospace font, 1ch is exactly one character column.
+    private string? IndentStyle => Line.HangingIndent > 0
+        ? $"padding-left: {Line.HangingIndent}ch; text-indent: -{Line.HangingIndent}ch"
+        : null;
+
+    private static string? StyleClass(OutputStyle style) => style switch
+    {
+        OutputStyle.Default => null,
+        OutputStyle.Muted => "s-muted",
+        OutputStyle.Accent => "s-accent",
+        OutputStyle.Directory => "s-directory",
+        OutputStyle.Success => "s-success",
+        OutputStyle.Warning => "s-warning",
+        OutputStyle.Error => "s-error",
+        OutputStyle.Highlight => "s-highlight",
+        _ => null,
+    };
+}

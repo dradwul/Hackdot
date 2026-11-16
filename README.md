@@ -32,8 +32,8 @@ dotnet test
 
 - [x] Foundation: project structure, PWA, HackOS shell (desktop, windows, dock, start menu)
 - [x] Localization infrastructure
-- [ ] Virtual file system defined in JSON
-- [ ] Terminal with command interpreter and shortcut buttons
+- [x] Virtual file system defined in JSON (users, owners, permissions)
+- [x] Terminal with command interpreter, pipes and shortcut buttons
 - [ ] File explorer with "show hidden files"
 - [ ] Mission app with flag submission and three-step hints
 - [ ] Three starter missions

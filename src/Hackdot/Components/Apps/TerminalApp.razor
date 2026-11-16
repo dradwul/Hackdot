@@ -1,1 +1,138 @@
-<AppPlaceholder App="AppId.Terminal" />
+@implements IDisposable
+@inject TerminalService Terminal
+
+<div class="terminal">
+    @* column-reverse keeps the view pinned to the newest output without any JavaScript. *@
+    <div class="scrollback" role="log" aria-live="polite" aria-label="@L["Terminal.Output"]">
+        <div class="lines">
+            @foreach (var line in Terminal.Lines)
+            {
+                <TerminalLine Line="line" />
+            }
+        </div>
+    </div>
+
+    <div class="shortcuts" role="toolbar" aria-label="@L["Terminal.Shortcuts"]">
+        <button type="button" class="chip chip-icon" title="@L["Terminal.PreviousCommand"]"
+                aria-label="@L["Terminal.PreviousCommand"]" disabled="@(Terminal.History.Count == 0)"
+                @onclick="RecallPrevious">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" /></svg>
+        </button>
+        @foreach (var shortcut in Shortcuts)
+        {
+            <button type="button" class="chip @(shortcut.RunsImmediately ? null : "chip-insert")"
+                    @onclick="() => UseShortcutAsync(shortcut)">@shortcut.Command.TrimEnd()@(shortcut.RunsImmediately ? null : "…")</button>
+        }
+    </div>
+
+    <form class="input-row" @onsubmit="SubmitAsync">
+        <label class="prompt" for="terminal-input">
+            <span class="prompt-path">&lrm;@Terminal.DisplayDirectory&lrm;</span><span class="prompt-sign">@(Terminal.IsRoot ? "#" : "$")</span>
+        </label>
+        <input id="terminal-input" @ref="_input" @bind="_command" @bind:event="oninput" @onkeydown="OnKeyDown"
+               type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
+               enterkeyhint="send" placeholder="@L["Terminal.InputPlaceholder"]" aria-label="@L["Terminal.Input"]" />
+        <button type="submit" class="run" title="@L["Terminal.Run"]" aria-label="@L["Terminal.Run"]">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 10l-5 5 5 5" /><path d="M20 4v7a4 4 0 0 1-4 4H4" /></svg>
+        </button>
+    </form>
+</div>
+
+@code {
+    /// <param name="RunsImmediately">Complete commands run on tap; the others are typed into the input.</param>
+    private sealed record Shortcut(string Command, bool RunsImmediately);
+
+    private static readonly Shortcut[] Shortcuts =
+    [
+        new("ls -la", true),
+        new("cd ..", true),
+        new("cat ", false),
+        new("grep ", false),
+        new("find ", false),
+        new("cd ", false),
+        new("pwd", true),
+        new("help", true),
+        new("clear", true),
+    ];
+
+    private ElementReference _input;
+    private string _command = "";
+    private int _historyIndex = -1;
+
+    protected override void OnInitialized() => Terminal.Changed += OnTerminalChanged;
+
+    private async Task SubmitAsync()
+    {
+        Run(_command);
+        _command = "";
+        await _input.FocusAsync();
+    }
+
+    private void Run(string command)
+    {
+        _historyIndex = -1;
+        Terminal.Submit(command);
+    }
+
+    private async Task UseShortcutAsync(Shortcut shortcut)
+    {
+        if (shortcut.RunsImmediately)
+        {
+            Run(shortcut.Command);
+            return;
+        }
+
+        _command = shortcut.Command;
+        await _input.FocusAsync();
+    }
+
+    private void RecallPrevious()
+    {
+        if (Terminal.History.Count == 0)
+        {
+            return;
+        }
+
+        _historyIndex = _historyIndex < 0 ? Terminal.History.Count - 1 : Math.Max(0, _historyIndex - 1);
+        _command = Terminal.History[_historyIndex];
+    }
+
+    private void RecallNext()
+    {
+        if (_historyIndex < 0)
+        {
+            return;
+        }
+
+        _historyIndex++;
+
+        if (_historyIndex >= Terminal.History.Count)
+        {
+            _historyIndex = -1;
+            _command = "";
+        }
+        else
+        {
+            _command = Terminal.History[_historyIndex];
+        }
+    }
+
+    private void OnKeyDown(KeyboardEventArgs e)
+    {
+        switch (e.Key)
+        {
+            case "ArrowUp":
+                RecallPrevious();
+                break;
+            case "ArrowDown":
+                RecallNext();
+                break;
+        }
+    }
+
+    private void OnTerminalChanged() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => Terminal.Changed -= OnTerminalChanged;
+}

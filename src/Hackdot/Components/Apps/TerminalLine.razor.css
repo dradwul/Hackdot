@@ -1,0 +1,19 @@
+.line {
+    min-height: 1.5em;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.s-muted { color: var(--text-muted); }
+.s-accent { color: var(--accent); font-weight: 600; }
+.s-directory { color: var(--accent); font-weight: 600; }
+.s-success { color: var(--accent-2); }
+.s-warning { color: var(--warning); }
+.s-error { color: var(--danger); }
+
+.s-highlight {
+    border-radius: 3px;
+    background: rgb(251 191 36 / 0.22);
+    color: var(--warning);
+    font-weight: 600;
+}

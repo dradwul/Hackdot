@@ -23,7 +23,7 @@ public sealed class HelpCommand : ICommand
 
             foreach (var command in commands)
             {
-                output.Write("  " + command.Name.PadRight(width), OutputStyle.Success);
+                output.HangingIndent(width + 2).Write("  " + command.Name.PadRight(width), OutputStyle.Success);
                 output.WriteLine(context.Localize($"Cmd.{command.Name}.Summary"));
             }
 
@@ -58,7 +58,7 @@ public sealed class HelpCommand : ICommand
         for (var i = 0; i < topic.Examples.Count; i++)
         {
             output.Write("  $ ", OutputStyle.Muted).WriteLine(topic.Examples[i], OutputStyle.Success);
-            output.WriteLine("    " + context.Localize($"Cmd.{topic.Name}.Example{i + 1}"), OutputStyle.Muted);
+            output.HangingIndent(4).WriteLine("    " + context.Localize($"Cmd.{topic.Name}.Example{i + 1}"), OutputStyle.Muted);
         }
     }
 }

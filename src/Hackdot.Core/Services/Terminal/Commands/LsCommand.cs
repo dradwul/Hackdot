@@ -113,8 +113,8 @@ public sealed class LsCommand : ICommand
             var owner = node.Owner.PadRight(ownerWidth);
             var size = node.Size.ToString(CultureInfo.InvariantCulture).PadLeft(sizeWidth);
 
-            // Linux style: the group is shown as the owner's name.
-            output.Write($"{node.PermissionString} {links} {owner} {owner} {size} {FormatDate(node.Modified)} ", OutputStyle.Muted);
+            // HackOS has no groups, so the group column is left out (like 'ls -o'). It also fits phone screens better.
+            output.Write($"{node.PermissionString} {links} {owner} {size} {FormatDate(node.Modified)} ", OutputStyle.Muted);
             WriteName(output, name, node, folderSuffix: false);
             output.EndLine();
         }

@@ -37,7 +37,6 @@
   <!-- Placeholders -->
   <data name="Placeholder.Badge" xml:space="preserve"><value>Coming soon</value></data>
   <data name="Placeholder.Mission" xml:space="preserve"><value>Your mission briefing, a field to submit the flag (FLAG{...}) and a three-step hint system will live here.</value></data>
-  <data name="Placeholder.Terminal" xml:space="preserve"><value>A terminal with commands like help, ls, cd, cat, grep and find – plus shortcut buttons so you do not have to type everything on your phone.</value></data>
   <data name="Placeholder.Files" xml:space="preserve"><value>A visual file explorer showing exactly the same file system as the terminal – with a toggle to show hidden files.</value></data>
   <data name="Placeholder.Guide" xml:space="preserve"><value>Notes and a cheat sheet that explain commands and ethical hacking concepts in plain language.</value></data>
 
@@ -47,4 +46,5 @@
   <data name="Terminal.InputPlaceholder" xml:space="preserve"><value>Type a command…</value></data>
   <data name="Terminal.Shortcuts" xml:space="preserve"><value>Command shortcuts</value></data>
   <data name="Terminal.Run" xml:space="preserve"><value>Run</value></data>
+  <data name="Terminal.PreviousCommand" xml:space="preserve"><value>Previous command</value></data>
 </root>
