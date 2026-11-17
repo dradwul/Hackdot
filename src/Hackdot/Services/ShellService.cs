@@ -98,4 +98,12 @@ public sealed class ShellService
         ActiveApp = null;
         Changed?.Invoke();
     }
+
+    /// <summary>Closes every window (e.g. when logging out).</summary>
+    public void CloseAll()
+    {
+        _openApps.Clear();
+        ActiveApp = null;
+        Changed?.Invoke();
+    }
 }

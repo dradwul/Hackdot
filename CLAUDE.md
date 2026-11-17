@@ -98,5 +98,6 @@ En bana = en JSON-fil i `src/Hackdot.Core/Data/Missions/` (`NN-namn.json`), mode
   Komponentstilar läggs i `*.razor.css` (scoped CSS).
 - **Spellogik hör hemma i `Hackdot.Core`** och ska ha tester. Blazor-komponenterna ska vara tunna.
 - **Nya banor** läggs till som JSON i `src/Hackdot.Core/Data/Missions/` – ingen kodändring ska behövas för en ny bana.
-- Terminalen och filutforskaren ska alltid visa **samma** virtuella filsystem.
+- Terminalen och filutforskaren ska alltid visa **samma** virtuella filsystem, men har var sin `ShellSession`
+  för den inloggade användaren (`GameService.CreateSession`) – `su` i terminalen påverkar inte filutforskaren.
 - Verifiera att `dotnet build` och `dotnet test` går igenom innan du committar.

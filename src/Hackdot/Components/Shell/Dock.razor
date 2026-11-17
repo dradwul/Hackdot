@@ -1,5 +1,6 @@
 @implements IDisposable
 @inject ShellService Shell
+@inject GameService Game
 
 <nav class="dock" aria-label="@L["Shell.Taskbar"]">
     <button type="button" class="start @(_menuOpen ? "open" : null)" aria-expanded="@Aria(_menuOpen)"
@@ -29,7 +30,7 @@
     <div class="start-menu" role="menu">
         <div class="menu-header">
             <Logo Full="true" Class="menu-logo" />
-            <span class="menu-subtitle">@L["Shell.StartMenu.Subtitle"]</span>
+            <span class="menu-subtitle">@L["Shell.LoggedInAs", Game.CurrentUser.Name, Game.FileSystem.Hostname]</span>
         </div>
         <ul>
             @foreach (var app in Shell.Apps)
@@ -46,7 +47,14 @@
                 </li>
             }
         </ul>
-        <button type="button" role="menuitem" class="menu-footer" @onclick="ShowDesktop">@L["Shell.ShowDesktop"]</button>
+        <div class="menu-footer">
+            <button type="button" role="menuitem" class="footer-button" @onclick="ShowDesktop">@L["Shell.ShowDesktop"]</button>
+            <button type="button" role="menuitem" class="footer-button logout" @onclick="LogOut">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" /><path d="m10 17-5-5 5-5" /><path d="M5 12h12" /></svg>
+                @L["Shell.LogOut"]
+            </button>
+        </div>
     </div>
 }
 
@@ -79,6 +87,14 @@
     {
         _menuOpen = false;
         Shell.ShowDesktop();
+    }
+
+    private void LogOut()
+    {
+        // Like a real OS: logging out closes every app.
+        _menuOpen = false;
+        Shell.CloseAll();
+        Game.LogOut();
     }
 
     private void OnShellChanged() => InvokeAsync(StateHasChanged);

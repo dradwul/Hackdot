@@ -40,10 +40,16 @@
     <Dock />
 </div>
 
+@if (Game.IsLocked)
+{
+    <LoginScreen />
+}
+
 @code {
     protected override void OnInitialized()
     {
         Shell.Changed += OnShellChanged;
+        Game.Changed += OnShellChanged;
 
         // New players land straight in their first mission briefing.
         if (Game.IsFirstLaunch && Shell.OpenApps.Count == 0)
@@ -54,5 +60,9 @@
 
     private void OnShellChanged() => InvokeAsync(StateHasChanged);
 
-    public void Dispose() => Shell.Changed -= OnShellChanged;
+    public void Dispose()
+    {
+        Shell.Changed -= OnShellChanged;
+        Game.Changed -= OnShellChanged;
+    }
 }

@@ -1,0 +1,101 @@
+@using System.Globalization
+@using Hackdot.Core.Models
+@inject GameService Game
+
+<div class="login" role="dialog" aria-modal="true" aria-labelledby="login-title">
+    <div class="login-card">
+        <div class="clock">
+            <time>@_now.ToString("HH:mm", CultureInfo.CurrentCulture)</time>
+            <span>@_now.ToString("dddd d MMMM", CultureInfo.CurrentCulture)</span>
+        </div>
+
+        <Logo Full="true" Class="login-logo" />
+        <p class="host">@Game.FileSystem.Hostname</p>
+
+        <h2 id="login-title">@L["Login.Choose"]</h2>
+
+        <ul class="accounts">
+            @foreach (var user in Game.FileSystem.LoginUsers)
+            {
+                var selected = user == _selected;
+                <li>
+                    <button type="button" class="account @(selected ? "selected" : null)" aria-pressed="@Aria(selected)"
+                            @onclick="() => Select(user)">
+                        <span class="avatar" aria-hidden="true">@user.Name[..1].ToUpperInvariant()</span>
+                        <span class="account-name">@user.Name</span>
+                        @if (!user.RequiresPassword)
+                        {
+                            <span class="no-password">@L["Login.NoPassword"]</span>
+                        }
+                    </button>
+                </li>
+            }
+        </ul>
+
+        @if (_selected is { } account)
+        {
+            <form class="login-form @(_shake ? "shake" : null)" @onsubmit="LogInAsync">
+                @if (account.RequiresPassword)
+                {
+                    <label class="visually-hidden" for="login-password">@L["Login.PasswordFor", account.Name]</label>
+                    <input id="login-password" @ref="_passwordInput" type="password" @bind="_password" @bind:event="oninput"
+                           placeholder="@L["Login.PasswordFor", account.Name]" autocomplete="off" autocapitalize="off"
+                           autocorrect="off" spellcheck="false" enterkeyhint="go" aria-invalid="@Aria(_failed)"
+                           aria-describedby="login-error" />
+                }
+                <button type="submit" class="submit">@L["Login.Submit"]</button>
+                <p id="login-error" class="error" role="status">@(_failed ? L["Login.Wrong"].Value : null)</p>
+            </form>
+        }
+    </div>
+</div>
+
+@code {
+    private readonly DateTime _now = DateTime.Now;
+    private VirtualUser? _selected;
+    private string _password = "";
+    private bool _failed;
+    private bool _shake;
+    private bool _focusPassword;
+    private ElementReference _passwordInput;
+
+    protected override void OnInitialized()
+    {
+        var users = Game.FileSystem.LoginUsers;
+        _selected = users.FirstOrDefault(user => user == Game.CurrentUser) ?? users.FirstOrDefault();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_focusPassword && _selected?.RequiresPassword == true)
+        {
+            _focusPassword = false;
+            await _passwordInput.FocusAsync();
+        }
+    }
+
+    private void Select(VirtualUser user)
+    {
+        _selected = user;
+        _password = "";
+        _failed = false;
+        _focusPassword = true;
+    }
+
+    private async Task LogInAsync()
+    {
+        if (_selected is null || Game.LogIn(_selected, _selected.RequiresPassword ? _password : null))
+        {
+            return;
+        }
+
+        _failed = true;
+        _password = "";
+
+        // Restart the shake animation on every failed attempt.
+        _shake = false;
+        StateHasChanged();
+        await Task.Delay(10);
+        _shake = true;
+    }
+}

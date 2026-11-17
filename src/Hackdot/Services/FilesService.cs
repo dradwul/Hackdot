@@ -5,7 +5,7 @@ namespace Hackdot.Services;
 
 /// <summary>
 /// State of the Files app: the explorer (same file system and user as the terminal) and the open file.
-/// Lives as long as the app so minimizing the window keeps your place; a new mission starts fresh.
+/// Lives as long as the app so minimizing the window keeps your place; a new mission or login starts fresh.
 /// </summary>
 public sealed class FilesService
 {
@@ -14,8 +14,8 @@ public sealed class FilesService
     public FilesService(GameService game)
     {
         _game = game;
-        Explorer = new FileExplorer(game.Session);
-        _game.MissionStarted += OnMissionStarted;
+        Explorer = new FileExplorer(game.CreateSession());
+        _game.SessionChanged += OnSessionChanged;
     }
 
     public FileExplorer Explorer { get; private set; }
@@ -79,9 +79,9 @@ public sealed class FilesService
     private VirtualNode? FindTarget(string path) =>
         Explorer.Session.FileSystem.GetNode(VirtualPath.Resolve(Explorer.CurrentPath, path, Explorer.Session.User.Home));
 
-    private void OnMissionStarted()
+    private void OnSessionChanged()
     {
-        Explorer = new FileExplorer(_game.Session) { ShowHidden = Explorer.ShowHidden };
+        Explorer = new FileExplorer(_game.CreateSession()) { ShowHidden = Explorer.ShowHidden };
         OpenedFile = null;
         LastError = null;
         Changed?.Invoke();

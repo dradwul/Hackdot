@@ -27,7 +27,8 @@
   <data name="Shell.Apps" xml:space="preserve"><value>Apps</value></data>
   <data name="Shell.Taskbar" xml:space="preserve"><value>Taskbar</value></data>
   <data name="Shell.Start" xml:space="preserve"><value>Start</value></data>
-  <data name="Shell.StartMenu.Subtitle" xml:space="preserve"><value>HackOS · learn ethical hacking</value></data>
+  <data name="Shell.LoggedInAs" xml:space="preserve"><value>Logged in as {0} on {1}</value></data>
+  <data name="Shell.LogOut" xml:space="preserve"><value>Log out</value></data>
   <data name="Shell.ShowDesktop" xml:space="preserve"><value>Show desktop</value></data>
   <data name="Window.Minimize" xml:space="preserve"><value>Minimize</value></data>
   <data name="Window.MinimizeApp" xml:space="preserve"><value>Minimize {0}</value></data>
@@ -41,6 +42,7 @@
   <data name="Terminal.InputPlaceholder" xml:space="preserve"><value>Type a command…</value></data>
   <data name="Terminal.Shortcuts" xml:space="preserve"><value>Command shortcuts</value></data>
   <data name="Terminal.Run" xml:space="preserve"><value>Run</value></data>
+  <data name="Terminal.PasswordPlaceholder" xml:space="preserve"><value>Type the password (hidden)…</value></data>
   <data name="Terminal.PreviousCommand" xml:space="preserve"><value>Previous command</value></data>
   <!-- Mission app -->
   <data name="Mission.Tab.Briefing" xml:space="preserve"><value>Briefing</value></data>
@@ -109,4 +111,10 @@
   <data name="Guide.Notes.Label" xml:space="preserve"><value>Your notes</value></data>
   <data name="Guide.Notes.Placeholder" xml:space="preserve"><value>Write down anything useful: passwords, file paths, ideas…</value></data>
   <data name="Guide.Notes.Privacy" xml:space="preserve"><value>Notes are saved automatically, only on this device.</value></data>
+  <!-- Login screen -->
+  <data name="Login.Choose" xml:space="preserve"><value>Who is using this computer?</value></data>
+  <data name="Login.PasswordFor" xml:space="preserve"><value>Password for {0}</value></data>
+  <data name="Login.Submit" xml:space="preserve"><value>Log in</value></data>
+  <data name="Login.Wrong" xml:space="preserve"><value>Wrong password. Passwords are case-sensitive.</value></data>
+  <data name="Login.NoPassword" xml:space="preserve"><value>no password</value></data>
 </root>

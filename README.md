@@ -36,5 +36,6 @@ dotnet test
 - [x] Terminal with command interpreter, pipes and shortcut buttons
 - [x] File explorer with "show hidden files", permissions and the matching terminal command
 - [x] Mission app with flag submission, three-step hints, score and saved progress
-- [x] Three starter missions
+- [x] Four missions (the fourth needs a found password, su and the login screen)
 - [x] Guide app: concepts, command reference built from the terminal, and notes
+- [x] Login screen, log out, su/exit with hidden password prompts

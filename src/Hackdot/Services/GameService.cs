@@ -7,8 +7,9 @@ using Microsoft.JSInterop;
 namespace Hackdot.Services;
 
 /// <summary>
-/// The running game: mission progress (saved in the browser) and the file system of the active mission,
-/// shared by the terminal and the file explorer.
+/// The running game: mission progress (saved in the browser), the active mission's file system and who is
+/// logged in. The terminal and the file explorer each get their own session for the logged-in user – so
+/// <c>su</c> in the terminal does not change what the file explorer may open, just like on a real computer.
 /// </summary>
 public sealed class GameService
 {
@@ -24,7 +25,8 @@ public sealed class GameService
         var snapshot = GameState.DeserializeSnapshot(ReadStorage());
         IsFirstLaunch = snapshot is null;
         State = new GameState(MissionCatalog.LoadEmbedded(), snapshot);
-        (FileSystem, Session) = CreateWorld();
+        FileSystem = State.CreateFileSystem();
+        CurrentUser = DefaultUser(FileSystem);
     }
 
     public GameState State { get; }
@@ -36,21 +38,54 @@ public sealed class GameService
 
     public VirtualFileSystem FileSystem { get; private set; }
 
-    public ShellSession Session { get; private set; }
+    /// <summary>The user logged in on the desktop.</summary>
+    public VirtualUser CurrentUser { get; private set; }
 
-    /// <summary>Progress changed (hint unlocked, flag solved, …).</summary>
+    /// <summary>The login screen is showing (after logging out).</summary>
+    public bool IsLocked { get; private set; }
+
+    /// <summary>Progress or login state changed.</summary>
     public event Action? Changed;
 
-    /// <summary>A mission was started and the file system was replaced.</summary>
-    public event Action? MissionStarted;
+    /// <summary>
+    /// A new mission was started or another user logged in: apps should start a fresh session
+    /// (see <see cref="CreateSession"/>).
+    /// </summary>
+    public event Action? SessionChanged;
+
+    /// <summary>A new session for the logged-in user, starting in their home folder.</summary>
+    public ShellSession CreateSession() => new(FileSystem, CurrentUser.Name);
 
     public void StartMission(MissionDefinition mission)
     {
         State.Activate(mission);
-        (FileSystem, Session) = CreateWorld();
+        FileSystem = State.CreateFileSystem();
+        CurrentUser = DefaultUser(FileSystem);
+        IsLocked = false;
         Save();
-        MissionStarted?.Invoke();
+        SessionChanged?.Invoke();
         Changed?.Invoke();
+    }
+
+    public void LogOut()
+    {
+        IsLocked = true;
+        Changed?.Invoke();
+    }
+
+    /// <summary>Logs in as <paramref name="user"/>. Returns <c>false</c> if the password is wrong.</summary>
+    public bool LogIn(VirtualUser user, string? password)
+    {
+        if (!user.Accepts(password))
+        {
+            return false;
+        }
+
+        CurrentUser = user;
+        IsLocked = false;
+        SessionChanged?.Invoke();
+        Changed?.Invoke();
+        return true;
     }
 
     public FlagCheckResult SubmitFlag(string answer)
@@ -70,11 +105,7 @@ public sealed class GameService
         }
     }
 
-    private (VirtualFileSystem, ShellSession) CreateWorld()
-    {
-        var fileSystem = State.CreateFileSystem();
-        return (fileSystem, new ShellSession(fileSystem));
-    }
+    private static VirtualUser DefaultUser(VirtualFileSystem fileSystem) => new ShellSession(fileSystem).User;
 
     private string? ReadStorage()
     {

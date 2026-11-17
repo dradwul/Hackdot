@@ -22,7 +22,7 @@ public sealed class TerminalService
         _game = game;
         _text = text;
         Interpreter = Connect();
-        _game.MissionStarted += OnMissionStarted;
+        _game.SessionChanged += OnSessionChanged;
     }
 
     public CommandInterpreter Interpreter { get; private set; }
@@ -36,10 +36,26 @@ public sealed class TerminalService
 
     public bool IsRoot => Interpreter.Session.User.IsRoot;
 
+    /// <summary>Set while a command waits for an answer, e.g. <c>Password:</c> after <c>su</c>.</summary>
+    public string? PendingInputLabel => Interpreter.PendingInputLabel;
+
+    /// <summary>The answer should be typed in a hidden field and never echoed or remembered.</summary>
+    public bool IsSecretInput => Interpreter.PendingInputIsSecret;
+
     public event Action? Changed;
 
     public void Submit(string input)
     {
+        if (PendingInputLabel is { } label)
+        {
+            // Answering a question: show the question, but never the (secret) answer, and keep it out of history.
+            var secret = IsSecretInput;
+            _lines.Add(secret ? OutputLine.Plain(label) : new OutputLine([new(label + " "), new(input)]));
+            AddLines(Interpreter.Execute(input));
+            Changed?.Invoke();
+            return;
+        }
+
         // Capture the prompt before running: 'cd' changes it.
         _lines.Add(Interpreter.Prompt(input));
 
@@ -48,8 +64,12 @@ public sealed class TerminalService
             _history.Add(input);
         }
 
-        var result = Interpreter.Execute(input);
+        AddLines(Interpreter.Execute(input));
+        Changed?.Invoke();
+    }
 
+    private void AddLines(CommandResult result)
+    {
         if (result.ClearScreen)
         {
             _lines.Clear();
@@ -63,13 +83,11 @@ public sealed class TerminalService
         {
             _lines.RemoveRange(0, _lines.Count - MaxLines);
         }
-
-        Changed?.Invoke();
     }
 
     private CommandInterpreter Connect()
     {
-        var interpreter = new CommandInterpreter(_game.Session, _text);
+        var interpreter = new CommandInterpreter(_game.CreateSession(), _text);
 
         _lines.Clear();
         _lines.AddRange(interpreter.Welcome());
@@ -80,7 +98,7 @@ public sealed class TerminalService
         return interpreter;
     }
 
-    private void OnMissionStarted()
+    private void OnSessionChanged()
     {
         Interpreter = Connect();
         Changed?.Invoke();
