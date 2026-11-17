@@ -120,6 +120,28 @@ Folders you are not allowed to open are reported as 'Permission denied'.</value>
   <data name="Cmd.whoami.Details" xml:space="preserve"><value>Prints the name of the current user. Different users may open different files – 'root' is the administrator who can open everything.</value></data>
   <data name="Cmd.whoami.Example1" xml:space="preserve"><value>Show your user name</value></data>
 
+  <!-- su / exit -->
+  <data name="Su.Password" xml:space="preserve"><value>Password:</value></data>
+  <data name="Su.Failure" xml:space="preserve"><value>su: Authentication failure</value></data>
+  <data name="Su.UnknownUser" xml:space="preserve"><value>su: user {0} does not exist. Tip: the users of a computer are listed in /etc/passwd.</value></data>
+  <data name="Su.Switched" xml:space="preserve"><value>You are now {0}. Type 'exit' to go back.</value></data>
+  <data name="Exit.Back" xml:space="preserve"><value>Back to {0}.</value></data>
+  <data name="Exit.Nowhere" xml:space="preserve"><value>There is no previous user to go back to. To switch accounts, log out from the start menu.</value></data>
+  <data name="Cmd.su.Summary" xml:space="preserve"><value>Switch user – become someone else (if you know the password)</value></data>
+  <data name="Cmd.su.Details" xml:space="preserve"><value>Lets you act as another user. You have to type that user's password; the letters are not shown while you type. Without a name, su tries to become root.
+
+  su   <!-- clear -->lt;user  <!-- clear -->gt;    become   <!-- clear -->lt;user  <!-- clear -->gt; and stay in the same folder
+  su -   <!-- clear -->lt;user  <!-- clear -->gt;  become   <!-- clear -->lt;user  <!-- clear -->gt; and go to their home folder
+  exit         go back to the user you were before
+
+On a real computer you may only do this with permission – just like everything else in Hackdot.</value></data>
+  <data name="Cmd.su.Example1" xml:space="preserve"><value>Become the user admin</value></data>
+  <data name="Cmd.su.Example2" xml:space="preserve"><value>Become admin and jump to their home folder</value></data>
+  <data name="Cmd.su.Example3" xml:space="preserve"><value>Go back to who you were</value></data>
+  <data name="Cmd.exit.Summary" xml:space="preserve"><value>Go back to the user you were before su</value></data>
+  <data name="Cmd.exit.Details" xml:space="preserve"><value>After switching user with su, exit takes you back to the user you were before – and to the folder you were in.</value></data>
+  <data name="Cmd.exit.Example1" xml:space="preserve"><value>Stop being the other user</value></data>
+
   <!-- clear -->
   <data name="Cmd.clear.Summary" xml:space="preserve"><value>Clear the screen</value></data>
   <data name="Cmd.clear.Details" xml:space="preserve"><value>Removes everything from the terminal window. Your files are not affected.</value></data>

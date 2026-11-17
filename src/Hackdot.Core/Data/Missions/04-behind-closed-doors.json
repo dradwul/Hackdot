@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "id": "behind-closed-doors",
+  "order": 4,
+  "difficulty": "hard",
+  "points": 400,
+  "title": "Behind Closed Doors",
+  "summary": "The quarterly report is locked in the admin's private folder – and the admin is on vacation.",
+  "briefing": "Panic at NovaTech: the quarterly report is due today, and it is stuck in the private home folder of Sam, the system administrator. Sam is on a beach somewhere with no phone signal.\n\nThe CEO has given you **written permission** to get into Sam's account. But `/home/admin` is locked: only the user `admin` may open it.\n\nTo get in, you need to become `admin` – and for that you need admin's password. Sam is known for writing lots of little scripts to automate things… and for taking shortcuts.",
+  "objective": "Find admin's password, become admin and read the quarterly report in /home/admin.",
+  "debrief": "Brilliant! You found a password hard-coded in a script, used it to become another user and read a file that was locked for you.\n\n`su admin` switches user in the terminal; logging out and in again on the login screen does the same for the whole computer. Either way, the system only checks one thing: do you know the password?\n\nThis is exactly how many real break-ins start: one leaked password, and the attacker suddenly has someone else's access. The lesson for NovaTech: never put passwords in scripts, and give every account only the access it really needs.",
+  "flag": "FLAG{cr3d3nt14ls_1n_scr1pts}",
+  "hints": [
+    "You can't open admin's folder as yourself, so you need to become `admin`. Admins often automate things with scripts – and sometimes leave passwords inside them. Scripts usually live in folders like `/opt`.",
+    "Search for the password: `grep -ri password /opt` searches every file in /opt. When you have it, run `su admin` in the terminal – or log out from the start menu and log in as admin.",
+    "The password is `Summer2026!` (found in `/opt/scripts/backup.sh`). Run `su admin`, type the password, then `cat /home/admin/quarterly_report.txt`."
+  ],
+  "skills": [ "grep -r", "su", "switching-users" ],
+  "fileSystem": {
+    "hostname": "novatech-srv",
+    "users": [
+      { "name": "admin", "home": "/home/admin", "password": "Summer2026!" }
+    ],
+    "directories": [
+      { "path": "/home/admin", "owner": "admin", "mode": "700" },
+      { "path": "/opt/scripts", "mode": "755" }
+    ],
+    "files": [
+      {
+        "path": "/etc/passwd",
+        "lines": [
+          "root:x:0:0:root:/root:/bin/bash",
+          "admin:x:1001:1001:Sam (System Administrator):/home/admin:/bin/bash",
+          "user:x:1000:1000:HackOS User:/home/user:/bin/bash"
+        ]
+      },
+      {
+        "path": "/home/user/Documents/email_from_ceo.txt",
+        "lines": [
+          "From: Alex (CEO)",
+          "To: You",
+          "Subject: Please get the quarterly report!",
+          "",
+          "Hi,",
+          "",
+          "Sam is on vacation and the quarterly report is stuck in Sam's folder,",
+          "/home/admin. You have my written permission to get into the admin account.",
+          "",
+          "I don't know the password, sorry. Sam automates everything with scripts,",
+          "maybe that helps?",
+          "",
+          "Thanks!",
+          "Alex"
+        ]
+      },
+      {
+        "path": "/opt/scripts/backup.sh",
+        "mode": "755",
+        "lines": [
+          "#!/bin/bash",
+          "# Nightly backup of all home folders – written by Sam (admin)",
+          "# TODO: stop hard-coding the password in here!!",
+          "",
+          "BACKUP_USER=admin",
+          "BACKUP_PASSWORD='Summer2026!'",
+          "",
+          "tar -czf /var/backups/home.tar.gz /home",
+          "echo \"Backup done\""
+        ]
+      },
+      {
+        "path": "/opt/scripts/cleanup.sh",
+        "mode": "755",
+        "lines": [
+          "#!/bin/bash",
+          "# Deletes temporary files older than 7 days",
+          "find /tmp -type f -mtime +7 -delete"
+        ]
+      },
+      {
+        "path": "/var/backups/README.txt",
+        "lines": [
+          "Backups are created every night by the script in /opt/scripts."
+        ]
+      },
+      {
+        "path": "/home/admin/quarterly_report.txt",
+        "owner": "admin",
+        "mode": "600",
+        "lines": [
+          "NovaTech – Quarterly report (CONFIDENTIAL)",
+          "",
+          "Revenue: up 12 %",
+          "Coffee consumed: up 340 %",
+          "Security incidents found by our ethical hacker: several",
+          "",
+          "FLAG{cr3d3nt14ls_1n_scr1pts}"
+        ]
+      },
+      {
+        "path": "/home/admin/.bash_history",
+        "owner": "admin",
+        "mode": "600",
+        "lines": [
+          "cd /opt/scripts",
+          "nano backup.sh",
+          "./backup.sh",
+          "exit"
+        ]
+      }
+    ]
+  }
+}

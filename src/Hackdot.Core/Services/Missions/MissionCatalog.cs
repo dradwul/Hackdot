@@ -87,23 +87,42 @@ public sealed partial class MissionCatalog
             return errors;
         }
 
-        var session = new ShellSession(fileSystem);
-        var flagFiles = VirtualFileSystem.Descendants(fileSystem.Root)
-            .OfType<VirtualFile>()
-            .Where(file => file.Content.Contains(mission.Flag, StringComparison.Ordinal))
-            .ToList();
+        var allFiles = VirtualFileSystem.Descendants(fileSystem.Root).OfType<VirtualFile>().ToList();
+        var flagFiles = allFiles.Where(file => file.Content.Contains(mission.Flag, StringComparison.Ordinal)).ToList();
 
         if (flagFiles.Count == 0)
         {
             errors.Add($"The flag {mission.Flag} does not appear in any file.");
         }
-        else if (!flagFiles.Any(file => session.CanRead(file) && CanReach(session, file)))
+        else if (!ReachableUsers(fileSystem, allFiles).Any(session => flagFiles.Any(file => CanReadFile(session, file))))
         {
-            errors.Add($"The flag {mission.Flag} is only in files that '{session.User.Name}' cannot read.");
+            errors.Add($"The flag {mission.Flag} is only in files the player cannot read – not even as another user whose password can be found.");
         }
 
         return errors;
     }
+
+    /// <summary>
+    /// The users a player can become: the starting user, accounts without a password, and accounts whose
+    /// password appears in a file the starting user can read (the "hidden password" mission pattern).
+    /// </summary>
+    private static IEnumerable<ShellSession> ReachableUsers(VirtualFileSystem fileSystem, List<VirtualFile> allFiles)
+    {
+        var start = new ShellSession(fileSystem);
+        yield return start;
+
+        var readableText = allFiles.Where(file => CanReadFile(start, file)).Select(file => file.Content).ToList();
+
+        foreach (var user in fileSystem.Users.Where(user => user != start.User && user.CanLogIn))
+        {
+            if (!user.RequiresPassword || readableText.Any(text => text.Contains(user.Password!, StringComparison.Ordinal)))
+            {
+                yield return new ShellSession(fileSystem, user.Name);
+            }
+        }
+    }
+
+    private static bool CanReadFile(ShellSession session, VirtualFile file) => session.CanRead(file) && CanReach(session, file);
 
     private static bool CanReach(ShellSession session, VirtualFile file)
     {

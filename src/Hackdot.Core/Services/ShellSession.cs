@@ -44,12 +44,46 @@ public sealed class ShellSession
 
     public void ChangeDirectory(VirtualDirectory directory) => CurrentDirectory = directory.Path;
 
-    /// <summary>Switches to another user (login, <c>su</c>) and moves to their home directory.</summary>
+    /// <summary>Switches to another user (e.g. after logging in) and moves to their home directory.</summary>
     public void SwitchUser(VirtualUser user)
     {
+        _previousUsers.Clear();
         User = user;
         CurrentDirectory = StartDirectoryFor(user);
     }
+
+    /// <summary>
+    /// Becomes another user like <c>su</c> does, remembering who you were so <c>exit</c> can go back.
+    /// Plain <c>su</c> stays in the current folder; <c>su -</c> moves to the new user's home.
+    /// </summary>
+    public void PushUser(VirtualUser user, bool goHome)
+    {
+        _previousUsers.Push((User, CurrentDirectory));
+        User = user;
+
+        if (goHome)
+        {
+            CurrentDirectory = StartDirectoryFor(user);
+        }
+    }
+
+    /// <summary>Goes back to the user before the last <see cref="PushUser"/>. Returns <c>false</c> if there is none.</summary>
+    public bool PopUser()
+    {
+        if (!_previousUsers.TryPop(out var previous))
+        {
+            return false;
+        }
+
+        User = previous.User;
+        CurrentDirectory = previous.Directory;
+        return true;
+    }
+
+    /// <summary>The user you would return to with <c>exit</c>, if any.</summary>
+    public VirtualUser? PreviousUser => _previousUsers.TryPeek(out var previous) ? previous.User : null;
+
+    private readonly Stack<(VirtualUser User, string Directory)> _previousUsers = new();
 
     private bool HasPermission(VirtualNode node, int permission)
     {

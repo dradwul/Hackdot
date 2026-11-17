@@ -47,6 +47,15 @@
       ]
     },
     {
+      "id": "switching-users",
+      "title": "Switching users and logging in",
+      "body": "Sometimes the file you need belongs to another user. If you know that user's password, you can become them.\n\nIn the terminal, `su admin` switches to the user `admin` after asking for the password (the letters are not shown while you type). `exit` takes you back. `su - admin` also moves you to admin's home folder.\n\nYou can also switch for the whole computer: open the start menu, choose **Log out** and log in as someone else. Then the Terminal and the Files app both run as that user.\n\nThe list of users on a Linux computer is in `/etc/passwd`. Despite the name, it does not contain any passwords.",
+      "examples": [
+        { "command": "whoami", "description": "Check which user you are right now" },
+        { "command": "cat /etc/passwd", "description": "See which users exist on this computer" }
+      ]
+    },
+    {
       "id": "logs",
       "title": "Log files and searching",
       "body": "Computers write down what happens in log files, one event per line. On Linux they live in `/var/log`. Logs show who logged in, what failed and when – gold for anyone investigating an attack.\n\nLogs can have thousands of lines, so nobody reads them from top to bottom. Use `grep` to show only the lines that contain the text you are looking for. Add `-i` to ignore upper and lower case, and `-n` to see line numbers.",

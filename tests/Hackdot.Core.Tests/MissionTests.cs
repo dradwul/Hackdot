@@ -15,7 +15,7 @@ public class MissionCatalogTests
     public void EmbeddedMissions_LoadInOrder()
     {
         Assert.Equal(
-            ["sloppy-intern", "hidden-in-the-shadows", "needle-in-the-log-stack"],
+            ["sloppy-intern", "hidden-in-the-shadows", "needle-in-the-log-stack", "behind-closed-doors"],
             Catalog.Missions.Select(mission => mission.Id));
     }
 
@@ -39,12 +39,52 @@ public class MissionCatalogTests
     [InlineData("sloppy-intern", "cat ~/Documents/server_setup.txt")]
     [InlineData("hidden-in-the-shadows", "cat /var/www/.secret_flag")]
     [InlineData("needle-in-the-log-stack", "grep FLAG /var/log/auth.log")]
+    [InlineData("behind-closed-doors", "su admin\nSummer2026!\ncat /home/admin/quarterly_report.txt")]
     public void EmbeddedMissions_CanBeSolvedInTheTerminal(string id, string solution)
     {
+        // Each line is one submitted input (a command, or the answer to a prompt like "Password:").
         var mission = Catalog.Find(id)!;
         var terminal = new CommandInterpreter(new ShellSession(Catalog.CreateFileSystem(mission)), TestTerminal.Text);
 
-        Assert.Contains(mission.Flag, terminal.Run(solution));
+        // ToList() first: LINQ's Last() on Select(array) would only run the final step.
+        var output = solution.Split('\n').Select(terminal.Run).ToList().Last();
+
+        Assert.Contains(mission.Flag, output);
+    }
+
+    [Fact]
+    public void LockedMission_CannotBeSolvedWithoutBecomingAdmin()
+    {
+        var mission = Catalog.Find("behind-closed-doors")!;
+        var terminal = new CommandInterpreter(new ShellSession(Catalog.CreateFileSystem(mission)), TestTerminal.Text);
+
+        Assert.Contains("Permission denied", terminal.Run("cat /home/admin/quarterly_report.txt"));
+        Assert.Contains("Summer2026!", terminal.Run("grep -ri password /opt"));
+    }
+
+    [Fact]
+    public void Validate_AcceptsFlagsReachableThroughAFoundPassword_ButNotSecretOnes()
+    {
+        const string template = """
+            {
+              "id": "locked", "title": "t", "summary": "s", "briefing": "b", "objective": "o", "debrief": "d",
+              "flag": "FLAG{locked}", "hints": [ "1", "2", "3" ],
+              "fileSystem": {
+                "users": [ { "name": "boss", "password": "s3cret" } ],
+                "directories": [ { "path": "/home/boss", "owner": "boss", "mode": "700" } ],
+                "files": [
+                  { "path": "/home/boss/flag.txt", "content": "FLAG{locked}", "owner": "boss", "mode": "600" }
+                  CLUE
+                ]
+              }
+            }
+            """;
+
+        var withClue = MissionCatalog.Parse(template.Replace("CLUE", """, { "path": "/tmp/note.txt", "content": "boss pw: s3cret" }"""));
+        var withoutClue = MissionCatalog.Parse(template.Replace("CLUE", ""));
+
+        Assert.Empty(Catalog.Validate(withClue));
+        Assert.Contains(Catalog.Validate(withoutClue), e => e.Contains("cannot read"));
     }
 
     [Fact]

@@ -35,17 +35,36 @@ public sealed class CommandInterpreter
         new GrepCommand(),
         new FindCommand(),
         new WhoamiCommand(),
+        new SuCommand(),
+        new ExitCommand(),
         new ClearCommand(),
     ];
 
     public ICommand? FindCommand(string name) => _commandsByName.GetValueOrDefault(name);
+
+    /// <summary>
+    /// Set while a command waits for the player to type something, e.g. <c>Password:</c> after <c>su</c>.
+    /// The next <see cref="Execute"/> call answers the question instead of running a command.
+    /// </summary>
+    public string? PendingInputLabel => _pendingInput?.Label;
+
+    /// <summary>The pending input should not be shown or remembered (a password).</summary>
+    public bool PendingInputIsSecret => _pendingInput?.Secret == true;
+
+    private PendingInput? _pendingInput;
+
+    private sealed record PendingInput(string Label, bool Secret, Action<string, CommandOutput> OnInput);
+
+    internal void RequestInput(string label, bool secret, Action<string, CommandOutput> onInput) =>
+        _pendingInput = new PendingInput(label, secret, onInput);
 
     /// <summary>The prompt, e.g. <c>user@hackos:~/Documents$</c>, optionally followed by a typed command.</summary>
     public OutputLine Prompt(string? input = null)
     {
         List<OutputSegment> segments =
         [
-            new($"{Session.User.Name}@{Session.FileSystem.Hostname}", OutputStyle.Success),
+            // Root's prompt is red: a classic reminder that you can break things now.
+            new($"{Session.User.Name}@{Session.FileSystem.Hostname}", Session.User.IsRoot ? OutputStyle.Error : OutputStyle.Success),
             new(":"),
             new(Session.DisplayDirectory, OutputStyle.Directory),
             new(Session.User.IsRoot ? "# " : "$ "),
@@ -68,6 +87,23 @@ public sealed class CommandInterpreter
 
     public CommandResult Execute(string input)
     {
+        if (_pendingInput is { } pending)
+        {
+            _pendingInput = null;
+            var output = new CommandOutput();
+
+            try
+            {
+                pending.OnInput(input, output);
+            }
+            catch (Exception)
+            {
+                output.Error(Text["Error.Unexpected", "?"]);
+            }
+
+            return new CommandResult(output.Lines, clearScreen: false);
+        }
+
         if (string.IsNullOrWhiteSpace(input))
         {
             return CommandResult.Empty;

@@ -31,6 +31,14 @@ public sealed class VirtualFileSystem
 
     public VirtualUser? FindUser(string name) => _users.Find(user => user.Name == name);
 
+    /// <summary>The accounts shown on the login screen: the default user first, locked accounts left out.</summary>
+    public IReadOnlyList<VirtualUser> LoginUsers =>
+        _users.Where(user => user.CanLogIn)
+            .OrderBy(user => user.Name == DefaultUser ? 0 : 1)
+            .ThenBy(user => user.IsRoot ? 1 : 0)
+            .ThenBy(user => user.Name, StringComparer.Ordinal)
+            .ToList();
+
     /// <summary>Adds (or replaces) a user and makes sure their home directory exists.</summary>
     public VirtualUser AddUser(VirtualUser user)
     {

@@ -40,6 +40,13 @@ public sealed class CommandContext
 
     public string Localize(string key, params object[] arguments) => Text[key, arguments];
 
+    /// <summary>
+    /// Asks the player for one more line of input (like <c>Password:</c>). <paramref name="onInput"/> runs with
+    /// the answer on the next submitted line; its output becomes that line's output.
+    /// </summary>
+    public void RequestInput(string label, bool secret, Action<string, CommandOutput> onInput) =>
+        Interpreter.RequestInput(label, secret, onInput);
+
     /// <summary>Writes a localized error line.</summary>
     public void Error(string key, params object[] arguments) => Output.Error(Text[key, arguments]);
 
