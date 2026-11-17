@@ -88,7 +88,7 @@ public sealed partial class MissionCatalog
         }
 
         var allFiles = VirtualFileSystem.Descendants(fileSystem.Root).OfType<VirtualFile>().ToList();
-        var flagFiles = allFiles.Where(file => file.Content.Contains(mission.Flag, StringComparison.Ordinal)).ToList();
+        var flagFiles = allFiles.Where(file => ContainsSecret(file.Content, mission.Flag)).ToList();
 
         if (flagFiles.Count == 0)
         {
@@ -115,26 +115,34 @@ public sealed partial class MissionCatalog
 
         foreach (var user in fileSystem.Users.Where(user => user != start.User && user.CanLogIn))
         {
-            if (!user.RequiresPassword || readableText.Any(text => text.Contains(user.Password!, StringComparison.Ordinal)))
+            if (!user.RequiresPassword || readableText.Any(text => ContainsSecret(text, user.Password!)))
             {
                 yield return new ShellSession(fileSystem, user.Name);
             }
         }
     }
 
-    private static bool CanReadFile(ShellSession session, VirtualFile file) => session.CanRead(file) && CanReach(session, file);
+    // CanRead also checks that every folder on the way can be passed through.
+    private static bool CanReadFile(ShellSession session, VirtualFile file) => session.CanRead(file);
 
-    private static bool CanReach(ShellSession session, VirtualFile file)
+    /// <summary>
+    /// The secret is in the text as-is, or base64-encoded once or twice (the player decodes it with <c>base64 -d</c>).
+    /// </summary>
+    private static bool ContainsSecret(string text, string secret)
     {
-        for (var directory = file.Parent; directory is not null; directory = directory.Parent)
+        var encoded = secret;
+
+        for (var layer = 0; layer <= 2; layer++)
         {
-            if (!session.CanEnter(directory))
+            if (text.Contains(encoded, StringComparison.Ordinal))
             {
-                return false;
+                return true;
             }
+
+            encoded = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(encoded));
         }
 
-        return true;
+        return false;
     }
 
     [GeneratedRegex("^[a-z0-9]+(-[a-z0-9]+)*$")]

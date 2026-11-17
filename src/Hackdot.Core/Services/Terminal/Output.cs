@@ -62,8 +62,28 @@ public sealed class CommandOutput
         }
     }
 
-    /// <summary>The non-error output as plain text – what a pipe passes on.</summary>
-    public string StandardOutput => string.Join('\n', Lines.Where(line => !line.IsError).Select(line => line.Text));
+    /// <summary>
+    /// The last line has no line break at the end (like <c>echo -n</c>). Only matters for what a pipe passes on,
+    /// e.g. <c>echo -n hi | base64</c>.
+    /// </summary>
+    public bool OmitFinalNewline { get; set; }
+
+    /// <summary>The non-error output as plain text, every line ending in a line break – what a pipe passes on.</summary>
+    public string StandardOutput
+    {
+        get
+        {
+            var lines = Lines.Where(line => !line.IsError).Select(line => line.Text).ToList();
+
+            if (lines.Count == 0)
+            {
+                return "";
+            }
+
+            var text = string.Join('\n', lines);
+            return OmitFinalNewline ? text : text + "\n";
+        }
+    }
 
     /// <summary>Appends text to the current line.</summary>
     public CommandOutput Write(string text, OutputStyle style = OutputStyle.Default)

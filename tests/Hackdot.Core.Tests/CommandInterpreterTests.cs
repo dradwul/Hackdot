@@ -104,7 +104,8 @@ public class CommandInterpreterTests
         Assert.DoesNotContain("Cmd.", output);
 
         var lsLine = terminal.Execute("help").Lines.Single(line => line.Text.StartsWith("  ls "));
-        Assert.Equal(10, lsLine.HangingIndent);
+        // Two spaces, the longest command name, two spaces: wrapped summaries line up under the first word.
+        Assert.Equal(terminal.Commands.Max(command => command.Name.Length) + 4, lsLine.HangingIndent);
     }
 
     [Fact]

@@ -7,12 +7,22 @@ namespace Hackdot.Core.Services.Terminal;
 public sealed class CommandInterpreter
 {
     private readonly Dictionary<string, ICommand> _commandsByName;
+    private readonly List<string> _history;
 
-    public CommandInterpreter(ShellSession session, IStringLocalizer<TerminalResources> text, IEnumerable<ICommand>? commands = null)
+    /// <param name="history">
+    /// Where typed commands are remembered (for <c>history</c> and the ↑ key). Pass the same list to the next
+    /// interpreter to keep the history when the terminal reconnects to another machine.
+    /// </param>
+    public CommandInterpreter(
+        ShellSession session,
+        IStringLocalizer<TerminalResources> text,
+        IEnumerable<ICommand>? commands = null,
+        List<string>? history = null)
     {
         Session = session;
         Text = text;
         Commands = [.. commands ?? DefaultCommands()];
+        _history = history ?? [];
 
         // Case-insensitive on purpose: phone keyboards love to capitalize the first letter.
         _commandsByName = Commands.ToDictionary(command => command.Name, StringComparer.OrdinalIgnoreCase);
@@ -32,15 +42,29 @@ public sealed class CommandInterpreter
         new CdCommand(),
         new PwdCommand(),
         new CatCommand(),
+        new HeadCommand(),
+        new TailCommand(),
         new GrepCommand(),
         new FindCommand(),
+        new WcCommand(),
+        new SortCommand(),
+        new UniqCommand(),
+        new CutCommand(),
+        new EchoCommand(),
+        new Base64Command(),
         new WhoamiCommand(),
         new SuCommand(),
         new ExitCommand(),
+        new HistoryCommand(),
         new ClearCommand(),
     ];
 
     public ICommand? FindCommand(string name) => _commandsByName.GetValueOrDefault(name);
+
+    /// <summary>Commands the player has typed, oldest first. Answers to questions (like passwords) are never included.</summary>
+    public IReadOnlyList<string> History => _history;
+
+    public void ClearHistory() => _history.Clear();
 
     /// <summary>
     /// Set while a command waits for the player to type something, e.g. <c>Password:</c> after <c>su</c>.
@@ -109,6 +133,12 @@ public sealed class CommandInterpreter
             return CommandResult.Empty;
         }
 
+        // Like bash with 'ignoredups': running the same command twice in a row is remembered once.
+        if (_history.Count == 0 || _history[^1] != input)
+        {
+            _history.Add(input);
+        }
+
         IReadOnlyList<IReadOnlyList<string>> pipeline;
 
         try
@@ -136,7 +166,10 @@ public sealed class CommandInterpreter
                 continue;
             }
 
-            var context = new CommandContext(command.Name, [.. stage.Skip(1)], standardInput, Session, Text, this);
+            var context = new CommandContext(command.Name, [.. stage.Skip(1)], standardInput, Session, Text, this)
+            {
+                OutputIsPiped = !isLast,
+            };
 
             try
             {

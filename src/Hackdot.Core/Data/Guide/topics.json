@@ -39,7 +39,7 @@
     {
       "id": "permissions",
       "title": "Users and permissions",
-      "body": "A computer can have many users. Each file belongs to one of them – its owner. The most powerful user is called `root`: the administrator, who can open everything.\n\n`ls -l` shows permissions like `drwxr-xr-x`. The first letter is `d` for a folder or `-` for a file. Then come three groups of three letters: what the owner may do, what the group may do, and what everyone else may do. `r` = read, `w` = write, `x` = execute (for a folder: go into it). A `-` means not allowed.\n\nIf you try to open something you are not allowed to, you get `Permission denied`. Try `cat /root/top_secret.txt` to see it happen.",
+      "body": "A computer can have many users. Each file belongs to one of them – its owner. The most powerful user is called `root`: the administrator, who can open everything.\n\n`ls -l` shows permissions like `drwxr-xr-x`. The first letter is `d` for a folder or `-` for a file. Then come three groups of three letters: what the owner may do, what the group may do, and what everyone else may do. `r` = read, `w` = write, `x` = execute (for a folder: go into it). A `-` means not allowed.\n\nFor folders the difference between `r` and `x` matters: `r` lets you list what is inside, `x` lets you pass through it to open things. A folder with `--x` can't be listed, but you can still open a file inside – if you know its exact name. And if a folder on the way has no `x` for you, nothing inside it can be reached at all.\n\nIf you try to open something you are not allowed to, you get `Permission denied`. Try `cat /root/top_secret.txt` to see it happen.",
       "examples": [
         { "command": "whoami", "description": "Which user are you?" },
         { "command": "ls -l /", "description": "Owners and permissions of the top folders – look at root" },
@@ -76,6 +76,27 @@
       ]
     },
     {
+      "id": "counting",
+      "title": "Counting and sorting",
+      "body": "Investigators often need to answer \"how many?\" and \"who did this the most?\". Small commands, chained with pipes, can answer both in seconds:\n\n`wc -l` counts lines. `cut` picks out one column of each line – like the IP address at the start of a web server log. `sort` puts identical lines next to each other, `uniq -c` counts how many times each line repeats, and `sort -n` orders by that number.\n\nSo the classic recipe for \"what occurs most often?\" is: `cut … | sort | uniq -c | sort -n | tail`. Filter first with `grep` if you only care about some lines, like failed logins.",
+      "examples": [
+        { "command": "wc -l /var/log/syslog", "description": "How many lines does the system log have?" },
+        { "command": "cut -d: -f1 /etc/passwd", "description": "Only the first column: the user names" },
+        { "command": "cut -d' ' -f5 /var/log/syslog | sort | uniq -c", "description": "How many log lines each program wrote" },
+        { "command": "cut -d' ' -f5 /var/log/syslog | sort | uniq -c | sort -n | tail -n 1", "description": "The program that wrote the most lines" }
+      ]
+    },
+    {
+      "id": "encoding",
+      "title": "Encoding vs. encryption",
+      "body": "**Encoding** changes how data is written down, so it can travel through systems that only handle plain text. There is no secret involved: anyone who knows the encoding can turn it back. **Encryption** scrambles data with a key – without the key, it can't be read.\n\nThe most common encoding is **base64**. It only uses letters, digits, `+` and `/`, and often ends with one or two `=`. If you see text like that, try `base64 -d`.\n\nA classic mistake is to \"protect\" a password by base64-encoding it. That protects nothing – encoding it twice doesn't help either.",
+      "examples": [
+        { "command": "echo hello | base64", "description": "Encode a word" },
+        { "command": "echo aGVsbG8K | base64 -d", "description": "Decode it again – no key needed" },
+        { "command": "echo hello | base64 | base64", "description": "Encoding twice just makes it longer" }
+      ]
+    },
+    {
       "id": "flags",
       "title": "What is a flag?",
       "body": "In Capture The Flag (CTF) games, a flag is a piece of text that proves you solved a challenge. In Hackdot every flag looks like `FLAG{some_secret_text}`.\n\nFlags often swap letters for numbers, like `p4ssw0rd`, so copy them carefully. Upper and lower case don't matter in Hackdot, but the `FLAG{` and `}` parts do.\n\nTip: keep track of anything interesting – passwords, file paths, ideas – in the **Notes** tab. Real hackers take notes all the time.",
@@ -84,7 +105,7 @@
     {
       "id": "terminal-tips",
       "title": "Terminal tips",
-      "body": "You don't have to type everything: tap the shortcut buttons above the keyboard. Buttons ending in `…` type the start of a command so you can finish it.\n\nThe ↑ button (or the up arrow key) brings back your previous commands.\n\nIf a name contains spaces, put it in quotes: `cat \"my notes.txt\"`.\n\nForgot how a command works? Type `help` followed by its name.",
+      "body": "You don't have to type everything: tap the shortcut buttons above the keyboard. Buttons ending in `…` type the start of a command so you can finish it.\n\nThe ↑ button (or the up arrow key) brings back your previous commands, and `history` lists them all. The `|` button adds a pipe – handy on phone keyboards where the symbol is hard to find.\n\nIf a name contains spaces, put it in quotes: `cat \"my notes.txt\"`.\n\nForgot how a command works? Type `help` followed by its name.",
       "examples": [
         { "command": "help grep", "description": "Learn everything about grep" },
         { "command": "clear", "description": "Clean up the screen" }

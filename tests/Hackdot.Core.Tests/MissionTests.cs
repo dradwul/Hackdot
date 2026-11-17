@@ -15,7 +15,10 @@ public class MissionCatalogTests
     public void EmbeddedMissions_LoadInOrder()
     {
         Assert.Equal(
-            ["sloppy-intern", "hidden-in-the-shadows", "needle-in-the-log-stack", "behind-closed-doors"],
+            [
+                "sloppy-intern", "hidden-in-the-shadows", "needle-in-the-log-stack", "behind-closed-doors",
+                "who-keeps-knocking", "encoded-not-encrypted",
+            ],
             Catalog.Missions.Select(mission => mission.Id));
     }
 
@@ -40,6 +43,8 @@ public class MissionCatalogTests
     [InlineData("hidden-in-the-shadows", "cat /var/www/.secret_flag")]
     [InlineData("needle-in-the-log-stack", "grep FLAG /var/log/auth.log")]
     [InlineData("behind-closed-doors", "su admin\nSummer2026!\ncat /home/admin/quarterly_report.txt")]
+    [InlineData("who-keeps-knocking", "cat /srv/honeypot/sessions/203.0.113.77.log")]
+    [InlineData("encoded-not-encrypted", "echo 'Umt4QlIzdGlOSE16TmpSZk1YTmZiakIwWHpOdVkzSjVjSFF4TUc1OQ==' | base64 -d | base64 -d")]
     public void EmbeddedMissions_CanBeSolvedInTheTerminal(string id, string solution)
     {
         // Each line is one submitted input (a command, or the answer to a prompt like "Password:").
@@ -60,6 +65,60 @@ public class MissionCatalogTests
 
         Assert.Contains("Permission denied", terminal.Run("cat /home/admin/quarterly_report.txt"));
         Assert.Contains("Summer2026!", terminal.Run("grep -ri password /opt"));
+    }
+
+    [Fact]
+    public void BruteForceMission_NeedsCounting_AndFilteringForFailedLogins()
+    {
+        var mission = Catalog.Find("who-keeps-knocking")!;
+        var terminal = new CommandInterpreter(new ShellSession(Catalog.CreateFileSystem(mission)), TestTerminal.Text);
+        const string log = "/var/log/nginx/access.log";
+
+        // The solution from hint 3 points at the attacker…
+        Assert.EndsWith(" 203.0.113.77", terminal.Run($"grep 401 {log} | cut -d' ' -f1 | sort | uniq -c | sort -n | tail -n 1"));
+
+        // …while counting every request points at the innocent health check: filtering matters.
+        Assert.EndsWith(" 10.0.0.5", terminal.Run($"cut -d' ' -f1 {log} | sort | uniq -c | sort -n | tail -n 1"));
+
+        // The runner-up has a decoy file without the flag.
+        var top = terminal.Run($"grep 401 {log} | cut -d' ' -f1 | sort | uniq -c | sort -rn | head -n 2").Split('\n');
+        Assert.EndsWith(" 198.51.100.23", top[1]);
+        Assert.DoesNotContain(mission.Flag, terminal.Run("cat /srv/honeypot/sessions/198.51.100.23.log"));
+
+        // The honeypot folder can't be browsed or searched – only opened by exact name.
+        Assert.Contains("Permission denied", terminal.Run("ls /srv/honeypot/sessions"));
+        Assert.DoesNotContain(mission.Flag, terminal.Run("grep -r FLAG /srv"));
+        Assert.DoesNotContain(mission.Flag, terminal.Run("find / -name \"*.log\""));
+        Assert.Equal(2400, int.Parse(terminal.Run($"wc -l {log}").Split(' ')[0], CultureInfo.InvariantCulture));
+    }
+
+    [Fact]
+    public void EncodingMission_DecodingOnceIsNotEnough()
+    {
+        var mission = Catalog.Find("encoded-not-encrypted")!;
+        var terminal = new CommandInterpreter(new ShellSession(Catalog.CreateFileSystem(mission)), TestTerminal.Text);
+
+        Assert.Contains("adminToken", terminal.Run("grep -r -i token /var/www/html/portal"));
+        Assert.DoesNotContain(mission.Flag, terminal.Run("grep -r FLAG /"));
+
+        var once = terminal.Run("echo 'Umt4QlIzdGlOSE16TmpSZk1YTmZiakIwWHpOdVkzSjVjSFF4TUc1OQ==' | base64 -d");
+        Assert.Equal("RkxBR3tiNHMzNjRfMXNfbjB0XzNuY3J5cHQxMG59", once);
+    }
+
+    [Fact]
+    public void Validate_AcceptsAFlagThatIsOnlyStoredInBase64()
+    {
+        const string template = """
+            {
+              "id": "encoded", "title": "t", "summary": "s", "briefing": "b", "objective": "o", "debrief": "d",
+              "flag": "FLAG{x}", "hints": [ "1", "2", "3" ],
+              "fileSystem": { "files": [ { "path": "/tmp/token.txt", "content": "VALUE" } ] }
+            }
+            """;
+
+        Assert.Empty(Catalog.Validate(MissionCatalog.Parse(template.Replace("VALUE", "RkxBR3t4fQ=="))));         // once
+        Assert.Empty(Catalog.Validate(MissionCatalog.Parse(template.Replace("VALUE", "Umt4QlIzdDRmUT09"))));     // twice
+        Assert.NotEmpty(Catalog.Validate(MissionCatalog.Parse(template.Replace("VALUE", "nothing here"))));
     }
 
     [Fact]

@@ -40,6 +40,12 @@
   <data name="Error.GrepNoInput" xml:space="preserve"><value>grep: no file to search. Try 'grep {0} &lt;file&gt;', or send text into grep with a pipe: 'cat &lt;file&gt; | grep {0}'.</value></data>
   <data name="Error.FindInvalidType" xml:space="preserve"><value>find: -type must be followed by f (file) or d (directory)</value></data>
   <data name="Error.FindUnknownPredicate" xml:space="preserve"><value>find: unknown option '{0}'. Try 'help find'.</value></data>
+  <data name="Error.NoInput" xml:space="preserve"><value>{0}: nothing to read. Give it a file – '{0} &lt;file&gt;' – or send text into it with a pipe: 'cat &lt;file&gt; | {0}'.</value></data>
+  <data name="Error.InvalidLineCount" xml:space="preserve"><value>{0}: invalid number of lines: '{1}'</value></data>
+  <data name="Error.CutNeedsFields" xml:space="preserve"><value>cut: say which fields you want with -f, e.g. 'cut -d: -f1 /etc/passwd'</value></data>
+  <data name="Error.CutInvalidFields" xml:space="preserve"><value>cut: invalid field list '{0}'. Fields are numbered from 1, e.g. -f1, -f1,3 or -f2-4.</value></data>
+  <data name="Error.CutInvalidDelimiter" xml:space="preserve"><value>cut: the delimiter must be a single character. For a space, use quotes: -d' '</value></data>
+  <data name="Error.Base64Invalid" xml:space="preserve"><value>base64: invalid input – this does not look like base64 text</value></data>
   <data name="Error.Unexpected" xml:space="preserve"><value>{0}: something went wrong</value></data>
 
   <data name="Hint.DidYouMean" xml:space="preserve"><value>Did you mean '{0}'? Names in Linux are case-sensitive.</value></data>
@@ -102,6 +108,101 @@ You can also send the output of another command into grep with a pipe (|).</valu
   <data name="Cmd.grep.Example3" xml:space="preserve"><value>Search every file under /home for 'password', in any case</value></data>
   <data name="Cmd.grep.Example4" xml:space="preserve"><value>Send a file through a pipe into grep</value></data>
 
+  <!-- head -->
+  <data name="Cmd.head.Summary" xml:space="preserve"><value>Show the first lines of a file</value></data>
+  <data name="Cmd.head.Details" xml:space="preserve"><value>Prints the first 10 lines of a file or of piped input – a quick peek without scrolling through everything.
+
+  -n &lt;lines&gt;  how many lines to show ('head -5' works too)</value></data>
+  <data name="Cmd.head.Example1" xml:space="preserve"><value>The first 10 lines of the system log</value></data>
+  <data name="Cmd.head.Example2" xml:space="preserve"><value>Only the first 3 lines</value></data>
+
+  <!-- tail -->
+  <data name="Cmd.tail.Summary" xml:space="preserve"><value>Show the last lines of a file</value></data>
+  <data name="Cmd.tail.Details" xml:space="preserve"><value>Prints the last 10 lines of a file or of piped input. Logs grow at the bottom, so tail shows the newest events.
+
+  -n &lt;lines&gt;  how many lines to show ('tail -1' works too)</value></data>
+  <data name="Cmd.tail.Example1" xml:space="preserve"><value>The newest 10 lines of the system log</value></data>
+  <data name="Cmd.tail.Example2" xml:space="preserve"><value>Only the very last line</value></data>
+
+  <!-- wc -->
+  <data name="Cmd.wc.Summary" xml:space="preserve"><value>Count lines, words and characters</value></data>
+  <data name="Cmd.wc.Details" xml:space="preserve"><value>Word count: counts the lines, words and bytes (characters) in a file or in piped input.
+
+  -l  only count lines
+  -w  only count words
+  -c  only count bytes
+
+'wc -l' at the end of a pipe answers "how many?" – how many failed logins, how many files, how many users.</value></data>
+  <data name="Cmd.wc.Example1" xml:space="preserve"><value>How many lines does the system log have?</value></data>
+  <data name="Cmd.wc.Example2" xml:space="preserve"><value>Lines, words and bytes of /etc/passwd</value></data>
+  <data name="Cmd.wc.Example3" xml:space="preserve"><value>How many files are in /etc?</value></data>
+
+  <!-- sort -->
+  <data name="Cmd.sort.Summary" xml:space="preserve"><value>Sort lines alphabetically or by number</value></data>
+  <data name="Cmd.sort.Details" xml:space="preserve"><value>Sorts the lines of a file or of piped input.
+
+  -r  reverse: largest or last first
+  -n  sort by the number at the start of each line (so 10 comes after 9)
+  -u  remove duplicate lines
+
+Without -n, sorting is letter by letter: '10' comes before '9', and capital letters before small ones.</value></data>
+  <data name="Cmd.sort.Example1" xml:space="preserve"><value>The users in alphabetical order</value></data>
+  <data name="Cmd.sort.Example2" xml:space="preserve"><value>The same, in reverse order</value></data>
+  <data name="Cmd.sort.Example3" xml:space="preserve"><value>Which login shells the users have, the most common first</value></data>
+
+  <!-- uniq -->
+  <data name="Cmd.uniq.Summary" xml:space="preserve"><value>Remove or count repeated lines</value></data>
+  <data name="Cmd.uniq.Details" xml:space="preserve"><value>Collapses repeated lines that come right after each other into one. That is why it is almost always used after sort: sorting puts identical lines next to each other.
+
+  -c  put the number of repeats in front of each line
+
+The classic way to find what occurs most often: sort | uniq -c | sort -n</value></data>
+  <data name="Cmd.uniq.Example1" xml:space="preserve"><value>Every login shell, each listed once</value></data>
+  <data name="Cmd.uniq.Example2" xml:space="preserve"><value>How many users have each login shell</value></data>
+
+  <!-- cut -->
+  <data name="Cmd.cut.Summary" xml:space="preserve"><value>Pick out columns (fields) from each line</value></data>
+  <data name="Cmd.cut.Details" xml:space="preserve"><value>Splits every line at a delimiter character and keeps only the fields (columns) you ask for. Fields are numbered from 1.
+
+  -d &lt;char&gt;    the delimiter, e.g. -d: or -d' ' for a space (default: tab)
+  -f &lt;fields&gt;  which fields: -f1, -f1,3 (field 1 and 3) or -f2-4 (field 2 to 4)
+
+Lines without the delimiter are printed unchanged.</value></data>
+  <data name="Cmd.cut.Example1" xml:space="preserve"><value>Only the user names from /etc/passwd</value></data>
+  <data name="Cmd.cut.Example2" xml:space="preserve"><value>User names and their home folders</value></data>
+  <data name="Cmd.cut.Example3" xml:space="preserve"><value>Field 5 of each log line: the program that wrote it</value></data>
+
+  <!-- echo -->
+  <data name="Cmd.echo.Summary" xml:space="preserve"><value>Print text</value></data>
+  <data name="Cmd.echo.Details" xml:space="preserve"><value>Prints the text you give it. Mostly useful to send a piece of text into another command with a pipe.
+
+  -n  no line break at the end
+
+Put text with spaces or special characters in quotes: echo 'a | b'</value></data>
+  <data name="Cmd.echo.Example1" xml:space="preserve"><value>Print hello</value></data>
+  <data name="Cmd.echo.Example2" xml:space="preserve"><value>Send text into another command</value></data>
+
+  <!-- base64 -->
+  <data name="Cmd.base64.Summary" xml:space="preserve"><value>Encode or decode base64 text</value></data>
+  <data name="Cmd.base64.Details" xml:space="preserve"><value>Base64 writes any data using only letters, digits, + and / (often with = at the end). It is used to send data through systems that only handle plain text.
+
+  -d  decode: turn base64 back into the original
+
+Base64 is an encoding, NOT encryption: there is no key or password, so anyone can decode it.</value></data>
+  <data name="Cmd.base64.Example1" xml:space="preserve"><value>Encode a word</value></data>
+  <data name="Cmd.base64.Example2" xml:space="preserve"><value>Decode it again</value></data>
+
+  <!-- history -->
+  <data name="Cmd.history.Summary" xml:space="preserve"><value>Show the commands you have typed</value></data>
+  <data name="Cmd.history.Details" xml:space="preserve"><value>Lists the commands you have run, oldest first, with a number in front. Add a number to only see the latest ones.
+
+  -c  clear the history
+
+On a real computer the history is saved in ~/.bash_history – a file investigators (and attackers) love to read.</value></data>
+  <data name="Cmd.history.Example1" xml:space="preserve"><value>Everything you have typed</value></data>
+  <data name="Cmd.history.Example2" xml:space="preserve"><value>Only the last 5 commands</value></data>
+  <data name="Cmd.history.Example3" xml:space="preserve"><value>Find the commands where you used cat</value></data>
+
   <!-- find -->
   <data name="Cmd.find.Summary" xml:space="preserve"><value>Search for files and folders by name</value></data>
   <data name="Cmd.find.Details" xml:space="preserve"><value>Searches through folders for files and folders.
@@ -132,8 +233,8 @@ Folders you are not allowed to open are reported as 'Permission denied'.</value>
   <data name="Cmd.su.Summary" xml:space="preserve"><value>Switch user – become someone else (if you know the password)</value></data>
   <data name="Cmd.su.Details" xml:space="preserve"><value>Lets you act as another user. You have to type that user's password; the letters are not shown while you type. Without a name, su tries to become root.
 
-  su   <!-- clear -->lt;user  <!-- clear -->gt;    become   <!-- clear -->lt;user  <!-- clear -->gt; and stay in the same folder
-  su -   <!-- clear -->lt;user  <!-- clear -->gt;  become   <!-- clear -->lt;user  <!-- clear -->gt; and go to their home folder
+  su &lt;user&gt;    become &lt;user&gt; and stay in the same folder
+  su - &lt;user&gt;  become &lt;user&gt; and go to their home folder
   exit         go back to the user you were before
 
 On a real computer you may only do this with permission – just like everything else in Hackdot.</value></data>

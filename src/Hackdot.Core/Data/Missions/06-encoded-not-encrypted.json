@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "id": "encoded-not-encrypted",
+  "order": 6,
+  "difficulty": "hard",
+  "points": 600,
+  "title": "Encoded, Not Encrypted",
+  "summary": "A developer swears the admin token on NovaTech's website is safely encrypted. Is it?",
+  "briefing": "NovaTech just launched a customer portal. Robin, the developer, put the admin token right in the website's JavaScript – \"don't worry, it's **double encrypted**\", Robin says.\n\nThe CTO isn't so sure and has given you **written permission** to check. If you can turn the token back into plain text, so can every visitor: the website's files are sent to everyone's browser.\n\nThe portal lives in `/var/www/html/portal`. Find the token and find out what it really says.",
+  "objective": "Find the admin token in the portal's files and decode it. The decoded token is the flag.",
+  "debrief": "Busted! The \"encryption\" was base64 – an encoding, not encryption. Encoding only changes how data is written down so it survives systems that only handle plain text. There is no key or password, so anyone can decode it with `base64 -d`. Doing it twice just means decoding twice.\n\nYou probably spotted the giveaways: only letters, digits, `+` and `/`, often ending in `=`. And the website's own `app.js` decoded the token with `atob()` – if the browser can decode it, so can anyone.\n\nThe lesson for NovaTech: secrets never belong in files that are sent to the browser. Keep them on the server, and when something really must be secret, use real encryption with a key that stays hidden.",
+  "flag": "FLAG{b4s364_1s_n0t_3ncrypt10n}",
+  "hints": [
+    "Everything in a website's folder is sent to visitors' browsers, so it's public. Look for something called a token in the portal's files. Text made only of letters, digits, `+` and `/`, often ending in `=`, is usually **base64**: an encoding anyone can reverse.",
+    "Search the portal with `grep -r -i token /var/www/html/portal`. Then decode the value: `echo '<value>' | base64 -d`. Robin said \"double\" – if the result still looks like base64, decode it once more.",
+    "Run `echo 'Umt4QlIzdGlOSE16TmpSZk1YTmZiakIwWHpOdVkzSjVjSFF4TUc1OQ==' | base64 -d | base64 -d` (the value is in `/var/www/html/portal/js/config.js`)."
+  ],
+  "skills": [ "grep -r", "echo", "base64", "encoding" ],
+  "fileSystem": {
+    "hostname": "novatech-web",
+    "directories": [
+      { "path": "/var/www/html/portal/js" },
+      { "path": "/var/www/html/portal/css" }
+    ],
+    "files": [
+      {
+        "path": "/home/user/Documents/email_from_cto.txt",
+        "lines": [
+          "From: Riley (CTO)",
+          "To: You",
+          "Subject: Is the portal token really safe?",
+          "",
+          "Hi,",
+          "",
+          "Robin put the admin token for our new customer portal in the website's",
+          "JavaScript and says it is \"double encrypted, totally safe\".",
+          "",
+          "I have a bad feeling about this. You have my written permission to look",
+          "at the portal in /var/www/html/portal and tell me if anyone could read it.",
+          "",
+          "Thanks,",
+          "Riley"
+        ]
+      },
+      {
+        "path": "/var/www/html/portal/index.html",
+        "lines": [
+          "<!DOCTYPE html>",
+          "<html lang=\"en\">",
+          "  <head>",
+          "    <title>NovaTech Customer Portal</title>",
+          "    <link rel=\"stylesheet\" href=\"css/portal.css\">",
+          "    <script src=\"js/config.js\"></script>",
+          "    <script src=\"js/app.js\" defer></script>",
+          "  </head>",
+          "  <body>",
+          "    <h1>Welcome to the NovaTech Customer Portal</h1>",
+          "    <div id=\"app\">Loading…</div>",
+          "  </body>",
+          "</html>"
+        ]
+      },
+      {
+        "path": "/var/www/html/portal/css/portal.css",
+        "lines": [
+          "body { font-family: sans-serif; background: #0b1020; color: #e6e9f2; }",
+          "h1 { color: #7cf2c4; }"
+        ]
+      },
+      {
+        "path": "/var/www/html/portal/js/config.js",
+        "lines": [
+          "// NovaTech Customer Portal – settings",
+          "// SECURITY: every secret below is DOUBLE ENCRYPTED, so it is safe to ship",
+          "// to the browser. Nobody can read them. – Robin",
+          "",
+          "window.PORTAL_CONFIG = {",
+          "  apiUrl: \"https://api.novatech.example/v2\",",
+          "  version: \"djIuNC4x\",",
+          "  theme: \"TmlnaHRPd2w=\",",
+          "  supportEmail: \"c3VwcG9ydEBub3ZhdGVjaC5leGFtcGxl\",",
+          "  adminToken: \"Umt4QlIzdGlOSE16TmpSZk1YTmZiakIwWHpOdVkzSjVjSFF4TUc1OQ==\"",
+          "};"
+        ]
+      },
+      {
+        "path": "/var/www/html/portal/js/app.js",
+        "lines": [
+          "// NovaTech Customer Portal",
+          "const config = window.PORTAL_CONFIG;",
+          "",
+          "// \"Decrypt\" the settings. atob() is the browser's base64 decoder.",
+          "const theme = atob(config.theme);",
+          "const adminToken = atob(atob(config.adminToken)); // double encrypted!",
+          "",
+          "document.getElementById(\"app\").textContent = \"Theme: \" + theme;",
+          "",
+          "function adminRequest(path) {",
+          "  return fetch(config.apiUrl + path, { headers: { \"X-Admin-Token\": adminToken } });",
+          "}"
+        ]
+      }
+    ]
+  }
+}

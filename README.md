@@ -33,9 +33,11 @@ dotnet test
 - [x] Foundation: project structure, PWA, HackOS shell (desktop, windows, dock, start menu)
 - [x] Localization infrastructure
 - [x] Virtual file system defined in JSON (users, owners, permissions)
-- [x] Terminal with command interpreter, pipes and shortcut buttons
+- [x] Terminal with command interpreter, pipes and shortcut buttons (ls, cd, cat, head, tail, grep, find,
+      wc, sort, uniq, cut, echo, base64, su, history, …)
 - [x] File explorer with "show hidden files", permissions and the matching terminal command
 - [x] Mission app with flag submission, three-step hints, score and saved progress
-- [x] Four missions (the fourth needs a found password, su and the login screen)
+- [x] Six missions: plain-text passwords, hidden files, log searching, su with a found password,
+      counting a brute-force attack with a pipeline, and decoding base64
 - [x] Guide app: concepts, command reference built from the terminal, and notes
 - [x] Login screen, log out, su/exit with hidden password prompts

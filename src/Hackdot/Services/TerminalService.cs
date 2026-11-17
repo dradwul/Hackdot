@@ -29,8 +29,8 @@ public sealed class TerminalService
 
     public IReadOnlyList<OutputLine> Lines => _lines;
 
-    /// <summary>Previously run commands, oldest first.</summary>
-    public IReadOnlyList<string> History => _history;
+    /// <summary>Previously run commands, oldest first (shared with the interpreter's <c>history</c> command).</summary>
+    public IReadOnlyList<string> History => Interpreter.History;
 
     public string DisplayDirectory => Interpreter.Session.DisplayDirectory;
 
@@ -56,14 +56,8 @@ public sealed class TerminalService
             return;
         }
 
-        // Capture the prompt before running: 'cd' changes it.
+        // Capture the prompt before running: 'cd' changes it. The interpreter remembers the command in History.
         _lines.Add(Interpreter.Prompt(input));
-
-        if (!string.IsNullOrWhiteSpace(input) && (_history.Count == 0 || _history[^1] != input))
-        {
-            _history.Add(input);
-        }
-
         AddLines(Interpreter.Execute(input));
         Changed?.Invoke();
     }
@@ -87,7 +81,8 @@ public sealed class TerminalService
 
     private CommandInterpreter Connect()
     {
-        var interpreter = new CommandInterpreter(_game.CreateSession(), _text);
+        // The same history list is handed to every new interpreter, so ↑ still works after switching missions.
+        var interpreter = new CommandInterpreter(_game.CreateSession(), _text, history: _history);
 
         _lines.Clear();
         _lines.AddRange(interpreter.Welcome());

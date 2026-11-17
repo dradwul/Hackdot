@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "id": "who-keeps-knocking",
+  "order": 5,
+  "difficulty": "hard",
+  "points": 500,
+  "title": "Who Keeps Knocking?",
+  "summary": "Someone is hammering NovaTech's login page. Count the attempts and unmask the attacker.",
+  "briefing": "NovaTech's customer website, novatech-web, was slow all night. The security team suspects a **brute-force attack**: someone trying password after password on the login page.\n\nEvery visit to the website is written to `/var/log/nginx/access.log` – one line per request, starting with the visitor's IP address. A failed login gets the status code `401`. The log has 2,400 lines, so counting by hand is not an option.\n\nNovaTech also runs a **honeypot**, a trap that records what attackers do. It keeps one file per attacker in `/srv/honeypot/sessions/`, named after their IP address. That folder can't be listed – you need the exact IP of the worst offender to open their file.",
+  "objective": "Find the IP address with the most failed logins (status 401), then open its file in /srv/honeypot/sessions.",
+  "debrief": "Great counting! `cut` picked out the IP addresses, `sort` put identical ones next to each other, `uniq -c` counted them and `sort -n` put the biggest number last.\n\nThis pipeline answers \"who did this the most?\" for almost any log in seconds – security analysts use it all the time. Did you notice that the busiest visitor, `10.0.0.5`, was innocent? It is NovaTech's own health check. Filtering for `401` first made all the difference.\n\nYou also met a folder you could pass through but not list (`rwx--x--x`). Without read permission you can't see what is inside, but with execute permission you can still open a file – if you know its exact name.\n\nThe lesson for NovaTech: limit how many login attempts one IP address may make, and block addresses that keep failing.",
+  "flag": "FLAG{c0unt_th3_kn0cks}",
+  "hints": [
+    "In a brute-force attack, the attacker fails to log in again and again – so their IP address appears in **lots** of failed logins. Don't read the log: count failed logins per IP address. Careful, the busiest visitor is not necessarily the attacker.",
+    "Build a pipeline step by step: `grep 401` keeps only the failed logins, `cut -d' ' -f1` keeps only the IP address, `sort | uniq -c` counts each address and `sort -n | tail -n 3` shows the top three.",
+    "Run `grep 401 /var/log/nginx/access.log | cut -d' ' -f1 | sort | uniq -c | sort -n | tail -n 1`. The winner is `203.0.113.77`, so open `cat /srv/honeypot/sessions/203.0.113.77.log`."
+  ],
+  "skills": [ "cut", "sort", "uniq", "counting", "permissions" ],
+  "fileSystem": {
+    "hostname": "novatech-web",
+    "directories": [
+      { "path": "/srv/honeypot", "owner": "root", "mode": "755" },
+      { "path": "/srv/honeypot/sessions", "owner": "root", "mode": "711" }
+    ],
+    "files": [
+      {
+        "path": "/home/user/Documents/ticket_brute_force.txt",
+        "lines": [
+          "TICKET #5150 – Login page under attack?",
+          "Priority: HIGH",
+          "",
+          "The login page of novatech-web was hit thousands of times last night.",
+          "Web server log: /var/log/nginx/access.log",
+          "",
+          "Format of every line:",
+          "  <ip address> - - [<time>] \"<method> <page> HTTP/1.1\" <status> <size> ...",
+          "",
+          "Status 401 = wrong password. Status 302 after POST /login = logged in.",
+          "",
+          "Please find the IP address behind the attack. The honeypot has recorded",
+          "it – see /srv/honeypot/README.txt.",
+          "",
+          "You have written permission from the CTO to investigate this server.",
+          "– Jordan, security team"
+        ]
+      },
+      {
+        "path": "/var/log/nginx/access.log",
+        "mode": "644",
+        "generate": {
+          "kind": "accessLog",
+          "lines": 2400,
+          "seed": 5150,
+          "actors": [
+            { "percent": 18, "text": "10.0.0.5 - - [{timestamp}] \"GET /health HTTP/1.1\" 200 2 \"-\" \"kube-probe/1.31\"" },
+            { "percent": 7, "text": "203.0.113.77 - - [{timestamp}] \"POST /login HTTP/1.1\" 401 38 \"-\" \"python-requests/2.32.3\"" },
+            { "percent": 3, "text": "198.51.100.23 - - [{timestamp}] \"POST /login HTTP/1.1\" 401 38 \"-\" \"curl/8.10.1\"" }
+          ]
+        }
+      },
+      {
+        "path": "/srv/honeypot/README.txt",
+        "lines": [
+          "NovaTech honeypot",
+          "=================",
+          "",
+          "The honeypot pretends to let attackers in and records everything they do.",
+          "Every recording is saved as:",
+          "",
+          "  /srv/honeypot/sessions/<ip address>.log",
+          "",
+          "The sessions folder has mode 711 (rwx--x--x): nobody but root can list it,",
+          "so you can't browse other people's recordings. If you know the exact IP",
+          "address, you can still open its file."
+        ]
+      },
+      {
+        "path": "/srv/honeypot/sessions/203.0.113.77.log",
+        "owner": "root",
+        "mode": "644",
+        "lines": [
+          "Honeypot recording – source 203.0.113.77",
+          "Tool: python-requests (an automated password-guessing script)",
+          "",
+          "[03:58:12] Login accepted by the honeypot after many failed guesses (password: dragon)",
+          "$ whoami",
+          "admin",
+          "$ ls /var/www",
+          "html",
+          "$ cat /etc/passwd",
+          "(fake data served by the honeypot)",
+          "$ exit",
+          "",
+          "Case closed: FLAG{c0unt_th3_kn0cks}"
+        ]
+      },
+      {
+        "path": "/srv/honeypot/sessions/198.51.100.23.log",
+        "owner": "root",
+        "mode": "644",
+        "lines": [
+          "Honeypot recording – source 198.51.100.23",
+          "Tool: curl",
+          "",
+          "Tried some passwords, then gave up. Suspicious, but not the main attacker.",
+          "Someone else failed far more often – keep counting!"
+        ]
+      }
+    ]
+  }
+}

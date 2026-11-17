@@ -82,7 +82,10 @@ public sealed class FileDefinition
 /// </summary>
 public sealed class GeneratorDefinition
 {
-    /// <summary>The kind of content. Supported: <c>authLog</c>.</summary>
+    /// <summary>
+    /// The kind of content. Supported: <c>authLog</c> (SSH logins, like <c>/var/log/auth.log</c>) and
+    /// <c>accessLog</c> (web server requests, like <c>/var/log/nginx/access.log</c>).
+    /// </summary>
     public required string Kind { get; set; }
 
     public int Lines { get; set; } = 1000;
@@ -90,6 +93,21 @@ public sealed class GeneratorDefinition
     public int Seed { get; set; } = 1;
 
     public List<GeneratedLine> Inserts { get; set; } = [];
+
+    /// <summary>
+    /// Lines that keep coming back at random positions, e.g. an attacker hammering the login page.
+    /// Unlike <see cref="Inserts"/> they are meant to be counted, not found once.
+    /// </summary>
+    public List<GeneratedActor> Actors { get; set; } = [];
+}
+
+public sealed class GeneratedActor
+{
+    /// <summary>The line. <c>{timestamp}</c>, <c>{host}</c> and <c>{port}</c> are filled in for every line.</summary>
+    public required string Text { get; set; }
+
+    /// <summary>How often the line appears, in percent of all generated lines.</summary>
+    public int Percent { get; set; }
 }
 
 public sealed class GeneratedLine

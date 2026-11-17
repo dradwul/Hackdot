@@ -33,7 +33,7 @@ public sealed class LsCommand : ICommand
                     break;
 
                 case VirtualFile file:
-                    Render(context.Output, [(path, file)], longFormat, includeTotal: false);
+                    Render(context.Output, [(path, file)], longFormat, includeTotal: false, context.OutputIsPiped);
                     break;
 
                 case VirtualDirectory directory when !context.Session.CanRead(directory):
@@ -51,7 +51,7 @@ public sealed class LsCommand : ICommand
                         context.Output.WriteLine(path + ":", OutputStyle.Muted);
                     }
 
-                    Render(context.Output, Entries(directory, showHidden), longFormat, includeTotal: true);
+                    Render(context.Output, Entries(directory, showHidden), longFormat, includeTotal: true, context.OutputIsPiped);
                     first = false;
                     break;
             }
@@ -75,12 +75,25 @@ public sealed class LsCommand : ICommand
         return entries;
     }
 
-    private static void Render(CommandOutput output, List<(string Name, VirtualNode Node)> entries, bool longFormat, bool includeTotal)
+    private static void Render(
+        CommandOutput output, List<(string Name, VirtualNode Node)> entries, bool longFormat, bool includeTotal, bool piped)
     {
         if (!longFormat)
         {
             if (entries.Count == 0)
             {
+                return;
+            }
+
+            // Into a pipe, ls writes one plain name per line – so 'ls | wc -l' counts files and 'ls | grep x' filters them.
+            if (piped)
+            {
+                foreach (var (name, node) in entries)
+                {
+                    WriteName(output, name, node, folderSuffix: false);
+                    output.EndLine();
+                }
+
                 return;
             }
 

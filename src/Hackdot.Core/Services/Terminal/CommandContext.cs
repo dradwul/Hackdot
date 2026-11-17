@@ -1,3 +1,4 @@
+using Hackdot.Core.Models;
 using Microsoft.Extensions.Localization;
 
 namespace Hackdot.Core.Services.Terminal;
@@ -38,6 +39,12 @@ public sealed class CommandContext
 
     public bool ClearRequested { get; set; }
 
+    /// <summary>
+    /// <c>true</c> when the output goes into another command through a pipe instead of to the screen.
+    /// Like real Linux, <c>ls</c> then prints one name per line.
+    /// </summary>
+    public bool OutputIsPiped { get; init; }
+
     public string Localize(string key, params object[] arguments) => Text[key, arguments];
 
     /// <summary>
@@ -65,17 +72,69 @@ public sealed class CommandContext
     }
 
     /// <summary>
+    /// Reads the text a filter command works on: the named files, or the piped input when no file is named.
+    /// Files that cannot be read get an error and are left out.
+    /// </summary>
+    public IReadOnlyList<TextInput> ReadInputs(IReadOnlyList<string> paths)
+    {
+        var inputs = new List<TextInput>();
+
+        if (paths.Count == 0)
+        {
+            if (StandardInput is { } input)
+            {
+                inputs.Add(new TextInput(null, input));
+            }
+            else
+            {
+                Error("Error.NoInput", Name);
+            }
+
+            return inputs;
+        }
+
+        foreach (var path in paths)
+        {
+            switch (Session.GetNode(path))
+            {
+                case null:
+                    PathNotFound("Error.NoSuchFile", path);
+                    break;
+                case VirtualDirectory:
+                    Error("Error.IsADirectory", Name, path);
+                    break;
+                case VirtualFile file when !Session.CanRead(file):
+                    Error("Error.PermissionDenied", Name, path);
+                    break;
+                case VirtualFile file:
+                    inputs.Add(new TextInput(path, file.Content));
+                    break;
+            }
+        }
+
+        return inputs;
+    }
+
+    /// <summary>
     /// Splits the arguments into single-letter flags (<c>-la</c> → <c>l</c>, <c>a</c>) and operands.
     /// <c>--</c> ends the flags. Writes an error and returns <c>false</c> on an unknown flag.
     /// </summary>
-    public bool TryParseOptions(string allowedFlags, out ParsedArguments parsed)
+    /// <param name="valueFlags">
+    /// Flags that take a value, written either joined (<c>-n5</c>, <c>-d:</c>) or as the next argument (<c>-n 5</c>).
+    /// If <c>n</c> is one of them, <c>-5</c> is short for <c>-n 5</c> (like <c>head -5</c>).
+    /// </param>
+    public bool TryParseOptions(string allowedFlags, out ParsedArguments parsed, string valueFlags = "")
     {
         var flags = new HashSet<char>();
+        var values = new Dictionary<char, string>();
         var operands = new List<string>();
         var flagsEnded = false;
+        parsed = ParsedArguments.Empty;
 
-        foreach (var argument in Arguments)
+        for (var i = 0; i < Arguments.Count; i++)
         {
+            var argument = Arguments[i];
+
             if (flagsEnded || argument.Length < 2 || argument[0] != '-')
             {
                 operands.Add(argument);
@@ -88,12 +147,40 @@ public sealed class CommandContext
                 continue;
             }
 
-            foreach (var flag in argument.AsSpan(1))
+            if (valueFlags.Contains('n') && argument.AsSpan(1).IndexOfAnyExceptInRange('0', '9') < 0)
             {
+                flags.Add('n');
+                values['n'] = argument[1..];
+                continue;
+            }
+
+            for (var j = 1; j < argument.Length; j++)
+            {
+                var flag = argument[j];
+
+                if (valueFlags.Contains(flag))
+                {
+                    if (j + 1 < argument.Length)
+                    {
+                        values[flag] = argument[(j + 1)..];
+                    }
+                    else if (i + 1 < Arguments.Count)
+                    {
+                        values[flag] = Arguments[++i];
+                    }
+                    else
+                    {
+                        Error("Error.MissingArgument", Name, "-" + flag);
+                        return false;
+                    }
+
+                    flags.Add(flag);
+                    break;
+                }
+
                 if (!allowedFlags.Contains(flag))
                 {
                     Error("Error.InvalidOption", Name, flag);
-                    parsed = ParsedArguments.Empty;
                     return false;
                 }
 
@@ -101,12 +188,18 @@ public sealed class CommandContext
             }
         }
 
-        parsed = new ParsedArguments(flags, operands);
+        parsed = new ParsedArguments(flags, operands, values);
         return true;
     }
 }
 
-public sealed class ParsedArguments(IReadOnlySet<char> flags, IReadOnlyList<string> operands)
+/// <summary>Text for a filter command: a file's content (labelled with the path as typed) or piped input (no label).</summary>
+public sealed record TextInput(string? Label, string Content);
+
+public sealed class ParsedArguments(
+    IReadOnlySet<char> flags,
+    IReadOnlyList<string> operands,
+    IReadOnlyDictionary<char, string>? values = null)
 {
     public static ParsedArguments Empty { get; } = new(new HashSet<char>(), []);
 
@@ -115,4 +208,7 @@ public sealed class ParsedArguments(IReadOnlySet<char> flags, IReadOnlyList<stri
     public IReadOnlyList<string> Operands { get; } = operands;
 
     public bool Has(char flag) => Flags.Contains(flag);
+
+    /// <summary>The value of a flag that takes one (e.g. <c>5</c> for <c>-n 5</c>), or <c>null</c>.</summary>
+    public string? Value(char flag) => values?.GetValueOrDefault(flag);
 }

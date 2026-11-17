@@ -22,7 +22,7 @@
         @foreach (var shortcut in Shortcuts)
         {
             <button type="button" class="chip @(shortcut.RunsImmediately ? null : "chip-insert")"
-                    @onclick="() => UseShortcutAsync(shortcut)">@shortcut.Command.TrimEnd()@(shortcut.RunsImmediately ? null : "…")</button>
+                    @onclick="() => UseShortcutAsync(shortcut)">@shortcut.Command.Trim()@(shortcut.RunsImmediately || shortcut.Appends ? null : "…")</button>
         }
     </div>
 
@@ -52,7 +52,8 @@
 
 @code {
     /// <param name="RunsImmediately">Complete commands run on tap; the others are typed into the input.</param>
-    private sealed record Shortcut(string Command, bool RunsImmediately);
+    /// <param name="Appends">Added to the end of what is already typed (the pipe) instead of replacing it.</param>
+    private sealed record Shortcut(string Command, bool RunsImmediately, bool Appends = false);
 
     private static readonly Shortcut[] Shortcuts =
     [
@@ -60,6 +61,8 @@
         new("cd ..", true),
         new("cat ", false),
         new("grep ", false),
+        // '|' is buried deep in most phone keyboards.
+        new(" | ", false, Appends: true),
         new("find ", false),
         new("cd ", false),
         new("pwd", true),
@@ -94,7 +97,7 @@
             return;
         }
 
-        _command = shortcut.Command;
+        _command = shortcut.Appends ? _command.TrimEnd() + shortcut.Command : shortcut.Command;
         await _input.FocusAsync();
     }
 

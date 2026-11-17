@@ -58,6 +58,12 @@ public static class PathSuggester
 
             if (node is null)
             {
+                // Looking through a folder's names needs read permission – never leak names the player can't list.
+                if (!session.CanRead(current))
+                {
+                    return null;
+                }
+
                 var matches = current.Children
                     .Where(child => string.Equals(child.Name, segment, StringComparison.OrdinalIgnoreCase))
                     .ToList();

@@ -92,7 +92,21 @@ public sealed class ShellSession
             return true;
         }
 
-        // Simplified model: owner bits for the owner, "other" bits for everyone else.
+        // Like Linux: to get to anything, every folder on the way must let you pass through (x).
+        for (var directory = node.Parent; directory is not null; directory = directory.Parent)
+        {
+            if (!HasBit(directory, FilePermissions.Execute))
+            {
+                return false;
+            }
+        }
+
+        return HasBit(node, permission);
+    }
+
+    // Simplified model: owner bits for the owner, "other" bits for everyone else.
+    private bool HasBit(VirtualNode node, int permission)
+    {
         var shift = node.Owner == User.Name ? 6 : 0;
         return ((node.Mode >> shift) & permission) != 0;
     }
