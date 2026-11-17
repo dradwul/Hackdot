@@ -118,6 +118,14 @@ public sealed class CommandOutput
         _pendingIndent = 0;
     }
 
+    /// <summary>Adds everything another command wrote (used by <c>sudo</c> to pass on the output of the command it ran).</summary>
+    public void Append(CommandOutput other)
+    {
+        Flush();
+        _lines.AddRange(other.Lines);
+        OmitFinalNewline = other.OmitFinalNewline;
+    }
+
     public void Error(string message)
     {
         Flush();

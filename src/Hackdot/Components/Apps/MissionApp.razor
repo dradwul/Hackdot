@@ -46,8 +46,8 @@
                             <span class="skills-label">@L["Mission.Skills"]</span>
                             @foreach (var skill in Mission.Skills)
                             {
-                                <button type="button" class="skill" title="@L["Mission.SkillInGuide", skill]"
-                                        @onclick="() => OpenGuide(skill)">@skill</button>
+                                <button type="button" class="skill" title="@L["Mission.SkillInGuide", Guide.SkillLabel(skill)]"
+                                        @onclick="() => OpenGuide(skill)">@Guide.SkillLabel(skill)</button>
                             }
                         </div>
                     }

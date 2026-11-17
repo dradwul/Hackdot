@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "id": "inside-job",
+  "order": 9,
+  "difficulty": "hard",
+  "points": 900,
+  "title": "Inside Job",
+  "summary": "NovaTech's secret roadmap has leaked. Retrace the insider's path from a normal account all the way to root.",
+  "briefing": "The final case. NovaTech's secret product roadmap appeared online, and it was only ever stored in one place: `/root/roadmap.txt` on the server novatech-ops. Every copy has a hidden watermark.\n\nThe security team believes an insider started with a normal account – just like yours – and climbed step by step: first to the `ops` account, then all the way to root.\n\nThe board has given you **written permission** to retrace that path. Prove it can be done by reading the watermark in the roadmap. You will need everything you have learned so far.",
+  "objective": "Become ops, then root – and read the watermark in /root/roadmap.txt.",
+  "debrief": "You did it – the full chain, just like a real attack:\n\n1. A password \"protected\" with base64 in a config file → decoded with `base64 -d`.\n\n2. A reused password → `su ops`.\n\n3. A sudo rule with a wildcard → `sudo base64` could read any file, and `base64 -d` turned it back.\n\nNo single mistake looked very dangerous on its own. Together, they handed over the whole server. That is why ethical hackers test whole chains, not just single holes.\n\nThe lessons for NovaTech: never store passwords in config files (encoded or not), keep sudo rules tight and without wildcards, and remember that **any** program that can read files – `cat`, `tail`, `base64` and many more – can leak them when it runs as root.\n\nCongratulations, agent. You have completed every mission in Hackdot!",
+  "flag": "FLAG{1ns1d3_j0b_r3tr4c3d}",
+  "hints": [
+    "This takes several steps, like a real attack: find a password, become another user, then abuse that user's sudo rights. Start by searching the readable config files for a password – and remember that base64 is not encryption.",
+    "`grep -ri password /opt` finds ops' password, base64-encoded: decode it with `echo '<value>' | base64 -d`, then `su ops`. As ops, `sudo -l` shows a rule for `base64` – a program that reads files. And `*` matches `..` too.",
+    "Run `echo 'TjB2YS1PcHMtNDI=' | base64 -d` (the password is `N0va-Ops-42`), then `su ops`, then `sudo base64 /var/backups/../../root/roadmap.txt | base64 -d`."
+  ],
+  "skills": [ "grep -r", "base64", "su", "sudo", "privilege-escalation" ],
+  "fileSystem": {
+    "hostname": "novatech-ops",
+    "users": [
+      { "name": "ops", "home": "/home/ops", "password": "N0va-Ops-42" }
+    ],
+    "directories": [
+      { "path": "/home/ops", "owner": "ops", "mode": "700" },
+      { "path": "/opt/monitor", "mode": "755" },
+      { "path": "/var/backups", "owner": "root", "mode": "755" }
+    ],
+    "files": [
+      {
+        "path": "/etc/passwd",
+        "lines": [
+          "root:x:0:0:root:/root:/bin/bash",
+          "user:x:1000:1000:HackOS User:/home/user:/bin/bash",
+          "ops:x:1003:1003:Operations:/home/ops:/bin/bash"
+        ]
+      },
+      {
+        "path": "/etc/sudoers",
+        "owner": "root",
+        "mode": "440",
+        "lines": [
+          "# /etc/sudoers – who may run which commands as root.",
+          "Defaults        env_reset",
+          "root    ALL=(ALL) ALL",
+          "# ops encodes the nightly backups before uploading them",
+          "ops     ALL=(root) NOPASSWD: /usr/bin/base64 /var/backups/*"
+        ]
+      },
+      {
+        "path": "/home/user/Documents/board_request.txt",
+        "lines": [
+          "From: The NovaTech board",
+          "To: You",
+          "Subject: Final audit – the roadmap leak",
+          "",
+          "Our roadmap leaked. The only copy was /root/roadmap.txt on novatech-ops.",
+          "We think someone climbed from a normal account to 'ops', and from 'ops'",
+          "to root. You have our written permission to try the same.",
+          "",
+          "Show us the watermark in the roadmap, and tell us how it was done.",
+          "",
+          "– The board"
+        ]
+      },
+      {
+        "path": "/opt/monitor/monitor.conf",
+        "lines": [
+          "# NovaTech monitoring agent",
+          "[agent]",
+          "interval = 60",
+          "server = 192.0.2.10",
+          "",
+          "[login]",
+          "user = ops",
+          "# the password is encrypted, so it is fine to keep it here",
+          "password_b64 = TjB2YS1PcHMtNDI="
+        ]
+      },
+      {
+        "path": "/opt/monitor/README.txt",
+        "lines": [
+          "The monitoring agent logs in as 'ops' every 60 seconds.",
+          "Settings: /opt/monitor/monitor.conf"
+        ]
+      },
+      {
+        "path": "/home/ops/todo.txt",
+        "owner": "ops",
+        "mode": "600",
+        "lines": [
+          "- Use the same password for the monitor agent as for my account (done, saves time)",
+          "- Ask Sam to tighten my sudo rule. base64 can read ANY file with that * ...",
+          "- Buy coffee"
+        ]
+      },
+      {
+        "path": "/var/backups/nightly.txt",
+        "owner": "root",
+        "mode": "600",
+        "lines": [
+          "Nightly backup completed: /home, /etc, /opt"
+        ]
+      },
+      {
+        "path": "/root/roadmap.txt",
+        "owner": "root",
+        "mode": "600",
+        "lines": [
+          "NovaTech – SECRET product roadmap",
+          "",
+          "Q1  NovaPhone Mini",
+          "Q2  NovaWatch (now with a battery that lasts all day!)",
+          "Q3  NovaCloud for schools",
+          "Q4  Something with AI, probably",
+          "",
+          "Watermark: FLAG{1ns1d3_j0b_r3tr4c3d}"
+        ]
+      }
+    ]
+  }
+}

@@ -241,6 +241,23 @@ On a real computer you may only do this with permission – just like everything
   <data name="Cmd.su.Example1" xml:space="preserve"><value>Become the user admin</value></data>
   <data name="Cmd.su.Example2" xml:space="preserve"><value>Become admin and jump to their home folder</value></data>
   <data name="Cmd.su.Example3" xml:space="preserve"><value>Go back to who you were</value></data>
+  <!-- sudo -->
+  <data name="Sudo.Password" xml:space="preserve"><value>[sudo] password for {0}:</value></data>
+  <data name="Sudo.WrongPassword" xml:space="preserve"><value>sudo: incorrect password</value></data>
+  <data name="Sudo.NotInSudoers" xml:space="preserve"><value>{0} is not in the sudoers file. This incident will be reported.</value></data>
+  <data name="Sudo.NotAllowed" xml:space="preserve"><value>Sorry, user {0} is not allowed to execute '{1}' as root on {2}. Type 'sudo -l' to see what you may run.</value></data>
+  <data name="Sudo.CommandNotFound" xml:space="preserve"><value>sudo: {0}: command not found</value></data>
+  <data name="Sudo.ListHeader" xml:space="preserve"><value>User {0} may run the following commands on {1}:</value></data>
+  <data name="Sudo.ListNone" xml:space="preserve"><value>Sorry, user {0} may not run sudo on {1}.</value></data>
+  <data name="Cmd.sudo.Summary" xml:space="preserve"><value>Run one command as root – if the sudo rules allow it</value></data>
+  <data name="Cmd.sudo.Details" xml:space="preserve"><value>"Superuser do": runs a single command as root. Unlike su, you don't need root's password – the file /etc/sudoers decides which users may run which commands.
+
+  sudo -l              list the commands you may run as root
+  sudo &lt;command&gt; ...  run the command as root
+
+A rule like '/usr/bin/cat /var/log/*' looks harmless, but * matches any text – even '..' – so it can open far more than intended.</value></data>
+  <data name="Cmd.sudo.Example1" xml:space="preserve"><value>What may I run as root?</value></data>
+  <data name="Cmd.sudo.Example2" xml:space="preserve"><value>Read a log file as root (if a rule allows it)</value></data>
   <data name="Cmd.exit.Summary" xml:space="preserve"><value>Go back to the user you were before su</value></data>
   <data name="Cmd.exit.Details" xml:space="preserve"><value>After switching user with su, exit takes you back to the user you were before – and to the folder you were in.</value></data>
   <data name="Cmd.exit.Example1" xml:space="preserve"><value>Stop being the other user</value></data>

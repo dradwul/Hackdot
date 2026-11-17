@@ -78,6 +78,13 @@ public sealed class GuideService
         Changed?.Invoke();
     }
 
+    /// <summary>
+    /// How a mission skill is shown: commands as typed (<c>grep -r</c>), topics by their title
+    /// (<c>privilege-escalation</c> → "Privilege escalation and sudo").
+    /// </summary>
+    public string SkillLabel(string skill) =>
+        Guide.Topics.FirstOrDefault(topic => topic.Id == skill)?.Title.Get() ?? skill;
+
     public void SaveNotes(string notes)
     {
         Notes = notes;

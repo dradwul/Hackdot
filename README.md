@@ -34,10 +34,11 @@ dotnet test
 - [x] Localization infrastructure
 - [x] Virtual file system defined in JSON (users, owners, permissions)
 - [x] Terminal with command interpreter, pipes and shortcut buttons (ls, cd, cat, head, tail, grep, find,
-      wc, sort, uniq, cut, echo, base64, su, history, …)
+      wc, sort, uniq, cut, echo, base64, su, sudo, history, …)
 - [x] File explorer with "show hidden files", permissions and the matching terminal command
 - [x] Mission app with flag submission, three-step hints, score and saved progress
-- [x] Six missions: plain-text passwords, hidden files, log searching, su with a found password,
-      counting a brute-force attack with a pipeline, and decoding base64
+- [x] Nine missions: plain-text passwords, hidden files, log searching, su with a found password,
+      counting a brute-force attack, decoding base64, following an attacker's shell history,
+      abusing a sudo wildcard, and a final multi-step chain to root
 - [x] Guide app: concepts, command reference built from the terminal, and notes
 - [x] Login screen, log out, su/exit with hidden password prompts

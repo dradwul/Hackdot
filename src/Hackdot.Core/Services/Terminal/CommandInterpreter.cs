@@ -54,6 +54,7 @@ public sealed class CommandInterpreter
         new Base64Command(),
         new WhoamiCommand(),
         new SuCommand(),
+        new SudoCommand(),
         new ExitCommand(),
         new HistoryCommand(),
         new ClearCommand(),

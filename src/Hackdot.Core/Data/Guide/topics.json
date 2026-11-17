@@ -56,6 +56,26 @@
       ]
     },
     {
+      "id": "privilege-escalation",
+      "title": "Privilege escalation and sudo",
+      "body": "**Privilege escalation** means getting more rights than you were given – for example going from a normal account to root. Attackers rarely get root in one step: they climb, using one small mistake after another.\n\n`sudo` lets an admin give users permission to run specific commands as root, without telling them root's password. The rules live in `/etc/sudoers`, and `sudo -l` shows the ones that apply to you.\n\nSudo rules are easy to get wrong. In a rule like `/usr/bin/cat /var/log/*`, the `*` matches **any** text – including `..` (go up a folder) and extra file names. And every program that can read files – `cat`, `tail`, `base64` and many more – can read *any* file when it runs as root.",
+      "examples": [
+        { "command": "sudo -l", "description": "Which commands may you run as root? (On this computer: none.)" },
+        { "command": "cat /etc/passwd", "description": "Which accounts could you try to climb to?" },
+        { "command": "ls -l /etc", "description": "Check who owns the system's settings" }
+      ]
+    },
+    {
+      "id": "forensics",
+      "title": "Investigating an attack",
+      "body": "After a break-in, investigators look for the **traces** an attacker left behind. This is called digital forensics.\n\nGood places to look: log files in `/var/log` (who logged in, and when), and each user's **command history**. Most Linux shells save every typed command in a hidden file called `.bash_history` in the user's home folder – `history` shows your own.\n\nAttackers try to hide things: hidden files and folders (even one called `...`), files in `/tmp` or `/var/tmp` where nobody looks, and encodings like base64 so a quick `grep` finds nothing. Follow the trail one step at a time and write down what you find.",
+      "examples": [
+        { "command": "history", "description": "The commands you have typed so far" },
+        { "command": "ls -la /tmp", "description": "A favourite hiding place – hidden files included" },
+        { "command": "ls -a ~", "description": "Hidden files in your home folder" }
+      ]
+    },
+    {
       "id": "logs",
       "title": "Log files and searching",
       "body": "Computers write down what happens in log files, one event per line. On Linux they live in `/var/log`. Logs show who logged in, what failed and when – gold for anyone investigating an attack.\n\nLogs can have thousands of lines, so nobody reads them from top to bottom. Use `grep` to show only the lines that contain the text you are looking for. Add `-i` to ignore upper and lower case, and `-n` to see line numbers.",

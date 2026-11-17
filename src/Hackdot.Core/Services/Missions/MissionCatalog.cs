@@ -103,32 +103,49 @@ public sealed partial class MissionCatalog
     }
 
     /// <summary>
-    /// The users a player can become: the starting user, accounts without a password, and accounts whose
-    /// password appears in a file the starting user can read (the "hidden password" mission pattern).
+    /// The users a player can become, step by step like a real attack: the starting user, accounts without a
+    /// password, accounts whose password appears in a file a reachable user can read, and root when a reachable
+    /// user has sudo rules. Sudo rules are assumed to be exploitable – the mission's solution test proves it.
     /// </summary>
-    private static IEnumerable<ShellSession> ReachableUsers(VirtualFileSystem fileSystem, List<VirtualFile> allFiles)
+    private static List<ShellSession> ReachableUsers(VirtualFileSystem fileSystem, List<VirtualFile> allFiles)
     {
-        var start = new ShellSession(fileSystem);
-        yield return start;
+        var reachable = new List<ShellSession> { new(fileSystem) };
+        bool foundMore;
 
-        var readableText = allFiles.Where(file => CanReadFile(start, file)).Select(file => file.Content).ToList();
-
-        foreach (var user in fileSystem.Users.Where(user => user != start.User && user.CanLogIn))
+        do
         {
-            if (!user.RequiresPassword || readableText.Any(text => ContainsSecret(text, user.Password!)))
+            foundMore = false;
+            var readableText = allFiles
+                .Where(file => reachable.Any(session => CanReadFile(session, file)))
+                .Select(file => file.Content)
+                .ToList();
+            var canSudo = reachable.Any(session => Sudoers.RulesFor(fileSystem, session.User.Name).Count > 0);
+
+            foreach (var user in fileSystem.Users.Where(user => reachable.All(session => session.User != user)))
             {
-                yield return new ShellSession(fileSystem, user.Name);
+                var passwordKnown = user.CanLogIn
+                    && (!user.RequiresPassword || readableText.Any(text => ContainsSecret(text, user.Password!)));
+
+                if (passwordKnown || (user.IsRoot && canSudo))
+                {
+                    reachable.Add(new ShellSession(fileSystem, user.Name));
+                    foundMore = true;
+                }
             }
         }
+        while (foundMore);
+
+        return reachable;
     }
 
     // CanRead also checks that every folder on the way can be passed through.
     private static bool CanReadFile(ShellSession session, VirtualFile file) => session.CanRead(file);
 
     /// <summary>
-    /// The secret is in the text as-is, or base64-encoded once or twice (the player decodes it with <c>base64 -d</c>).
+    /// The secret is in the text as-is or base64-encoded once or twice – or the whole text is base64 that
+    /// decodes to something containing it. The player decodes such things with <c>base64 -d</c>.
     /// </summary>
-    private static bool ContainsSecret(string text, string secret)
+    private static bool ContainsSecret(string text, string secret, int depth = 0)
     {
         var encoded = secret;
 
@@ -142,7 +159,22 @@ public sealed partial class MissionCatalog
             encoded = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(encoded));
         }
 
-        return false;
+        return depth < 2 && TryDecodeBase64(text, out var decoded) && ContainsSecret(decoded, secret, depth + 1);
+    }
+
+    private static bool TryDecodeBase64(string text, out string decoded)
+    {
+        var compact = new string([.. text.Where(c => !char.IsWhiteSpace(c))]);
+        var buffer = new byte[compact.Length];
+        decoded = "";
+
+        if (compact.Length < 8 || compact.Length % 4 != 0 || !Convert.TryFromBase64String(compact, buffer, out var length))
+        {
+            return false;
+        }
+
+        decoded = System.Text.Encoding.UTF8.GetString(buffer, 0, length);
+        return true;
     }
 
     [GeneratedRegex("^[a-z0-9]+(-[a-z0-9]+)*$")]

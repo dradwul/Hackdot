@@ -17,7 +17,7 @@ public class MissionCatalogTests
         Assert.Equal(
             [
                 "sloppy-intern", "hidden-in-the-shadows", "needle-in-the-log-stack", "behind-closed-doors",
-                "who-keeps-knocking", "encoded-not-encrypted",
+                "who-keeps-knocking", "encoded-not-encrypted", "footprints", "a-little-too-generous", "inside-job",
             ],
             Catalog.Missions.Select(mission => mission.Id));
     }
@@ -45,6 +45,9 @@ public class MissionCatalogTests
     [InlineData("behind-closed-doors", "su admin\nSummer2026!\ncat /home/admin/quarterly_report.txt")]
     [InlineData("who-keeps-knocking", "cat /srv/honeypot/sessions/203.0.113.77.log")]
     [InlineData("encoded-not-encrypted", "echo 'Umt4QlIzdGlOSE16TmpSZk1YTmZiakIwWHpOdVkzSjVjSFF4TUc1OQ==' | base64 -d | base64 -d")]
+    [InlineData("footprints", "base64 -d /var/tmp/.../c.b64 | grep -i canary")]
+    [InlineData("a-little-too-generous", "sudo cat /var/log/../../root/flag.txt")]
+    [InlineData("inside-job", "su ops\nN0va-Ops-42\nsudo base64 /var/backups/../../root/roadmap.txt | base64 -d")]
     public void EmbeddedMissions_CanBeSolvedInTheTerminal(string id, string solution)
     {
         // Each line is one submitted input (a command, or the answer to a prompt like "Password:").
@@ -103,6 +106,69 @@ public class MissionCatalogTests
 
         var once = terminal.Run("echo 'Umt4QlIzdGlOSE16TmpSZk1YTmZiakIwWHpOdVkzSjVjSFF4TUc1OQ==' | base64 -d");
         Assert.Equal("RkxBR3tiNHMzNjRfMXNfbjB0XzNuY3J5cHQxMG59", once);
+    }
+
+    [Fact]
+    public void FootprintsMission_TheTrailIsInTheHistory_AndTheOriginalIsLocked()
+    {
+        var mission = Catalog.Find("footprints")!;
+        var terminal = new CommandInterpreter(new ShellSession(Catalog.CreateFileSystem(mission)), TestTerminal.Text);
+
+        Assert.Contains("/var/tmp/...", terminal.Run("cat /home/intern/.bash_history"));
+        Assert.DoesNotContain("...", terminal.Run("ls /var/tmp"));
+        Assert.Contains("...", terminal.Run("ls -a /var/tmp"));
+        Assert.Contains("Permission denied", terminal.Run("cat /var/backups/db/customers.sql"));
+        Assert.DoesNotContain(mission.Flag, terminal.Run("grep -r FLAG /var /home"));
+        Assert.Contains(mission.Flag, terminal.Run("cat /var/tmp/.../c.b64 | base64 -d"));
+    }
+
+    [Fact]
+    public void SudoMissions_AreLockedWithoutTheSudoTrick()
+    {
+        var generous = Catalog.Find("a-little-too-generous")!;
+        var terminal = new CommandInterpreter(new ShellSession(Catalog.CreateFileSystem(generous)), TestTerminal.Text);
+
+        Assert.Contains("Permission denied", terminal.Run("cat /root/flag.txt"));
+        Assert.Contains("Permission denied", terminal.Run("cat /etc/sudoers"));
+        Assert.Contains("/usr/bin/cat /var/log/*", terminal.Run("sudo -l"));
+        Assert.Contains("not allowed", terminal.Run("sudo cat /root/flag.txt"));
+        Assert.Contains(generous.Flag, terminal.Run("sudo cat /var/log/syslog /root/flag.txt"));
+
+        var inside = Catalog.Find("inside-job")!;
+        terminal = new CommandInterpreter(new ShellSession(Catalog.CreateFileSystem(inside)), TestTerminal.Text);
+
+        Assert.Contains("may not run sudo", terminal.Run("sudo -l"));
+        Assert.Equal("N0va-Ops-42", terminal.Run("echo 'TjB2YS1PcHMtNDI=' | base64 -d"));
+        terminal.Execute("su ops");
+        terminal.Execute("N0va-Ops-42");
+        Assert.Contains("/usr/bin/base64 /var/backups/*", terminal.Run("sudo -l"));
+        Assert.Contains("not allowed", terminal.Run("sudo cat /root/roadmap.txt"));
+    }
+
+    [Fact]
+    public void Validate_FollowsPasswordsAndSudoRulesToRoot()
+    {
+        const string template = """
+            {
+              "id": "chain", "title": "t", "summary": "s", "briefing": "b", "objective": "o", "debrief": "d",
+              "flag": "FLAG{chain}", "hints": [ "1", "2", "3" ],
+              "fileSystem": {
+                "users": [ { "name": "ops", "password": "pw123456" } ],
+                "files": [
+                  { "path": "/opt/conf.txt", "content": "password = cHcxMjM0NTY=" },
+                  { "path": "/root/flag.txt", "content": "FLAG{chain}", "owner": "root", "mode": "600" }
+                  SUDOERS
+                ]
+              }
+            }
+            """;
+
+        var withSudo = MissionCatalog.Parse(template.Replace("SUDOERS",
+            """, { "path": "/etc/sudoers", "content": "ops ALL=(root) NOPASSWD: /usr/bin/base64 /var/backups/*", "mode": "440" }"""));
+        var withoutSudo = MissionCatalog.Parse(template.Replace("SUDOERS", ""));
+
+        Assert.Empty(Catalog.Validate(withSudo));
+        Assert.NotEmpty(Catalog.Validate(withoutSudo));
     }
 
     [Fact]
