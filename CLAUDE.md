@@ -73,7 +73,17 @@ En bana = en JSON-fil i `src/Hackdot.Core/Data/Missions/` (`NN-namn.json`), mode
 - Exakt **3 ledtrådar**: 1) begreppet/idén, 2) vilket kommando/verktyg, 3) exakt var flaggan finns.
 - `fileSystem` läggs ovanpå basen (`Data/FileSystems/base.json`). Långa filer genereras med
   `"generate": { "kind": "authLog", "lines": 1500, "seed": 1, "inserts": [...] }`.
-- Texter får innehålla `` `backticks` `` för kommandon/sökvägar och tomrad för nytt stycke.
+- Texter får innehålla `` `backticks` `` för kommandon/sökvägar, `**fetstil**` och tomrad för nytt stycke.
+- Uppdragets `skills` länkar till Guide-appen: ett kommandonamn (`ls -a` → `ls`) eller ett ämnes-`id` i
+  `Data/Guide/topics.json` (t.ex. `pipes`). `GuideTests` kontrollerar att varje skill har en guide-post.
+
+## Guide-appen
+
+- **Learn:** ämnen i `src/Hackdot.Core/Data/Guide/topics.json` (lokaliserbar text som uppdragen). Exempelkommandona
+  ska fungera på basfilsystemet utan fel – det testas.
+- **Commands:** byggs från terminalens egna kommandon och hjälptexter (`TerminalResources.resx`) – lägg aldrig in
+  kommandodokumentation på två ställen.
+- **Notes:** spelarens anteckningar sparas i `localStorage`.
 - `MissionCatalog.Validate` + testerna i `MissionTests` kontrollerar att flaggan finns i en fil som spelaren kan läsa.
   Lägg till banans lösning i `EmbeddedMissions_CanBeSolvedInTheTerminal`.
 - Allt som spelet gör är fiktivt (NovaTech, dokumentations-IP:n enligt RFC 5737). Framställ alltid hackning som

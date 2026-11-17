@@ -1,26 +1,47 @@
-@* Renders mission text: blank lines separate paragraphs and `backticks` mark commands and paths. *@
+@* Renders mission and guide text: blank lines separate paragraphs, `backticks` mark commands and paths,
+   and **double asterisks** mark important words. *@
 @foreach (var paragraph in Paragraphs)
 {
-    <p class="rich-text">@foreach (var (text, isCode) in Segments(paragraph)){@if (isCode){<code>@text</code>}else{@text}}</p>
+    <p class="rich-text">@foreach (var segment in Segments(paragraph)){@switch (segment.Kind){case SegmentKind.Code:<code>@segment.Text</code>break;case SegmentKind.Bold:<strong>@segment.Text</strong>break;default:@segment.Text break;}}</p>
 }
 
 @code {
     [Parameter, EditorRequired] public string Text { get; set; } = "";
 
+    private enum SegmentKind
+    {
+        Text,
+        Code,
+        Bold,
+    }
+
+    private readonly record struct Segment(string Text, SegmentKind Kind);
+
     private IEnumerable<string> Paragraphs =>
         Text.Replace("\r\n", "\n")
             .Split("\n\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-    private static IEnumerable<(string Text, bool IsCode)> Segments(string paragraph)
+    private static IEnumerable<Segment> Segments(string paragraph)
     {
-        var parts = paragraph.Split('`');
+        var codeParts = paragraph.Split('`');
 
-        for (var i = 0; i < parts.Length; i++)
+        for (var i = 0; i < codeParts.Length; i++)
         {
-            if (parts[i].Length > 0)
+            if (i % 2 == 1)
             {
-                // Odd parts are between backticks.
-                yield return (parts[i], i % 2 == 1);
+                // Odd parts are between backticks: code is shown as-is, even if it contains asterisks.
+                yield return new Segment(codeParts[i], SegmentKind.Code);
+                continue;
+            }
+
+            var boldParts = codeParts[i].Split("**");
+
+            for (var j = 0; j < boldParts.Length; j++)
+            {
+                if (boldParts[j].Length > 0)
+                {
+                    yield return new Segment(boldParts[j], j % 2 == 1 ? SegmentKind.Bold : SegmentKind.Text);
+                }
             }
         }
     }

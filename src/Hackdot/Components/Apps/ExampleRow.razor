@@ -1,0 +1,19 @@
+@* One example command with an explanation and a button that runs it in the terminal. *@
+<div class="example">
+    <div class="example-text">
+        <code><span class="dollar" aria-hidden="true">$ </span>@Command</code>
+        <span class="description">@Description</span>
+    </div>
+    <button type="button" class="run" title="@L["Files.RunInTerminal"]" aria-label="@L["Guide.RunExample", Command]"
+            @onclick="() => OnRun.InvokeAsync(Command)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12-7.5z" /></svg>
+    </button>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public string Command { get; set; } = "";
+
+    [Parameter] public string Description { get; set; } = "";
+
+    [Parameter] public EventCallback<string> OnRun { get; set; }
+}

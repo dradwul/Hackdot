@@ -3,6 +3,7 @@
 @implements IDisposable
 @inject GameService Game
 @inject ShellService Shell
+@inject GuideService Guide
 
 <div class="mission-app">
     <div class="toolbar">
@@ -45,7 +46,8 @@
                             <span class="skills-label">@L["Mission.Skills"]</span>
                             @foreach (var skill in Mission.Skills)
                             {
-                                <code>@skill</code>
+                                <button type="button" class="skill" title="@L["Mission.SkillInGuide", skill]"
+                                        @onclick="() => OpenGuide(skill)">@skill</button>
                             }
                         </div>
                     }
@@ -240,6 +242,12 @@
         StateHasChanged();
         await Task.Delay(10);
         _shake = true;
+    }
+
+    private void OpenGuide(string skill)
+    {
+        Guide.Focus(skill);
+        Shell.Open(AppId.Guide);
     }
 
     private void Select(MissionDefinition mission)

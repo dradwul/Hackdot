@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Hackdot.Core.Models.Definitions;
+using Hackdot.Core.Models.Guide;
 using Hackdot.Core.Models.Missions;
 using Hackdot.Core.Services.Missions;
 
@@ -18,4 +19,5 @@ namespace Hackdot.Core.Services;
 [JsonSerializable(typeof(FileSystemDefinition))]
 [JsonSerializable(typeof(MissionDefinition))]
 [JsonSerializable(typeof(GameProgressSnapshot))]
+[JsonSerializable(typeof(GuideDefinition))]
 internal sealed partial class CoreJsonContext : JsonSerializerContext;

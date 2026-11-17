@@ -158,6 +158,24 @@ code {
     margin-top: 0.85rem;
 }
 
+.skill {
+    min-height: 32px;
+    padding: 0 0.65rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--terminal-bg);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.skill:hover,
+.skill:active {
+    border-color: var(--app-guide);
+}
+
 .skills-label {
     font-size: 0.78rem;
     color: var(--text-muted);

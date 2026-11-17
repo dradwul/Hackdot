@@ -18,5 +18,6 @@ builder.Services.AddSingleton<ShellService>();
 builder.Services.AddSingleton<GameService>();
 builder.Services.AddSingleton<TerminalService>();
 builder.Services.AddSingleton<FilesService>();
+builder.Services.AddSingleton<GuideService>();
 
 await builder.Build().RunAsync();

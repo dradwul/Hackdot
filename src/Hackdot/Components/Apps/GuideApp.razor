@@ -1,1 +1,112 @@
-<AppPlaceholder App="AppId.Guide" />
+@using Hackdot.Core
+@using Hackdot.Core.Services.Terminal
+@implements IDisposable
+@inject GuideService Guide
+@inject TerminalService Terminal
+@inject ShellService Shell
+@inject IStringLocalizer<TerminalResources> TerminalText
+
+<div class="guide-app">
+    <div class="toolbar">
+        <div class="tabs" role="tablist">
+            @foreach (var tab in Enum.GetValues<GuideTab>())
+            {
+                <button type="button" role="tab" class="tab" aria-selected="@Aria(Guide.Tab == tab)"
+                        @onclick="() => Guide.SelectTab(tab)">@L[$"Guide.Tab.{tab}"]</button>
+            }
+        </div>
+    </div>
+
+    @* A new element per tab, so each tab starts scrolled to the top. *@
+    <div class="content" @key="Guide.Tab">
+        @switch (Guide.Tab)
+        {
+            case GuideTab.Learn:
+                <ul class="items">
+                    @foreach (var topic in Guide.Guide.Topics)
+                    {
+                        var key = GuideService.TopicKey(topic.Id);
+                        var expanded = Guide.IsExpanded(key);
+                        <li class="item @(expanded ? "expanded" : null)">
+                            <button type="button" class="item-header" aria-expanded="@Aria(expanded)" @onclick="() => Guide.Toggle(key)">
+                                <span class="item-title">@topic.Title.Get()</span>
+                                <Chevron />
+                            </button>
+                            @if (expanded)
+                            {
+                                <div class="item-body">
+                                    <RichText Text="@topic.Body.Get()" />
+                                    @if (topic.Examples.Count > 0)
+                                    {
+                                        <h4>@L["Guide.TryIt"]</h4>
+                                        @foreach (var example in topic.Examples)
+                                        {
+                                            <ExampleRow Command="@example.Command" Description="@example.Description.Get()" OnRun="Run" />
+                                        }
+                                    }
+                                </div>
+                            }
+                        </li>
+                    }
+                </ul>
+                break;
+
+            case GuideTab.Commands:
+                <p class="intro">@L["Guide.CommandsIntro"]</p>
+                <ul class="items">
+                    @foreach (var command in Terminal.Interpreter.Commands)
+                    {
+                        var key = GuideService.CommandKey(command.Name);
+                        var expanded = Guide.IsExpanded(key);
+                        <li class="item @(expanded ? "expanded" : null)">
+                            <button type="button" class="item-header" aria-expanded="@Aria(expanded)" @onclick="() => Guide.Toggle(key)">
+                                <span class="command-name">@command.Name</span>
+                                <span class="command-summary">@TerminalText[$"Cmd.{command.Name}.Summary"]</span>
+                                <Chevron />
+                            </button>
+                            @if (expanded)
+                            {
+                                <div class="item-body">
+                                    <div class="usage"><span>@TerminalText["Help.Usage"]</span><code>@command.Usage</code></div>
+                                    <pre class="details">@TerminalText[$"Cmd.{command.Name}.Details"]</pre>
+                                    @if (command.Examples.Count > 0)
+                                    {
+                                        <h4>@TerminalText["Help.Examples"]</h4>
+                                        @for (var i = 0; i < command.Examples.Count; i++)
+                                        {
+                                            <ExampleRow Command="@command.Examples[i]"
+                                                        Description="@TerminalText[$"Cmd.{command.Name}.Example{i + 1}"]" OnRun="Run" />
+                                        }
+                                    }
+                                </div>
+                            }
+                        </li>
+                    }
+                </ul>
+                break;
+
+            case GuideTab.Notes:
+                <div class="notes">
+                    <label for="guide-notes">@L["Guide.Notes.Label"]</label>
+                    <textarea id="guide-notes" value="@Guide.Notes" @oninput="e => Guide.SaveNotes(e.Value?.ToString() ?? string.Empty)"
+                              placeholder="@L["Guide.Notes.Placeholder"]" spellcheck="false" autocapitalize="off"></textarea>
+                    <p class="hint">@L["Guide.Notes.Privacy"]</p>
+                </div>
+                break;
+        }
+    </div>
+</div>
+
+@code {
+    protected override void OnInitialized() => Guide.Changed += OnGuideChanged;
+
+    private void Run(string command)
+    {
+        Terminal.Submit(command);
+        Shell.Open(AppId.Terminal);
+    }
+
+    private void OnGuideChanged() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => Guide.Changed -= OnGuideChanged;
+}

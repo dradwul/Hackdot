@@ -37,3 +37,4 @@ dotnet test
 - [x] File explorer with "show hidden files", permissions and the matching terminal command
 - [x] Mission app with flag submission, three-step hints, score and saved progress
 - [x] Three starter missions
+- [x] Guide app: concepts, command reference built from the terminal, and notes

@@ -1,0 +1,212 @@
+.guide-app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    --guide-accent: var(--app-guide);
+}
+
+/* ---------- Toolbar ---------- */
+
+.toolbar {
+    flex: none;
+    padding: 0.6rem max(1rem, var(--safe-left));
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-elev);
+}
+
+.tabs {
+    display: inline-flex;
+    gap: 0.25rem;
+    padding: 0.2rem;
+    border-radius: 12px;
+    background: var(--surface);
+}
+
+.tab {
+    min-height: 36px;
+    padding: 0 0.9rem;
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.tab[aria-selected="true"] {
+    background: var(--surface-2);
+    color: var(--text);
+}
+
+.content {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.intro {
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: 1rem max(1rem, var(--safe-left)) 0;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+}
+
+/* ---------- Accordion ---------- */
+
+.items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: 1rem max(1rem, var(--safe-left)) 1.5rem;
+    list-style: none;
+}
+
+.item {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    overflow: hidden;
+}
+
+.item.expanded {
+    border-color: color-mix(in srgb, var(--guide-accent) 45%, var(--border));
+}
+
+.item-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    min-height: 54px;
+    padding: 0.6rem 0.9rem;
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    text-align: left;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.item-header:active {
+    background: var(--surface-2);
+}
+
+.item-title {
+    flex: 1;
+    font-weight: 600;
+}
+
+.command-name {
+    flex: none;
+    min-width: 4.5rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: var(--accent-2);
+}
+
+.command-summary {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.86rem;
+    line-height: 1.35;
+    color: var(--text-muted);
+}
+
+.item-header ::deep .chevron {
+    flex: none;
+    color: var(--text-muted);
+    transition: transform 150ms ease;
+}
+
+.item.expanded .item-header ::deep .chevron {
+    transform: rotate(180deg);
+    color: var(--guide-accent);
+}
+
+.item-body {
+    padding: 0.25rem 0.9rem 0.6rem;
+    font-size: 0.92rem;
+}
+
+h4 {
+    margin: 1rem 0 0.25rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--guide-accent);
+}
+
+.usage {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.usage code {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--accent-2);
+    overflow-wrap: anywhere;
+}
+
+/* Help texts contain aligned option lists, so they keep their spacing. */
+.details {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    color: var(--text);
+}
+
+/* ---------- Notes ---------- */
+
+.notes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    height: 100%;
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: 1rem max(1rem, var(--safe-left));
+}
+
+.notes label {
+    font-weight: 600;
+}
+
+textarea {
+    flex: 1;
+    min-height: 12rem;
+    padding: 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    outline: none;
+    resize: none;
+    background: var(--terminal-bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    line-height: 1.55;
+}
+
+textarea:focus {
+    border-color: var(--guide-accent);
+}
+
+.hint {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}

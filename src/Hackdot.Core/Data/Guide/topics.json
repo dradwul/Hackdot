@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "topics": [
+    {
+      "id": "how-to-play",
+      "title": "How to play",
+      "body": "Every mission starts in the **Mission** app. Read the briefing – it tells you what happened and what to look for.\n\nThen go exploring. Use the **Terminal** if you want to type commands like a real hacker, or the **Files** app if you prefer to click around. Both show exactly the same computer.\n\nSomewhere you will find a flag: a secret code that looks like `FLAG{...}`. Copy it into the Mission app to complete the mission.\n\nStuck? Each mission has three hints, from a gentle nudge to the exact answer. Hints cost a few points – but learning matters more than points.",
+      "examples": [
+        { "command": "help", "description": "See every command the terminal knows" }
+      ]
+    },
+    {
+      "id": "ethics",
+      "title": "Hacking with permission",
+      "body": "Ethical hackers – also called penetration testers – break into systems to find weaknesses before criminals do. The big difference: they always have **written permission** from the owner.\n\nBreaking into a computer, account or network without permission is against the law, even if you only look around.\n\nEverything in Hackdot is pretend: NovaTech is not a real company and nothing here touches a real computer. Practise as much as you like!",
+      "examples": []
+    },
+    {
+      "id": "paths",
+      "title": "Files, folders and paths",
+      "body": "Files live in folders, and folders live in other folders. The very top folder is called the root and is written as `/`.\n\nA path is the address of a file. An absolute path starts at the root, like `/var/log/syslog`. A relative path starts where you are right now, like `Documents/notes.txt`.\n\nA few shortcuts: `~` is your home folder, `..` is the folder above the one you are in, and `.` is the folder you are in.",
+      "examples": [
+        { "command": "pwd", "description": "Show where you are right now" },
+        { "command": "cd /var/log", "description": "Jump to a folder with an absolute path" },
+        { "command": "cd ..", "description": "Go up one folder" },
+        { "command": "cd ~", "description": "Go back home" }
+      ]
+    },
+    {
+      "id": "hidden-files",
+      "title": "Hidden files",
+      "body": "On Linux, a file or folder whose name starts with a dot – like `.bashrc` – is hidden. A plain `ls` does not show it.\n\nHidden files are not secret or protected. They are hidden to keep folders tidy, which is exactly why attackers always look for them.\n\nUse `ls -a` to see everything, or turn on **Show hidden files** in the Files app.",
+      "examples": [
+        { "command": "ls ~", "description": "Your home folder, the normal way" },
+        { "command": "ls -a ~", "description": "The same folder, hidden files included" },
+        { "command": "cat ~/.bashrc", "description": "Read a hidden file – it is just a normal file" }
+      ]
+    },
+    {
+      "id": "permissions",
+      "title": "Users and permissions",
+      "body": "A computer can have many users. Each file belongs to one of them – its owner. The most powerful user is called `root`: the administrator, who can open everything.\n\n`ls -l` shows permissions like `drwxr-xr-x`. The first letter is `d` for a folder or `-` for a file. Then come three groups of three letters: what the owner may do, what the group may do, and what everyone else may do. `r` = read, `w` = write, `x` = execute (for a folder: go into it). A `-` means not allowed.\n\nIf you try to open something you are not allowed to, you get `Permission denied`. Try `cat /root/top_secret.txt` to see it happen.",
+      "examples": [
+        { "command": "whoami", "description": "Which user are you?" },
+        { "command": "ls -l /", "description": "Owners and permissions of the top folders – look at root" },
+        { "command": "ls -l ~", "description": "The files you own" }
+      ]
+    },
+    {
+      "id": "logs",
+      "title": "Log files and searching",
+      "body": "Computers write down what happens in log files, one event per line. On Linux they live in `/var/log`. Logs show who logged in, what failed and when – gold for anyone investigating an attack.\n\nLogs can have thousands of lines, so nobody reads them from top to bottom. Use `grep` to show only the lines that contain the text you are looking for. Add `-i` to ignore upper and lower case, and `-n` to see line numbers.",
+      "examples": [
+        { "command": "cat /var/log/syslog", "description": "Read the whole system log" },
+        { "command": "grep sshd /var/log/syslog", "description": "Only the lines about the SSH server" },
+        { "command": "grep -in started /var/log/syslog", "description": "Ignore case and show line numbers" }
+      ]
+    },
+    {
+      "id": "pipes",
+      "title": "Pipes: combining commands",
+      "body": "The pipe symbol `|` sends the output of one command into the next one, like water through a pipe.\n\n`cat` prints a file, and `grep` filters lines – so `cat file | grep word` prints only the lines with that word. You can chain as many commands as you like.",
+      "examples": [
+        { "command": "cat /etc/passwd | grep root", "description": "Find the root user in the list of users" },
+        { "command": "cat /var/log/syslog | grep -i web", "description": "Filter a log through grep" },
+        { "command": "ls -a ~ | grep bash", "description": "Pipe a folder listing into grep" }
+      ]
+    },
+    {
+      "id": "flags",
+      "title": "What is a flag?",
+      "body": "In Capture The Flag (CTF) games, a flag is a piece of text that proves you solved a challenge. In Hackdot every flag looks like `FLAG{some_secret_text}`.\n\nFlags often swap letters for numbers, like `p4ssw0rd`, so copy them carefully. Upper and lower case don't matter in Hackdot, but the `FLAG{` and `}` parts do.\n\nTip: keep track of anything interesting – passwords, file paths, ideas – in the **Notes** tab. Real hackers take notes all the time.",
+      "examples": []
+    },
+    {
+      "id": "terminal-tips",
+      "title": "Terminal tips",
+      "body": "You don't have to type everything: tap the shortcut buttons above the keyboard. Buttons ending in `…` type the start of a command so you can finish it.\n\nThe ↑ button (or the up arrow key) brings back your previous commands.\n\nIf a name contains spaces, put it in quotes: `cat \"my notes.txt\"`.\n\nForgot how a command works? Type `help` followed by its name.",
+      "examples": [
+        { "command": "help grep", "description": "Learn everything about grep" },
+        { "command": "clear", "description": "Clean up the screen" }
+      ]
+    }
+  ]
+}
