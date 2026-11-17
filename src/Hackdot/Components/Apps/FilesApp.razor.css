@@ -1,0 +1,351 @@
+.files-app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* ---------- Toolbar ---------- */
+
+.toolbar {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.4rem max(0.5rem, var(--safe-right)) 0.4rem max(0.5rem, var(--safe-left));
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-elev);
+}
+
+.icon-button {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.icon-button:not(:disabled):active,
+.icon-button:not(:disabled):hover {
+    background: var(--surface-2);
+}
+
+.icon-button:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+.icon-button.small {
+    width: 36px;
+    height: 36px;
+}
+
+.breadcrumbs {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: row-reverse;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.breadcrumbs::-webkit-scrollbar {
+    display: none;
+}
+
+.breadcrumbs ol {
+    display: flex;
+    align-items: center;
+    margin: 0 auto 0 0;
+    padding: 0 0.25rem;
+    list-style: none;
+}
+
+.breadcrumbs li {
+    display: flex;
+    align-items: center;
+    flex: none;
+}
+
+.breadcrumbs li + li::before {
+    content: "/";
+    padding: 0 0.1rem;
+    color: var(--text-muted);
+    opacity: 0.6;
+}
+
+/* The root crumb is already a "/", so it needs no separator after it. */
+.breadcrumbs li:nth-child(2)::before {
+    content: none;
+}
+
+.crumb {
+    min-height: 36px;
+    padding: 0 0.4rem;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.88rem;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.crumb:hover,
+.crumb:active {
+    background: var(--surface-2);
+    color: var(--text);
+}
+
+.crumb[aria-current] {
+    color: var(--app-files);
+    font-weight: 700;
+}
+
+/* ---------- Hidden files toggle ---------- */
+
+.toggle {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    min-height: 48px;
+    padding: 0 max(1rem, var(--safe-left));
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.toggle input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.toggle-track {
+    position: relative;
+    flex: none;
+    width: 42px;
+    height: 24px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface-2);
+    transition: background 150ms ease, border-color 150ms ease;
+}
+
+.toggle-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    transition: transform 150ms ease, background 150ms ease;
+}
+
+.toggle input:checked + .toggle-track {
+    border-color: var(--app-files);
+    background: color-mix(in srgb, var(--app-files) 35%, var(--surface-2));
+}
+
+.toggle input:checked + .toggle-track .toggle-thumb {
+    background: var(--text);
+    transform: translateX(18px);
+}
+
+.toggle input:focus-visible + .toggle-track {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* ---------- Messages ---------- */
+
+.error {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin: 0.75rem max(1rem, var(--safe-left)) 0;
+    padding: 0.5rem 0.4rem 0.5rem 0.9rem;
+    border: 1px solid color-mix(in srgb, var(--danger) 45%, var(--border));
+    border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--danger) 10%, var(--surface));
+    font-size: 0.88rem;
+    line-height: 1.45;
+}
+
+.empty {
+    margin: 0;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    color: var(--text-muted);
+}
+
+/* ---------- Entries ---------- */
+
+.list-area {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.entries {
+    margin: 0;
+    padding: 0.35rem 0;
+    list-style: none;
+}
+
+.entry {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    width: 100%;
+    min-height: 60px;
+    padding: 0.45rem max(1rem, var(--safe-right)) 0.45rem max(1rem, var(--safe-left));
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    text-align: left;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.entry:hover,
+.entry:active {
+    background: var(--surface);
+}
+
+.entry-icon {
+    position: relative;
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+}
+
+.entry-icon.folder {
+    background: color-mix(in srgb, var(--app-files) 16%, transparent);
+    color: var(--app-files);
+}
+
+.entry-icon.file {
+    background: var(--surface-2);
+    color: var(--text-muted);
+}
+
+.lock {
+    position: absolute;
+    right: -4px;
+    bottom: -4px;
+    display: grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--bg-elev);
+    border-radius: 50%;
+    background: var(--danger);
+    color: var(--bg);
+}
+
+.entry-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.entry-name {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-size: 0.92rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.entry-meta {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.tag {
+    flex: none;
+    padding: 0.05rem 0.4rem;
+    border: 1px dashed color-mix(in srgb, var(--app-files) 60%, transparent);
+    border-radius: 6px;
+    font-family: var(--font-sans);
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--app-files);
+}
+
+.entry.is-hidden .entry-icon,
+.entry.is-hidden .entry-name {
+    opacity: 0.75;
+}
+
+.entry.is-locked .entry-meta {
+    color: color-mix(in srgb, var(--danger) 80%, var(--text-muted));
+}
+
+.chevron {
+    flex: none;
+    color: var(--text-muted);
+}
+
+/* ---------- File viewer ---------- */
+
+.viewer-title {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    padding-right: 0.5rem;
+}
+
+.viewer-name {
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.viewer-meta {
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text-muted);
+}
+
+.file-content {
+    flex: 1;
+    min-height: 0;
+    margin: 0;
+    padding: 1rem max(1rem, var(--safe-left));
+    overflow: auto;
+    overscroll-behavior: contain;
+    background: var(--terminal-bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}

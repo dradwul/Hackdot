@@ -1,1 +1,171 @@
-<AppPlaceholder App="AppId.Files" />
+@using System.Globalization
+@using Hackdot.Core.Models
+@using Hackdot.Core.Services
+@implements IDisposable
+@inject FilesService Files
+@inject TerminalService Terminal
+@inject ShellService Shell
+
+<div class="files-app">
+    @if (Files.OpenedFile is { } file)
+    {
+        <header class="toolbar viewer-toolbar">
+            <button type="button" class="icon-button" title="@L["Files.Back", Explorer.DisplayPath]"
+                    aria-label="@L["Files.Back", Explorer.DisplayPath]" @onclick="Files.CloseFile">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
+            </button>
+            <div class="viewer-title">
+                <span class="viewer-name @(file.IsHidden ? "hidden-name" : null)">@file.Name</span>
+                <span class="viewer-meta">@file.PermissionString · @L["Files.Owner", file.Owner] · @FormatSize(file.Size)</span>
+            </div>
+        </header>
+
+        <pre class="file-content">@file.Content</pre>
+
+        <CommandBar Command="@Explorer.EquivalentReadCommand(file)" OnRun="RunInTerminal" />
+    }
+    else
+    {
+        <header class="toolbar">
+            <button type="button" class="icon-button" disabled="@(!Explorer.CanGoUp)" title="@L["Files.Up"]"
+                    aria-label="@L["Files.Up"]" @onclick="Files.GoUp">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" /></svg>
+            </button>
+            <button type="button" class="icon-button" title="@L["Files.Home"]" aria-label="@L["Files.Home"]" @onclick="Files.GoHome">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 12 4l9 7" /><path d="M5 10v10h14V10" /></svg>
+            </button>
+            @* row-reverse keeps the end of a long path in view without JavaScript. *@
+            <nav class="breadcrumbs" aria-label="@L["Files.Location"]">
+                <ol>
+                    @foreach (var (name, path) in Explorer.Breadcrumbs)
+                    {
+                        var current = path == Explorer.CurrentPath;
+                        <li>
+                            <button type="button" class="crumb" aria-current="@(current ? "location" : null)"
+                                    @onclick="() => Files.Navigate(path)">@name</button>
+                        </li>
+                    }
+                </ol>
+            </nav>
+        </header>
+
+        <label class="toggle">
+            <input type="checkbox" role="switch" checked="@Explorer.ShowHidden"
+                   @onchange="e => Files.SetShowHidden(e.Value is true)" />
+            <span class="toggle-track" aria-hidden="true"><span class="toggle-thumb"></span></span>
+            <span>@L["Files.ShowHidden"]</span>
+        </label>
+
+        @if (Files.LastError is { } error)
+        {
+            <div class="error" role="alert">
+                <span>@ErrorText(error.Result, error.Node, error.Path)</span>
+                <button type="button" class="icon-button small" aria-label="@L["Files.Dismiss"]" @onclick="Files.DismissError">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                         stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+                </button>
+            </div>
+        }
+
+        <div class="list-area">
+            @if (Entries.Count == 0)
+            {
+                <p class="empty">@(Explorer.HasOnlyHiddenItems ? L["Files.OnlyHidden"] : L["Files.Empty"])</p>
+            }
+            else
+            {
+                <ul class="entries">
+                    @foreach (var entry in Entries)
+                    {
+                        <li>
+                            <button type="button" class="entry @(entry.IsHidden ? "is-hidden" : null) @(entry.CanOpen ? null : "is-locked")"
+                                    @onclick="() => Files.Open(entry)">
+                                <span class="entry-icon @(entry.IsDirectory ? "folder" : "file")" aria-hidden="true">
+                                    @if (entry.IsDirectory)
+                                    {
+                                        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H9l2 2h7.5A2.5 2.5 0 0 1 21 9.5v7a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 16.5z" /></svg>
+                                    }
+                                    else
+                                    {
+                                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                             stroke-linejoin="round"><path d="M6 3h8.5L19 7.5V21H6z" /><path d="M14 3v5h5" /></svg>
+                                    }
+                                    @if (!entry.CanOpen)
+                                    {
+                                        <span class="lock">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"
+                                                 stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>
+                                        </span>
+                                    }
+                                </span>
+                                <span class="entry-text">
+                                    <span class="entry-name">
+                                        @entry.Name
+                                        @if (entry.IsHidden)
+                                        {
+                                            <span class="tag">@L["Files.HiddenTag"]</span>
+                                        }
+                                    </span>
+                                    <span class="entry-meta">@EntryMeta(entry)</span>
+                                </span>
+                                @if (entry.IsDirectory && entry.CanOpen)
+                                {
+                                    <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+                                }
+                            </button>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+
+        <CommandBar Command="@Explorer.EquivalentListCommand" OnRun="RunInTerminal" />
+    }
+</div>
+
+@code {
+    private FileExplorer Explorer => Files.Explorer;
+
+    private IReadOnlyList<ExplorerEntry> Entries => Explorer.Entries;
+
+    protected override void OnInitialized() => Files.Changed += OnFilesChanged;
+
+    private void RunInTerminal(string command)
+    {
+        Terminal.Submit(command);
+        Shell.Open(AppId.Terminal);
+    }
+
+    private string EntryMeta(ExplorerEntry entry)
+    {
+        if (!entry.CanOpen)
+        {
+            return L["Files.NoAccess", entry.Node.Owner];
+        }
+
+        if (entry.ChildCount is { } count)
+        {
+            return count == 1 ? L["Files.OneItem"] : L["Files.Items", count];
+        }
+
+        return $"{FormatSize(entry.Node.Size)} · {entry.Node.Modified.ToString("d MMM yyyy", CultureInfo.CurrentCulture)}";
+    }
+
+    private string FormatSize(long bytes) => bytes < 1024
+        ? L["Files.Bytes", bytes]
+        : L["Files.Kilobytes", (bytes / 1024d).ToString("0.#", CultureInfo.CurrentCulture)];
+
+    private string ErrorText(ExplorerResult result, VirtualNode? node, string path) => result switch
+    {
+        ExplorerResult.PermissionDenied => L["Files.Error.PermissionDenied", node?.Name ?? path, node?.Owner ?? "root", Explorer.Session.User.Name],
+        _ => L["Files.Error.NotFound", path],
+    };
+
+    private void OnFilesChanged() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => Files.Changed -= OnFilesChanged;
+}

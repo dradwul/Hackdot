@@ -1,0 +1,16 @@
+@* Shows the terminal command that does the same thing as the GUI – and lets the player run it. *@
+<div class="command-bar">
+    <span class="label">@L["Files.Terminal"]</span>
+    <code>@Command</code>
+    <button type="button" class="run" title="@L["Files.RunInTerminal"]" aria-label="@L["Files.RunInTerminal"]"
+            @onclick="() => OnRun.InvokeAsync(Command)">
+        <AppIcon App="AppId.Terminal" Size="16" />
+        <span>@L["Terminal.Run"]</span>
+    </button>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public string Command { get; set; } = "";
+
+    [Parameter] public EventCallback<string> OnRun { get; set; }
+}

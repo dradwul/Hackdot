@@ -1,0 +1,50 @@
+.command-bar {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.55rem max(0.9rem, var(--safe-right)) 0.6rem max(0.9rem, var(--safe-left));
+    border-top: 1px solid var(--border);
+    background: var(--bg-elev);
+}
+
+.label {
+    flex: none;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+code {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--accent);
+}
+
+.run {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 40px;
+    padding: 0 0.8rem;
+    border: 1px solid color-mix(in srgb, var(--app-terminal) 45%, var(--border));
+    border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--app-terminal) 10%, var(--surface));
+    color: var(--app-terminal);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.run:active {
+    background: color-mix(in srgb, var(--app-terminal) 20%, var(--surface));
+}

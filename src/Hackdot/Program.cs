@@ -14,8 +14,9 @@ builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
 // Blazor WebAssembly runs one app per browser tab, so singletons are per player.
 builder.Services.AddSingleton<ShellService>();
 
-// The game owns the active mission's file system; the terminal (and soon the file explorer) use it.
+// The game owns the active mission's file system; the terminal and the file explorer both use it.
 builder.Services.AddSingleton<GameService>();
 builder.Services.AddSingleton<TerminalService>();
+builder.Services.AddSingleton<FilesService>();
 
 await builder.Build().RunAsync();
