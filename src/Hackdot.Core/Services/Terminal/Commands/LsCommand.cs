@@ -29,7 +29,7 @@ public sealed class LsCommand : ICommand
             switch (context.Session.GetNode(path))
             {
                 case null:
-                    context.Error("Error.CannotAccess", Name, path);
+                    context.PathNotFound("Error.CannotAccess", path);
                     break;
 
                 case VirtualFile file:

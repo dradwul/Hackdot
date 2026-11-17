@@ -84,7 +84,7 @@ public sealed class CdCommand : ICommand
         switch (context.Session.GetNode(target))
         {
             case null:
-                context.Error("Error.NoSuchFile", Name, target);
+                context.PathNotFound("Error.NoSuchFile", target);
                 break;
             case VirtualFile:
                 context.Error("Error.NotADirectory", Name, target);
@@ -168,7 +168,7 @@ public sealed class CatCommand : ICommand
             switch (context.Session.GetNode(path))
             {
                 case null:
-                    context.Error("Error.NoSuchFile", Name, path);
+                    context.PathNotFound("Error.NoSuchFile", path);
                     break;
                 case VirtualDirectory:
                     context.Error("Error.IsADirectory", Name, path);

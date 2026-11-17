@@ -42,6 +42,8 @@
   <data name="Error.FindUnknownPredicate" xml:space="preserve"><value>find: unknown option '{0}'. Try 'help find'.</value></data>
   <data name="Error.Unexpected" xml:space="preserve"><value>{0}: something went wrong</value></data>
 
+  <data name="Hint.DidYouMean" xml:space="preserve"><value>Did you mean '{0}'? Names in Linux are case-sensitive.</value></data>
+
   <!-- help -->
   <data name="Cmd.help.Summary" xml:space="preserve"><value>Show the available commands, or explain one of them</value></data>
   <data name="Cmd.help.Details" xml:space="preserve"><value>Shows every command you can use. Add the name of a command to get a longer explanation with examples.</value></data>

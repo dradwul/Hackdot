@@ -51,6 +51,20 @@ public sealed class CommandContext
     public void Error(string key, params object[] arguments) => Output.Error(Text[key, arguments]);
 
     /// <summary>
+    /// Reports a path that does not exist (<paramref name="errorKey"/> gets the command name and the path),
+    /// plus a "Did you mean …?" tip when the path only has the wrong upper/lower case.
+    /// </summary>
+    public void PathNotFound(string errorKey, string path)
+    {
+        Error(errorKey, Name, path);
+
+        if (PathSuggester.Suggest(Session, path) is { } suggestion)
+        {
+            Output.Hint(Text["Hint.DidYouMean", suggestion]);
+        }
+    }
+
+    /// <summary>
     /// Splits the arguments into single-letter flags (<c>-la</c> → <c>l</c>, <c>a</c>) and operands.
     /// <c>--</c> ends the flags. Writes an error and returns <c>false</c> on an unknown flag.
     /// </summary>

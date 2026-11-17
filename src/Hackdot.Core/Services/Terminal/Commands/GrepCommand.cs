@@ -66,7 +66,7 @@ public sealed class GrepCommand : ICommand
             switch (context.Session.GetNode(path))
             {
                 case null:
-                    context.Error("Error.NoSuchFile", Name, path);
+                    context.PathNotFound("Error.NoSuchFile", path);
                     break;
                 case VirtualFile file when !context.Session.CanRead(file):
                     context.Error("Error.PermissionDenied", Name, path);

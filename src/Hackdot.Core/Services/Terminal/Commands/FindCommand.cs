@@ -74,7 +74,7 @@ public sealed class FindCommand : ICommand
         {
             if (context.Session.GetNode(path) is not { } start)
             {
-                context.Error("Error.NoSuchFile", Name, path);
+                context.PathNotFound("Error.NoSuchFile", path);
                 continue;
             }
 

@@ -41,6 +41,9 @@ public sealed class OutputLine
     public static OutputLine Plain(string text, OutputStyle style = OutputStyle.Default) => new([new(text, style)]);
 
     public static OutputLine Error(string text) => new([new(text, OutputStyle.Error)], isError: true);
+
+    /// <summary>A friendly tip after an error. Goes to "stderr" too, so it is never piped.</summary>
+    public static OutputLine Hint(string text) => new([new(text, OutputStyle.Warning)], isError: true);
 }
 
 /// <summary>Collects the output of a command, segment by segment.</summary>
@@ -99,6 +102,12 @@ public sealed class CommandOutput
     {
         Flush();
         _lines.Add(OutputLine.Error(message));
+    }
+
+    public void Hint(string message)
+    {
+        Flush();
+        _lines.Add(OutputLine.Hint(message));
     }
 
     private void Flush()
