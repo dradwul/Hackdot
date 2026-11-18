@@ -1,0 +1,61 @@
+# Builds, tests and publishes Hackdot to GitHub Pages on every push to main.
+# One-time setup in the repository: Settings → Pages → Source: "GitHub Actions".
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never run two deployments at once; a newer push replaces a waiting one.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.4xx
+
+      - name: Test
+        run: dotnet test Hackdot.slnx --configuration Release
+
+      - name: Publish
+        run: dotnet publish src/Hackdot/Hackdot.csproj --configuration Release --output publish
+
+      # index.html uses a relative <base href="./">, so the site works under /<repo>/ as it is.
+      # Don't edit published files: the service worker checks their hashes for the offline cache.
+      - name: Prepare for GitHub Pages
+        working-directory: publish/wwwroot
+        run: |
+          # Without this, GitHub Pages (Jekyll) would hide the _framework folder.
+          touch .nojekyll
+
+          # GitHub Pages can't serve pre-compressed files, so leave them out of the upload.
+          find . -type f \( -name '*.br' -o -name '*.gz' \) -delete
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: publish/wwwroot
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

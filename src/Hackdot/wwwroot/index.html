@@ -12,7 +12,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Hackdot" />
     <title>Hackdot</title>
-    <base href="/" />
+    <!-- Relative on purpose: works at '/' locally and at '/<repo>/' on GitHub Pages without rewriting this
+         file after publishing (that would break its hash in the service worker's offline cache list). -->
+    <base href="./" />
     <link rel="preload" id="webassembly" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="css/app.css" />

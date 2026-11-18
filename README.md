@@ -21,6 +21,13 @@ Open <http://localhost:5282>. For a mobile view, open the developer tools (F12) 
 dotnet test
 ```
 
+## Publishing
+
+Every push to `main` is tested and published to GitHub Pages by `.github/workflows/deploy.yml`.
+One-time setup in the GitHub repository: **Settings → Pages → Source: GitHub Actions**.
+The site then lives at `https://<user>.github.io/<repo>/` and can be installed as an app (PWA) that also
+works offline. `index.html` uses a relative `<base href="./">`, so no path needs to be configured.
+
 ## Tech
 
 - Blazor WebAssembly Standalone (.NET 10) as a PWA – installable and works offline
