@@ -125,7 +125,7 @@
     {
       "id": "terminal-tips",
       "title": "Terminal tips",
-      "body": "You don't have to type everything: tap the shortcut buttons above the keyboard. Buttons ending in `…` type the start of a command so you can finish it.\n\nThe ↑ button (or the up arrow key) brings back your previous commands, and `history` lists them all. The `|` button adds a pipe – handy on phone keyboards where the symbol is hard to find.\n\nIf a name contains spaces, put it in quotes: `cat \"my notes.txt\"`.\n\nForgot how a command works? Type `help` followed by its name.",
+      "body": "You don't have to type everything: tap the shortcut buttons above the keyboard. Buttons ending in `…` type the start of a command so you can finish it.\n\nType the start of a command, file or folder name and tap **Tab** (or press the Tab key): the terminal finishes it for you. If several names match, they appear as buttons – tap the one you want.\n\nThe ↑ and ↓ buttons (or the arrow keys) bring back your previous commands, and `history` lists them all. The `|` button adds a pipe – handy on phone keyboards where the symbol is hard to find.\n\nIf a name contains spaces, put it in quotes: `cat \"my notes.txt\"`.\n\nForgot how a command works? Type `help` followed by its name.",
       "examples": [
         { "command": "help grep", "description": "Learn everything about grep" },
         { "command": "clear", "description": "Clean up the screen" }

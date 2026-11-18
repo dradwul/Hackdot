@@ -16,6 +16,7 @@ public class MissionCatalogTests
     {
         Assert.Equal(
             [
+                "first-steps",
                 "sloppy-intern", "hidden-in-the-shadows", "needle-in-the-log-stack", "behind-closed-doors",
                 "who-keeps-knocking", "encoded-not-encrypted", "footprints", "a-little-too-generous", "inside-job",
             ],
@@ -38,7 +39,18 @@ public class MissionCatalogTests
         Assert.Equal(Catalog.Missions.Count, Catalog.Missions.Select(m => m.Flag).Distinct().Count());
     }
 
+    [Fact]
+    public void Tutorial_TabCompletesTheNamesTheBriefingPromises()
+    {
+        var terminal = new CommandInterpreter(
+            new ShellSession(Catalog.CreateFileSystem(Catalog.Find("first-steps")!)), TestTerminal.Text);
+
+        Assert.Equal("cat start_here.txt ", TabCompleter.Complete(terminal, "cat st").Input);
+        Assert.Equal("cd training/", TabCompleter.Complete(terminal, "cd tr").Input);
+    }
+
     [Theory]
+    [InlineData("first-steps", "ls\ncat start_here.txt\ncd training\nls\ncat flag.txt")]
     [InlineData("sloppy-intern", "cat ~/Documents/server_setup.txt")]
     [InlineData("hidden-in-the-shadows", "cat /var/www/.secret_flag")]
     [InlineData("needle-in-the-log-stack", "grep FLAG /var/log/auth.log")]
@@ -330,12 +342,26 @@ public class GameStateTests
 {
     private static readonly MissionCatalog Catalog = MissionCatalog.LoadEmbedded();
 
+    private static readonly MissionDefinition Tutorial = Catalog.Find("first-steps")!;
+
+    private static readonly MissionDefinition SloppyIntern = Catalog.Find("sloppy-intern")!;
+
+    /// <summary>A game where the tutorial is done and the first real mission (100 points) is active.</summary>
+    private static GameState AfterTutorial()
+    {
+        var state = new GameState(Catalog);
+        state.SubmitFlag(Tutorial.Flag);
+        state.Activate(SloppyIntern);
+        return state;
+    }
+
     [Fact]
-    public void NewGame_StartsAtFirstMissionWithOnlyItUnlocked()
+    public void NewGame_StartsWithTheTutorialAndOnlyItUnlocked()
     {
         var state = new GameState(Catalog);
 
-        Assert.Equal("sloppy-intern", state.ActiveMission.Id);
+        Assert.Same(Tutorial, Catalog.Missions[0]);
+        Assert.Equal("first-steps", state.ActiveMission.Id);
         Assert.True(state.IsUnlocked(Catalog.Missions[0]));
         Assert.False(state.IsUnlocked(Catalog.Missions[1]));
         Assert.Throws<InvalidOperationException>(() => state.Activate(Catalog.Missions[1]));
@@ -345,7 +371,7 @@ public class GameStateTests
     [InlineData("", FlagCheckResult.Empty)]
     [InlineData("password123", FlagCheckResult.WrongFormat)]
     [InlineData("FLAG{wrong}", FlagCheckResult.Incorrect)]
-    [InlineData("  flag{N3V3R_wr1t3_p4ssw0rds_d0wn}  ", FlagCheckResult.Correct)]
+    [InlineData("  flag{H3LL0_h4ck0s}  ", FlagCheckResult.Correct)]
     public void SubmitFlag_ChecksTheAnswer(string answer, FlagCheckResult expected)
     {
         var state = new GameState(Catalog);
@@ -358,19 +384,19 @@ public class GameStateTests
     {
         var state = new GameState(Catalog);
 
-        state.SubmitFlag("FLAG{n3v3r_wr1t3_p4ssw0rds_d0wn}");
+        state.SubmitFlag(Tutorial.Flag);
 
         Assert.True(state.ActiveProgress.Completed);
-        Assert.Equal(100, state.TotalScore);
-        Assert.True(state.IsUnlocked(Catalog.Missions[1]));
-        Assert.Equal(FlagCheckResult.AlreadySolved, state.SubmitFlag("FLAG{n3v3r_wr1t3_p4ssw0rds_d0wn}"));
-        Assert.Equal("hidden-in-the-shadows", state.NextMission!.Id);
+        Assert.Equal(Tutorial.Points, state.TotalScore);
+        Assert.True(state.IsUnlocked(SloppyIntern));
+        Assert.Equal(FlagCheckResult.AlreadySolved, state.SubmitFlag(Tutorial.Flag));
+        Assert.Equal("sloppy-intern", state.NextMission!.Id);
     }
 
     [Fact]
     public void Hints_CostPointsAndRunOut()
     {
-        var state = new GameState(Catalog);
+        var state = AfterTutorial();
 
         Assert.Equal(10, state.NextHintCost());
         Assert.True(state.UnlockNextHint());
@@ -383,35 +409,35 @@ public class GameStateTests
 
         state.SubmitFlag("FLAG{n3v3r_wr1t3_p4ssw0rds_d0wn}");
 
-        Assert.Equal(50, state.TotalScore);
+        Assert.Equal(50, state.ActiveProgress.PointsEarned);
     }
 
     [Fact]
     public void Hints_AreFreeAfterSolving()
     {
-        var state = new GameState(Catalog);
+        var state = AfterTutorial();
         state.SubmitFlag("FLAG{n3v3r_wr1t3_p4ssw0rds_d0wn}");
 
         Assert.Equal(0, state.NextHintCost());
         state.UnlockNextHint();
-        Assert.Equal(100, state.TotalScore);
+        Assert.Equal(100, state.ActiveProgress.PointsEarned);
     }
 
     [Fact]
     public void Snapshot_RoundTripsProgress()
     {
-        var state = new GameState(Catalog);
+        var state = AfterTutorial();
         state.UnlockNextHint();
         state.SubmitFlag("FLAG{n3v3r_wr1t3_p4ssw0rds_d0wn}");
-        state.Activate(Catalog.Missions[1]);
+        state.Activate(Catalog.Find("hidden-in-the-shadows")!);
         state.SubmitFlag("FLAG{nope}");
 
         var json = GameState.SerializeSnapshot(state.ToSnapshot());
         var restored = new GameState(Catalog, GameState.DeserializeSnapshot(json));
 
         Assert.Equal("hidden-in-the-shadows", restored.ActiveMission.Id);
-        Assert.Equal(90, restored.TotalScore);
-        Assert.Equal(1, restored.Progress(Catalog.Missions[0]).HintsUnlocked);
+        Assert.Equal(Tutorial.Points + 90, restored.TotalScore);
+        Assert.Equal(1, restored.Progress(SloppyIntern).HintsUnlocked);
         Assert.Equal(1, restored.ActiveProgress.FailedAttempts);
     }
 
@@ -436,7 +462,29 @@ public class GameStateTests
 
         var state = new GameState(Catalog, snapshot);
 
-        Assert.Equal("sloppy-intern", state.ActiveMission.Id);
+        Assert.Equal("first-steps", state.ActiveMission.Id);
         Assert.Equal(0, state.TotalScore);
+    }
+
+    [Fact]
+    public void ProgressSavedBeforeTheTutorialExisted_StaysUnlocked()
+    {
+        // Players who started before the tutorial was added have solved missions but not the tutorial.
+        var snapshot = new GameProgressSnapshot
+        {
+            ActiveMissionId = "needle-in-the-log-stack",
+            Missions =
+            {
+                ["sloppy-intern"] = new MissionProgressSnapshot { Completed = true, PointsEarned = 100 },
+                ["hidden-in-the-shadows"] = new MissionProgressSnapshot { Completed = true, PointsEarned = 100 },
+            },
+        };
+
+        var state = new GameState(Catalog, snapshot);
+
+        Assert.Equal("needle-in-the-log-stack", state.ActiveMission.Id);
+        Assert.True(state.IsUnlocked(SloppyIntern));
+        Assert.True(state.IsUnlocked(Catalog.Find("hidden-in-the-shadows")!));
+        Assert.True(state.IsUnlocked(Tutorial));
     }
 }

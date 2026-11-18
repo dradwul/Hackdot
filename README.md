@@ -44,7 +44,7 @@ works offline. `index.html` uses a relative `<base href="./">`, so no path needs
       wc, sort, uniq, cut, echo, base64, su, sudo, history, …)
 - [x] File explorer with "show hidden files", permissions and the matching terminal command
 - [x] Mission app with flag submission, three-step hints, score and saved progress
-- [x] Nine missions: plain-text passwords, hidden files, log searching, su with a found password,
+- [x] A guided tutorial for first-timers, then nine missions: plain-text passwords, hidden files, log searching, su with a found password,
       counting a brute-force attack, decoding base64, following an attacker's shell history,
       abusing a sudo wildcard, and a final multi-step chain to root
 - [x] Guide app: concepts, command reference built from the terminal, and notes
