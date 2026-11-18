@@ -143,6 +143,12 @@
     list-style: none;
 }
 
+.separated {
+    margin-top: 0.4rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid var(--border);
+}
+
 .menu-item {
     display: flex;
     align-items: center;

@@ -20,17 +20,16 @@
                     </button>
                 </li>
             }
-            @if (Install.CanInstall)
-            {
-                <li>
-                    <button type="button" class="desktop-icon" style="--app-accent: var(--accent-2)"
-                            @onclick="Install.InstallAsync">
-                        <span class="icon-tile"><InstallIcon Size="30" /></span>
-                        <span class="icon-label">@L["Install.Icon"]</span>
-                    </button>
-                </li>
-            }
         </ul>
+
+        @* Kept apart from the app icons: it installs the game itself, it isn't an app inside HackOS. *@
+        @if (Install.CanInstall)
+        {
+            <button type="button" class="install-button" @onclick="Install.InstallAsync">
+                <InstallIcon Size="18" />
+                <span>@L["Install.Title"]</span>
+            </button>
+        }
 
         @* Every open app is rendered but only the active one is visible, so minimized
            apps keep their state (e.g. terminal history). *@

@@ -49,7 +49,8 @@
             }
             @if (Install.CanInstall)
             {
-                <li>
+                @* Set apart from the apps: it installs the game itself. *@
+                <li class="separated">
                     <button type="button" role="menuitem" class="menu-item" style="--app-accent: var(--accent-2)"
                             @onclick="InstallFromMenu">
                         <span class="menu-icon"><InstallIcon Size="20" /></span>

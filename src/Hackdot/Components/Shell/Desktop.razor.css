@@ -91,6 +91,43 @@
     }
 }
 
+/* ---------- Install button ---------- */
+
+/* Apart from the app icons, at the bottom of the desktop above the dock. */
+.install-button {
+    position: absolute;
+    left: 50%;
+    bottom: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0 1.1rem;
+    border: 1px solid color-mix(in srgb, var(--accent-2) 45%, var(--border));
+    border-radius: 999px;
+    background: rgb(18 26 35 / 0.75);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: var(--accent-2);
+    font-size: 0.9rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    touch-action: manipulation;
+    transform: translateX(-50%);
+    transition: border-color 120ms ease, transform 120ms ease;
+}
+
+.install-button:active {
+    transform: translateX(-50%) scale(0.97);
+}
+
+@media (hover: hover) {
+    .install-button:hover {
+        border-color: var(--accent-2);
+    }
+}
+
 /* Larger screens: icons in a column on the left, like a classic desktop. */
 @media (min-width: 768px) {
     .desktop-icons {

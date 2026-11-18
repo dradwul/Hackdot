@@ -36,8 +36,7 @@
   <data name="Window.CloseApp" xml:space="preserve"><value>Close {0}</value></data>
 
   <!-- Install as an app -->
-  <data name="Install.Icon" xml:space="preserve"><value>Install</value></data>
-  <data name="Install.Title" xml:space="preserve"><value>Install Hackdot</value></data>
+  <data name="Install.Title" xml:space="preserve"><value>Install as app</value></data>
   <data name="Install.Description" xml:space="preserve"><value>Play from your home screen, even offline</value></data>
   <data name="Install.Help.Title" xml:space="preserve"><value>Add Hackdot to your home screen</value></data>
   <data name="Install.Help.Share" xml:space="preserve"><value>Tap the **Share** button – the square with an arrow.</value></data>
