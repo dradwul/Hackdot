@@ -35,6 +35,12 @@
   <data name="Window.Close" xml:space="preserve"><value>Close</value></data>
   <data name="Window.CloseApp" xml:space="preserve"><value>Close {0}</value></data>
 
+  <!-- New version (service worker update) -->
+  <data name="Update.Title" xml:space="preserve"><value>A new version of Hackdot is ready</value></data>
+  <data name="Update.Body" xml:space="preserve"><value>Reload to get the latest missions and fixes. Your mission progress is kept.</value></data>
+  <data name="Update.Later" xml:space="preserve"><value>Later</value></data>
+  <data name="Update.Reload" xml:space="preserve"><value>Reload</value></data>
+
 
   <!-- Terminal -->
   <data name="Terminal.Output" xml:space="preserve"><value>Terminal output</value></data>

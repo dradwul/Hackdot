@@ -1,0 +1,85 @@
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+@* Shown when the service worker has downloaded a new version (see wwwroot/js/updates.js). *@
+@if (_visible)
+{
+    <div class="update-banner" role="status" aria-live="polite">
+        <span class="update-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12a9 9 0 1 1-2.64-6.36" />
+                <path d="M21 3v6h-6" />
+            </svg>
+        </span>
+        <div class="update-text">
+            <strong>@L["Update.Title"]</strong>
+            <span>@L["Update.Body"]</span>
+        </div>
+        <div class="update-actions">
+            <button type="button" class="later" @onclick="Dismiss">@L["Update.Later"]</button>
+            <button type="button" class="reload" @onclick="ReloadAsync" disabled="@_reloading">@L["Update.Reload"]</button>
+        </div>
+    </div>
+}
+
+@code {
+    private DotNetObjectReference<UpdateBanner>? _self;
+    private bool _visible;
+    private bool _dismissed;
+    private bool _reloading;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        _self = DotNetObjectReference.Create(this);
+        try
+        {
+            await JS.InvokeVoidAsync("hackdotUpdates.subscribe", _self);
+        }
+        catch (JSException)
+        {
+            // updates.js isn't loaded (e.g. in a test host) – there are simply no update notices.
+        }
+    }
+
+    [JSInvokable]
+    public Task OnUpdateReady() => InvokeAsync(() =>
+    {
+        // "Later" lasts until the next start; the waiting version is announced again then.
+        if (!_dismissed)
+        {
+            _visible = true;
+            StateHasChanged();
+        }
+    });
+
+    private void Dismiss()
+    {
+        _dismissed = true;
+        _visible = false;
+    }
+
+    private async Task ReloadAsync()
+    {
+        _reloading = true;
+        await JS.InvokeVoidAsync("hackdotUpdates.apply");
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("hackdotUpdates.unsubscribe");
+        }
+        catch (Exception ex) when (ex is JSException or JSDisconnectedException)
+        {
+        }
+
+        _self?.Dispose();
+    }
+}

@@ -1,0 +1,94 @@
+/* Sits just above the dock, on top of windows, the start menu and the login screen. */
+.update-banner {
+    position: fixed;
+    left: max(0.6rem, var(--safe-left));
+    right: max(0.6rem, var(--safe-right));
+    bottom: calc(var(--dock-h) + var(--safe-bottom) + 0.5rem);
+    z-index: 110;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.75rem;
+    padding: 0.85rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow-window);
+    animation: banner-in 180ms ease-out;
+}
+
+.update-icon {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+    color: var(--accent);
+}
+
+.update-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.update-text strong {
+    font-size: 0.95rem;
+    color: var(--text);
+}
+
+.update-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.update-actions button {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 1rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.later {
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+}
+
+.reload {
+    border: 0;
+    background: var(--accent);
+    color: var(--bg);
+}
+
+.update-actions button:active {
+    filter: brightness(0.9);
+}
+
+.reload:disabled {
+    opacity: 0.6;
+    cursor: progress;
+}
+
+/* Larger screens: a compact card in the bottom-right corner. */
+@media (min-width: 768px) {
+    .update-banner {
+        left: auto;
+        width: 380px;
+    }
+}
+
+@keyframes banner-in {
+    from { opacity: 0; transform: translateY(8px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .update-banner { animation: none; }
+}
