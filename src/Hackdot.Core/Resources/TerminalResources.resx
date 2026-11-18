@@ -40,6 +40,9 @@
   <data name="Error.GrepNoInput" xml:space="preserve"><value>grep: no file to search. Try 'grep {0} &lt;file&gt;', or send text into grep with a pipe: 'cat &lt;file&gt; | grep {0}'.</value></data>
   <data name="Error.FindInvalidType" xml:space="preserve"><value>find: -type must be followed by f (file) or d (directory)</value></data>
   <data name="Error.FindUnknownPredicate" xml:space="preserve"><value>find: unknown option '{0}'. Try 'help find'.</value></data>
+  <data name="Error.FindInvalidPerm" xml:space="preserve"><value>find: invalid mode '{0}' after -perm. Try for example -perm -4000 or -perm 644.</value></data>
+  <data name="Error.ChmodInvalidMode" xml:space="preserve"><value>chmod: invalid mode: '{0}'. Try a number like 600 or letters like u+r.</value></data>
+  <data name="Error.ChmodNotOwner" xml:space="preserve"><value>chmod: changing permissions of '{0}': Operation not permitted</value></data>
   <data name="Error.NoInput" xml:space="preserve"><value>{0}: nothing to read. Give it a file – '{0} &lt;file&gt;' – or send text into it with a pipe: 'cat &lt;file&gt; | {0}'.</value></data>
   <data name="Error.InvalidLineCount" xml:space="preserve"><value>{0}: invalid number of lines: '{1}'</value></data>
   <data name="Error.CutNeedsFields" xml:space="preserve"><value>cut: say which fields you want with -f, e.g. 'cut -d: -f1 /etc/passwd'</value></data>
@@ -211,12 +214,34 @@ On a real computer the history is saved in ~/.bash_history – a file investigat
   find &lt;path&gt; -name &lt;pat&gt;   search below &lt;path&gt;; * matches anything, ? one character
   -iname &lt;pat&gt;              like -name, but ignores upper and lower case
   -type f / -type d         only files / only folders
+  -perm -4000               files with all these permission bits (4000 = set-user-ID)
+  -perm /222                files with any of these bits (222 = writable by someone)
+  -perm 644                 files with exactly this mode
 
-Folders you are not allowed to open are reported as 'Permission denied'.</value></data>
+Folders you are not allowed to open are reported as 'Permission denied'. Add 2&gt;/dev/null at the end to hide those messages.</value></data>
   <data name="Cmd.find.Example1" xml:space="preserve"><value>Find everything with 'flag' in its name</value></data>
   <data name="Cmd.find.Example2" xml:space="preserve"><value>Find all .txt files on the system</value></data>
   <data name="Cmd.find.Example3" xml:space="preserve"><value>List every file below /var</value></data>
   <data name="Cmd.find.Example4" xml:space="preserve"><value>Find hidden files in your home folder</value></data>
+  <data name="Cmd.find.Example5" xml:space="preserve"><value>Find set-user-ID programs, without the 'Permission denied' noise</value></data>
+
+  <!-- chmod -->
+  <data name="Cmd.chmod.Summary" xml:space="preserve"><value>Change who may read, write or run a file</value></data>
+  <data name="Cmd.chmod.Details" xml:space="preserve"><value>Changes a file's permissions. Only the owner of a file (or root) may do this – whatever the permissions are right now.
+
+With numbers, the three digits are for the owner, the group and everyone else (r = 4, w = 2, x = 1, added up):
+  chmod 600 file      rw------- only the owner may read and write
+  chmod 644 file      rw-r--r-- everyone may read, only the owner may write
+  chmod 755 file      rwxr-xr-x everyone may read and run it
+
+With letters: u (owner), g (group), o (others), a (all) and + (add), - (remove), = (set exactly):
+  chmod u+r file      let the owner read it
+  chmod go-w file     nobody but the owner may write
+  chmod +x script.sh  make it runnable
+
+Use 'ls -l' to see the permissions before and after.</value></data>
+  <data name="Cmd.chmod.Example1" xml:space="preserve"><value>Only you may read and write the file</value></data>
+  <data name="Cmd.chmod.Example2" xml:space="preserve"><value>Let yourself run it, and stop others from reading it</value></data>
 
   <!-- whoami -->
   <data name="Cmd.whoami.Summary" xml:space="preserve"><value>Show which user you are logged in as</value></data>

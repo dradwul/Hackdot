@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using Hackdot.Core.Models;
 using Hackdot.Core.Models.Definitions;
 using Hackdot.Core.Models.Missions;
+using Hackdot.Core.Services.Terminal;
 
 namespace Hackdot.Core.Services.Missions;
 
@@ -120,13 +121,17 @@ public sealed partial class MissionCatalog
                 .Select(file => file.Content)
                 .ToList();
             var canSudo = reachable.Any(session => Sudoers.RulesFor(fileSystem, session.User.Name).Count > 0);
+            var setUidOwners = SetUidPrograms.All(fileSystem, CommandInterpreter.DefaultCommands().Select(command => command.Name))
+                .Where(program => reachable.Any(session => session.CanExecute(program)))
+                .Select(program => program.Owner)
+                .ToHashSet(StringComparer.Ordinal);
 
             foreach (var user in fileSystem.Users.Where(user => reachable.All(session => session.User != user)))
             {
                 var passwordKnown = user.CanLogIn
                     && (!user.RequiresPassword || readableText.Any(text => ContainsSecret(text, user.Password!)));
 
-                if (passwordKnown || (user.IsRoot && canSudo))
+                if (passwordKnown || (user.IsRoot && canSudo) || setUidOwners.Contains(user.Name))
                 {
                     reachable.Add(new ShellSession(fileSystem, user.Name));
                     foundMore = true;
@@ -138,8 +143,10 @@ public sealed partial class MissionCatalog
         return reachable;
     }
 
-    // CanRead also checks that every folder on the way can be passed through.
-    private static bool CanReadFile(ShellSession session, VirtualFile file) => session.CanRead(file);
+    // CanRead also checks that every folder on the way can be passed through. The owner of a file can always
+    // read it in the end: they may chmod it, whatever its permissions are.
+    private static bool CanReadFile(ShellSession session, VirtualFile file) =>
+        session.CanRead(file) || (file.Owner == session.User.Name && session.CanReach(file));
 
     /// <summary>
     /// The secret is in the text as-is or base64-encoded once or twice – or the whole text is base64 that

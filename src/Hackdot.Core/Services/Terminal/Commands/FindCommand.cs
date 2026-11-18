@@ -10,9 +10,9 @@ public sealed class FindCommand : ICommand
 {
     public string Name => "find";
 
-    public string Usage => "find [path] [-name <pattern>] [-iname <pattern>] [-type f|d]";
+    public string Usage => "find [path] [-name <pattern>] [-iname <pattern>] [-type f|d] [-perm <mode>]";
 
-    public IReadOnlyList<string> Examples { get; } = ["find flag", "find / -name \"*.txt\"", "find /var -type f", "find ~ -name \".*\""];
+    public IReadOnlyList<string> Examples { get; } = ["find flag", "find / -name \"*.txt\"", "find /var -type f", "find ~ -name \".*\"", "find / -perm -4000 2>/dev/null"];
 
     public void Execute(CommandContext context)
     {
@@ -52,6 +52,17 @@ public sealed class FindCommand : ICommand
                     filter = filter with { Type = arguments[index++][0] };
                     break;
 
+                case "-perm":
+                    if (index >= arguments.Count || !PermissionTest.TryParse(arguments[index], out var permission))
+                    {
+                        context.Error("Error.FindInvalidPerm", index < arguments.Count ? arguments[index] : "");
+                        return;
+                    }
+
+                    index++;
+                    filter = filter with { Permission = permission };
+                    break;
+
                 default:
                     context.Error("Error.FindUnknownPredicate", option);
                     return;
@@ -85,7 +96,7 @@ public sealed class FindCommand : ICommand
     /// <summary><c>find secret</c> where "secret" is not an existing path: treat it as a name to look for.</summary>
     private static bool IsQuickSearch(CommandContext context, List<string> paths, Filter filter)
     {
-        if (paths.Count != 1 || filter.Pattern is not null || filter.Type is not null)
+        if (paths.Count != 1 || filter != new Filter())
         {
             return false;
         }
@@ -120,10 +131,15 @@ public sealed class FindCommand : ICommand
         }
     }
 
-    private sealed record Filter(string? Pattern = null, bool IgnoreCase = false, bool Contains = false, char? Type = null)
+    private sealed record Filter(string? Pattern = null, bool IgnoreCase = false, bool Contains = false, char? Type = null, PermissionTest? Permission = null)
     {
         public bool Matches(VirtualNode node)
         {
+            if (Permission is { } permission && !permission.Matches(node.Mode))
+            {
+                return false;
+            }
+
             if (Type is 'f' && node.IsDirectory || Type is 'd' && !node.IsDirectory)
             {
                 return false;
@@ -139,4 +155,33 @@ public sealed class FindCommand : ICommand
                 : Glob.IsMatch(node.Name, Pattern, IgnoreCase);
         }
     }
+}
+
+/// <summary>
+/// <c>-perm</c>: <c>-4000</c> = all these bits are set, <c>/222</c> = any of them is set, <c>644</c> = exactly
+/// this mode. Symbolic modes work too, e.g. <c>-u=s</c> (set-user-ID) or <c>-o=w</c> (writable by everyone).
+/// </summary>
+internal sealed record PermissionTest(int Bits, char Kind)
+{
+    public static bool TryParse(string value, out PermissionTest test)
+    {
+        test = new PermissionTest(0, '=');
+        var kind = value.Length > 0 && value[0] is '-' or '/' ? value[0] : '=';
+        var mode = kind == '=' ? value : value[1..];
+
+        if (mode.Length == 0 || !FilePermissions.TryApply(mode, 0, out var bits))
+        {
+            return false;
+        }
+
+        test = new PermissionTest(bits, kind);
+        return true;
+    }
+
+    public bool Matches(int mode) => Kind switch
+    {
+        '-' => (mode & Bits) == Bits,
+        '/' => Bits == 0 || (mode & Bits) != 0,
+        _ => FilePermissions.ToOctal(mode) == FilePermissions.ToOctal(Bits),
+    };
 }

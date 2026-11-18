@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "id": "clockwork",
+  "order": 12,
+  "difficulty": "hard",
+  "points": 1200,
+  "title": "Clockwork",
+  "summary": "Something on the backup server runs as root every five minutes. Follow it and see where root's secrets end up.",
+  "briefing": "DotTech's admin keeps private notes in `/root/notes` on the server dottech-backup. Only root can open that folder – you can't, and you won't get root's password.\n\nBut computers do a lot of work on their own. Every Linux system has a **scheduler** called cron that runs commands at set times – and those jobs often run as root. The schedule is in `/etc/crontab`, and anyone may read it.\n\nYou have **written permission** to audit the server. Find out what root does automatically, and whether one of those jobs puts the admin's notes somewhere less private.",
+  "objective": "Follow root's scheduled jobs and read the admin's password notes. The flag is in them.",
+  "debrief": "Tick, tock – got it! `/etc/crontab` showed that root runs `/opt/scripts/sync-notes.sh` every five minutes. The script copies `/root/notes` to `/srv/share/.sync` and then makes the copies readable by everyone. The original was safe; the automatic copy was not.\n\nYou followed the trail just like a real attacker: read the schedule, read the script, then go where the script puts things. A hidden folder (`.sync`) is not a locked folder – `ls -la` shows it.\n\nThe lessons for DotTech: anything a root job writes must be just as protected as the original, scripts that run as root should be reviewed like any other code – and a script that **everyone can change** but root runs is even worse: then anyone could make root do anything.",
+  "flag": "FLAG{cr0n_j0bs_n3v3r_sl33p}",
+  "hints": [
+    "Scheduled jobs are listed in `/etc/crontab`, together with the user they run as. Read the job that runs as root, then read the script it runs: where does it copy things?",
+    "`cat /etc/crontab`, then `cat /opt/scripts/sync-notes.sh`. The script copies root's notes to a hidden folder – `ls -la /srv/share` shows hidden folders.",
+    "The flag is in `/srv/share/.sync/passwords.txt`. Run `cat /srv/share/.sync/passwords.txt`."
+  ],
+  "skills": [ "cat", "ls -la", "scheduled-tasks", "hidden-files" ],
+  "fileSystem": {
+    "hostname": "dottech-backup",
+    "directories": [
+      { "path": "/root/notes", "owner": "root", "mode": "700" },
+      { "path": "/opt/scripts", "owner": "root", "mode": "755" },
+      { "path": "/srv/share", "owner": "root", "mode": "755" },
+      { "path": "/srv/share/.sync", "owner": "root", "mode": "755" },
+      { "path": "/srv/share/public" }
+    ],
+    "files": [
+      {
+        "path": "/etc/crontab",
+        "lines": [
+          "# /etc/crontab: system-wide crontab",
+          "# Each line: minute hour day month weekday  user  command",
+          "# (*/5 in the minute column means every 5 minutes)",
+          "",
+          "17  *  *  *  *    root  cd / && run-parts --report /etc/cron.hourly",
+          "*/5 * *  *  *    root  /opt/scripts/sync-notes.sh",
+          "0   3  *  *  *    root  /opt/scripts/rotate-logs.sh",
+          "30  8  *  *  1-5  user  /home/user/bin/remind-coffee"
+        ]
+      },
+      {
+        "path": "/opt/scripts/sync-notes.sh",
+        "owner": "root",
+        "mode": "755",
+        "lines": [
+          "#!/bin/bash",
+          "# Copies the admin's notes to the backup share every 5 minutes,",
+          "# so they survive if the server dies. (Added by the admin, 2026-02-11)",
+          "",
+          "SRC=/root/notes",
+          "DEST=/srv/share/.sync",
+          "",
+          "mkdir -p \"$DEST\"",
+          "cp \"$SRC\"/* \"$DEST\"/",
+          "",
+          "# The backup robot couldn't read the copies, so:",
+          "chmod 644 \"$DEST\"/*"
+        ]
+      },
+      {
+        "path": "/opt/scripts/rotate-logs.sh",
+        "owner": "root",
+        "mode": "755",
+        "lines": [
+          "#!/bin/bash",
+          "# Keeps the logs from filling up the disk.",
+          "find /var/log -name \"*.log\" -size +50M -delete"
+        ]
+      },
+      {
+        "path": "/root/notes/passwords.txt",
+        "owner": "root",
+        "mode": "600",
+        "lines": [
+          "Admin notes – PRIVATE",
+          "",
+          "Backup encryption key: FLAG{cr0n_j0bs_n3v3r_sl33p}",
+          "Router admin:          see the yellow sticky note"
+        ]
+      },
+      {
+        "path": "/root/notes/todo.txt",
+        "owner": "root",
+        "mode": "600",
+        "lines": [
+          "- Renew the certificate before May",
+          "- Check that the backup share is not readable by everyone (?)"
+        ]
+      },
+      {
+        "path": "/srv/share/.sync/passwords.txt",
+        "owner": "root",
+        "mode": "644",
+        "lines": [
+          "Admin notes – PRIVATE",
+          "",
+          "Backup encryption key: FLAG{cr0n_j0bs_n3v3r_sl33p}",
+          "Router admin:          see the yellow sticky note"
+        ]
+      },
+      {
+        "path": "/srv/share/.sync/todo.txt",
+        "owner": "root",
+        "mode": "644",
+        "lines": [
+          "- Renew the certificate before May",
+          "- Check that the backup share is not readable by everyone (?)"
+        ]
+      },
+      {
+        "path": "/srv/share/public/README.txt",
+        "lines": [
+          "Shared folder for the whole office. Put files here that everyone needs."
+        ]
+      },
+      {
+        "path": "/var/log/cron.log",
+        "lines": [
+          "Mar 14 09:00:01 dottech-backup CRON[2101]: (root) CMD (/opt/scripts/sync-notes.sh)",
+          "Mar 14 09:05:01 dottech-backup CRON[2155]: (root) CMD (/opt/scripts/sync-notes.sh)",
+          "Mar 14 09:10:01 dottech-backup CRON[2190]: (root) CMD (/opt/scripts/sync-notes.sh)",
+          "Mar 14 09:15:01 dottech-backup CRON[2234]: (root) CMD (/opt/scripts/sync-notes.sh)",
+          "Mar 14 09:17:01 dottech-backup CRON[2251]: (root) CMD (cd / && run-parts --report /etc/cron.hourly)",
+          "Mar 14 09:20:01 dottech-backup CRON[2288]: (root) CMD (/opt/scripts/sync-notes.sh)"
+        ]
+      }
+    ]
+  }
+}

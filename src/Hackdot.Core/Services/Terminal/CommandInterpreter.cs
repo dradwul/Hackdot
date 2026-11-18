@@ -1,3 +1,4 @@
+using Hackdot.Core.Models;
 using Hackdot.Core.Services.Terminal.Commands;
 using Microsoft.Extensions.Localization;
 
@@ -46,6 +47,7 @@ public sealed class CommandInterpreter
         new TailCommand(),
         new GrepCommand(),
         new FindCommand(),
+        new ChmodCommand(),
         new WcCommand(),
         new SortCommand(),
         new UniqCommand(),
@@ -61,6 +63,34 @@ public sealed class CommandInterpreter
     ];
 
     public ICommand? FindCommand(string name) => _commandsByName.GetValueOrDefault(name);
+
+    /// <summary>
+    /// Finds the command for the first word of a stage: a name (<c>cat</c>) or a path to its program
+    /// (<c>/usr/bin/cat</c>). <paramref name="program"/> is the program file, which may be set-user-ID.
+    /// </summary>
+    private ICommand? ResolveCommand(string word, out VirtualFile? program)
+    {
+        program = null;
+
+        if (!word.Contains('/'))
+        {
+            var command = FindCommand(word);
+            program = command is null ? null : SetUidPrograms.FindProgram(Session.FileSystem, command.Name);
+            return command;
+        }
+
+        var path = Session.Resolve(word);
+        var name = VirtualPath.GetName(path);
+        program = Session.FileSystem.GetFile(path);
+
+        // The usual program folders work even when the mission didn't put a file there.
+        return program is not null || SetUidPrograms.SearchPath.Contains(VirtualPath.GetParent(path))
+            ? FindCommand(name)
+            : null;
+    }
+
+    /// <summary>Written after a command, this throws away its error messages (e.g. <c>find</c>'s "Permission denied").</summary>
+    public const string DiscardErrors = "2>/dev/null";
 
     /// <summary>Commands the player has typed, oldest first. Answers to questions (like passwords) are never included.</summary>
     public IReadOnlyList<string> History => _history;
@@ -157,17 +187,27 @@ public sealed class CommandInterpreter
 
         for (var i = 0; i < pipeline.Count; i++)
         {
-            var stage = pipeline[i];
             var isLast = i == pipeline.Count - 1;
+            var discardErrors = pipeline[i].Contains(DiscardErrors);
+            IReadOnlyList<string> stage = discardErrors ? [.. pipeline[i].Where(word => word != DiscardErrors)] : pipeline[i];
 
-            if (FindCommand(stage[0]) is not { } command)
+            if (stage.Count == 0 || ResolveCommand(stage[0], out var program) is not { } command)
             {
-                lines.Add(OutputLine.Error(Text["Error.CommandNotFound", stage[0]]));
+                if (stage.Count > 0 && !discardErrors)
+                {
+                    lines.Add(OutputLine.Error(Text["Error.CommandNotFound", stage[0]]));
+                }
+
                 standardInput = "";
                 continue;
             }
 
-            var context = new CommandContext(command.Name, [.. stage.Skip(1)], standardInput, Session, Text, this)
+            // A set-user-ID program runs as its owner – the session of the logged-in user stays as it is.
+            var session = SetUidPrograms.EffectiveUser(Session, command.Name, program) is { } owner
+                ? Session.RunningAs(owner)
+                : Session;
+
+            var context = new CommandContext(command.Name, [.. stage.Skip(1)], standardInput, session, Text, this)
             {
                 OutputIsPiped = !isLast,
             };
@@ -182,14 +222,16 @@ public sealed class CommandInterpreter
                 context.Output.Error(Text["Error.Unexpected", command.Name]);
             }
 
+            var output = discardErrors ? context.Output.Lines.Where(line => !line.IsError) : context.Output.Lines;
+
             if (isLast)
             {
-                lines.AddRange(context.Output.Lines);
+                lines.AddRange(output);
                 clearScreen = context.ClearRequested;
             }
             else
             {
-                lines.AddRange(context.Output.Lines.Where(line => line.IsError));
+                lines.AddRange(output.Where(line => line.IsError));
                 standardInput = context.Output.StandardOutput;
             }
         }

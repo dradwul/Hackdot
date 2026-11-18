@@ -39,7 +39,7 @@ public class TabCompleterTests
         var completion = Complete("c");
 
         Assert.Equal("c", completion.Input);
-        Assert.Equal(["cat", "cd", "clear", "cut"], completion.Options.Select(option => option.Label));
+        Assert.Equal(["cat", "cd", "chmod", "clear", "cut"], completion.Options.Select(option => option.Label));
         Assert.Equal("cat ", completion.Options[0].Input);
     }
 

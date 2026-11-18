@@ -42,6 +42,28 @@ public sealed class ShellSession
     /// <summary>Execute permission on a directory means you may <c>cd</c> into it.</summary>
     public bool CanEnter(VirtualDirectory directory) => HasPermission(directory, FilePermissions.Execute);
 
+    /// <summary>Execute permission on a file means you may run it as a program.</summary>
+    public bool CanExecute(VirtualFile file) => HasPermission(file, FilePermissions.Execute);
+
+    /// <summary>Every folder on the way to the node can be passed through (it may still be unreadable itself).</summary>
+    public bool CanReach(VirtualNode node) => User.IsRoot || node.Parent is not { } parent || HasPermission(parent, FilePermissions.Execute);
+
+    /// <summary>
+    /// A throw-away session for <paramref name="user"/> in the same folder – how <c>sudo</c> and set-user-ID
+    /// programs run one command as someone else without changing who is logged in.
+    /// </summary>
+    public ShellSession RunningAs(VirtualUser user)
+    {
+        var session = new ShellSession(FileSystem, user.Name);
+
+        if (FileSystem.GetDirectory(CurrentDirectory) is { } directory)
+        {
+            session.ChangeDirectory(directory);
+        }
+
+        return session;
+    }
+
     public void ChangeDirectory(VirtualDirectory directory) => CurrentDirectory = directory.Path;
 
     /// <summary>Switches to another user (e.g. after logging in) and moves to their home directory.</summary>

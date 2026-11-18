@@ -21,6 +21,16 @@
       ]
     },
     {
+      "path": "/etc/crontab",
+      "lines": [
+        "# /etc/crontab: system-wide crontab",
+        "# Each line: minute hour day month weekday  user  command",
+        "",
+        "17  *  *  *  *    root  cd / && run-parts --report /etc/cron.hourly",
+        "0   3  *  *  *    root  /usr/sbin/logrotate /etc/logrotate.conf"
+      ]
+    },
+    {
       "path": "/etc/motd",
       "lines": [
         "Welcome to DotOS 1.0",

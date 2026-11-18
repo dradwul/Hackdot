@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "id": "set-user-id",
+  "order": 13,
+  "difficulty": "hard",
+  "points": 1400,
+  "title": "Set User ID",
+  "summary": "No sudo, no passwords – but one program on the build server runs as root for everyone. Find it.",
+  "briefing": "The last case of chapter 2. DotTech signs every release with a secret key, stored in `/root/signing_key.txt` on the build server dottech-build. If someone steals it, they can publish fake DotTech updates.\n\nThis server is locked down: `sudo -l` gives you nothing, and there are no passwords lying around. But some programs carry a special permission called **set-user-ID** (the `s` in `-rwsr-xr-x`): whoever runs them, they run as their **owner**. That's how `passwd` can change your password in a file only root may write.\n\nA few programs are supposed to have it. You have **written permission** to check whether one has it that shouldn't – and to prove it by reading the signing key.",
+  "objective": "Find a program that runs as root when you start it, and use it to read /root/signing_key.txt.",
+  "debrief": "Chapter 2 complete! `find / -perm -4000` listed the set-user-ID programs. `passwd`, `su` and `sudo` are supposed to be there – they check passwords themselves. But `base64` was set-user-ID root too, so it read `/root/signing_key.txt` as root for you, and `base64 -d` turned it back into text.\n\nThis is one of the most common ways real attackers become root. Lists like GTFOBins describe how dozens of everyday programs – `cat`, `cp`, `find`, `vim`, `python` – can be abused when they are set-user-ID or allowed in sudo.\n\nThe lesson for DotTech: give set-user-ID to as few programs as possible, and never to a program that can read or write any file. The fix here is one command: `chmod u-s /usr/bin/base64`.\n\nWell done, agent – you have completed every mission in Hackdot so far!",
+  "flag": "FLAG{s3tu1d_b4s364_15_r00t}",
+  "hints": [
+    "A set-user-ID program runs as its owner, whoever starts it. Search for such programs and compare them with the ones that are supposed to have it (`passwd`, `su`, `sudo`). Which one can read files?",
+    "`find / -perm -4000 2>/dev/null` lists set-user-ID programs, and `ls -l /usr/bin` shows them with an `s`. A program that reads files and runs as root can read root's files – then turn its output back with a pipe.",
+    "`/usr/bin/base64` is set-user-ID root. Run `base64 /root/signing_key.txt | base64 -d`."
+  ],
+  "skills": [ "find", "ls -l", "base64", "suid" ],
+  "fileSystem": {
+    "hostname": "dottech-build",
+    "directories": [
+      { "path": "/usr/bin", "owner": "root", "mode": "755" },
+      { "path": "/var/log/build", "owner": "root", "mode": "700" }
+    ],
+    "files": [
+      { "path": "/usr/bin/passwd", "owner": "root", "mode": "4755", "content": "ELF 64-bit executable (this is a program, not a text file)" },
+      { "path": "/usr/bin/su", "owner": "root", "mode": "4755", "content": "ELF 64-bit executable (this is a program, not a text file)" },
+      { "path": "/usr/bin/sudo", "owner": "root", "mode": "4755", "content": "ELF 64-bit executable (this is a program, not a text file)" },
+      { "path": "/usr/bin/base64", "owner": "root", "mode": "4755", "content": "ELF 64-bit executable (this is a program, not a text file)" },
+      { "path": "/usr/bin/cat", "owner": "root", "mode": "755", "content": "ELF 64-bit executable (this is a program, not a text file)" },
+      { "path": "/usr/bin/grep", "owner": "root", "mode": "755", "content": "ELF 64-bit executable (this is a program, not a text file)" },
+      { "path": "/usr/bin/find", "owner": "root", "mode": "755", "content": "ELF 64-bit executable (this is a program, not a text file)" },
+      { "path": "/usr/bin/ls", "owner": "root", "mode": "755", "content": "ELF 64-bit executable (this is a program, not a text file)" },
+      {
+        "path": "/root/signing_key.txt",
+        "owner": "root",
+        "mode": "600",
+        "lines": [
+          "DotTech release signing key – NEVER share",
+          "",
+          "key-id:  0x5EC4E7D07",
+          "secret:  FLAG{s3tu1d_b4s364_15_r00t}"
+        ]
+      },
+      {
+        "path": "/var/log/build/latest.log",
+        "owner": "root",
+        "mode": "600",
+        "lines": [
+          "Build 1042 OK – signed with key 0x5EC4E7D07"
+        ]
+      },
+      {
+        "path": "/var/log/admin.log",
+        "lines": [
+          "2026-03-02 09:14  Installed build tools",
+          "2026-03-09 16:40  CI can't read /var/log/build – needs root.",
+          "2026-03-09 16:52  Quick fix: gave a small tool the set-user-ID bit so CI can read the logs. Will tidy up later.",
+          "2026-03-10 08:03  Builds OK again."
+        ]
+      },
+      {
+        "path": "/home/user/notes.txt",
+        "lines": [
+          "dottech-build – test notes",
+          "",
+          "sudo -l   -> not in sudoers. No luck there.",
+          "No passwords in /etc, /opt or the home folders.",
+          "Next idea: which programs run as root no matter who starts them?"
+        ]
+      }
+    ]
+  }
+}

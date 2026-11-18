@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "id": "locked-out",
+  "order": 11,
+  "difficulty": "medium",
+  "points": 1100,
+  "title": "Locked Out",
+  "summary": "A security script has locked everyone out of their own files. Can you get back into yours?",
+  "briefing": "Panic at DotTech's HR office. Last night the IT department ran a new \"security script\" on the computer dottech-hr. It removed **every** permission from the files in the home folders – nobody can read anything anymore. Not even their own files.\n\nYour account was hit too. Your file `recovery_codes.txt` now just says `Permission denied`, and you need those codes.\n\nPermissions decide what others may do with a file. But what can the **owner** of a file always do? Find out, and get back into your own file.",
+  "objective": "Get back into your own file recovery_codes.txt and read the flag inside.",
+  "debrief": "You're back in! `ls -l` showed `----------`: no permissions at all. But the file was still **yours** – and the owner of a file may always change its permissions with `chmod`, whatever they are right now. `chmod 600` (or `chmod u+r`) gave you back the right to read it.\n\nDid you try the HR payroll file too? `chmod` said `Operation not permitted`: it belongs to the user hr, and only the owner – or root – may change it. That is the rule that keeps other people's files safe.\n\nThe lesson for DotTech: permissions protect a file from **other** users, not from its owner or from root. Removing them all doesn't make anything more secure – it just breaks things. Use `chmod 600` for private files and `chmod 644` for files everyone may read.",
+  "flag": "FLAG{0wn3rs_c4n_4lw4ys_chm0d}",
+  "hints": [
+    "Look at the file's permissions and its owner. Permissions protect a file from other users – but the owner of a file can always change them.",
+    "`ls -l ~` shows the owner and the permissions. `chmod` changes them: `chmod u+r <file>` lets the owner read it, and `chmod 600 <file>` means \"only the owner may read and write\".",
+    "The flag is in `~/recovery_codes.txt`. Run `chmod 600 ~/recovery_codes.txt`, then `cat ~/recovery_codes.txt`."
+  ],
+  "skills": [ "ls -l", "chmod", "cat", "permissions" ],
+  "fileSystem": {
+    "hostname": "dottech-hr",
+    "users": [
+      { "name": "hr", "home": "/home/hr", "password": "Payday-every-25th" }
+    ],
+    "directories": [
+      { "path": "/home/hr", "owner": "hr", "mode": "700" },
+      { "path": "/opt/it", "owner": "root", "mode": "755" }
+    ],
+    "files": [
+      {
+        "path": "/home/user/recovery_codes.txt",
+        "owner": "user",
+        "mode": "000",
+        "lines": [
+          "Account recovery codes – keep these safe!",
+          "",
+          "  4821-1937",
+          "  7730-2264",
+          "  FLAG{0wn3rs_c4n_4lw4ys_chm0d}",
+          "  1158-9043",
+          "",
+          "Each code works once."
+        ]
+      },
+      {
+        "path": "/home/user/todo.txt",
+        "owner": "user",
+        "mode": "000",
+        "lines": [
+          "[ ] Ask IT why I can't open my own files",
+          "[ ] Find my recovery codes"
+        ]
+      },
+      {
+        "path": "/home/user/payroll_2026.csv",
+        "owner": "hr",
+        "mode": "000",
+        "lines": [
+          "name,monthly_salary",
+          "(you are not supposed to see this – and you can't)"
+        ]
+      },
+      {
+        "path": "/opt/it/lockdown.sh",
+        "owner": "root",
+        "mode": "755",
+        "lines": [
+          "#!/bin/bash",
+          "# \"Security\" script – run nightly by IT.",
+          "# Removes all permissions from files in the home folders. Nobody can leak what nobody can read!",
+          "for file in /home/*/*; do",
+          "    chmod 000 \"$file\"",
+          "done",
+          "echo \"Lockdown complete. Have a secure day.\""
+        ]
+      }
+    ]
+  }
+}

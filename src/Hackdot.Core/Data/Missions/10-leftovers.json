@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "id": "leftovers",
+  "order": 10,
+  "difficulty": "medium",
+  "points": 1000,
+  "title": "Leftovers",
+  "summary": "The shop's config file is locked down tight. But developers have a habit of leaving copies behind…",
+  "briefing": "Chapter 2 begins. DotTech has opened a web shop on the server dottech-shop, and you have **written permission** to test it.\n\nThe shop's database password is in `/var/www/shop/config.php`, and that file is properly locked: only root may read it. Good!\n\nBut Sam, the developer, edits files directly on the live server. Text editors and nervous developers love to leave copies behind – files ending in `.bak`, `.old`, `.orig` or `~`. A copy doesn't get the original's permissions.\n\nFind a leftover copy of the config and read the database password.",
+  "objective": "Find a leftover copy of the shop's config and read the database password. It is the flag.",
+  "debrief": "Found it! The real `config.php` was locked, but `config.php.bak` – a copy Sam made \"just in case\" – could be read by anyone.\n\nYou used `ls -la` to spot the copies and `find` with a pattern like `*.bak` to search for them everywhere. Attackers do exactly this: on web servers they even try to download `config.php.bak` straight from the browser, because the server won't run it as code and simply sends the text – passwords and all.\n\nThe lessons for DotTech: never edit files on a live server, keep secrets out of the web folder, and clean up backup copies. Better still, don't keep passwords in files at all.",
+  "flag": "FLAG{b4ckup5_n3v3r_f0rg3t}",
+  "hints": [
+    "The locked file has a copy somewhere, and copies usually get a new ending like `.bak` or `.old`. Look closely at everything in the shop's folder – including the details of each file.",
+    "`ls -la /var/www/shop` shows every file with its permissions. To search the whole computer, use `find / -name \"*.bak\" 2>/dev/null` (the `2>/dev/null` hides the 'Permission denied' messages).",
+    "The flag is in `/var/www/shop/config.php.bak`. Run `cat /var/www/shop/config.php.bak`."
+  ],
+  "skills": [ "ls -la", "find", "cat", "leftover-files" ],
+  "fileSystem": {
+    "hostname": "dottech-shop",
+    "users": [
+      { "name": "sam", "home": "/home/sam", "password": "Pr0duction-Sam!" }
+    ],
+    "directories": [
+      { "path": "/home/sam", "owner": "sam", "mode": "700" },
+      { "path": "/var/www/shop", "owner": "root", "mode": "755" },
+      { "path": "/var/www/shop/img" }
+    ],
+    "files": [
+      {
+        "path": "/var/www/shop/index.php",
+        "lines": [
+          "<?php",
+          "// DotTech Shop – front page",
+          "require __DIR__ . '/config.php';",
+          "",
+          "$products = db_query('SELECT name, price FROM products WHERE visible = 1');",
+          "include 'templates/front.php';"
+        ]
+      },
+      {
+        "path": "/var/www/shop/config.php",
+        "owner": "root",
+        "mode": "600",
+        "lines": [
+          "<?php",
+          "// DotTech Shop – settings",
+          "define('DB_HOST', 'localhost');",
+          "define('DB_NAME', 'shop');",
+          "define('DB_USER', 'shop');",
+          "define('DB_PASSWORD', 'FLAG{b4ckup5_n3v3r_f0rg3t}');"
+        ]
+      },
+      {
+        "path": "/var/www/shop/config.php.bak",
+        "owner": "root",
+        "mode": "644",
+        "lines": [
+          "<?php",
+          "// DotTech Shop – settings",
+          "// (copy before changing the payment settings – Sam)",
+          "define('DB_HOST', 'localhost');",
+          "define('DB_NAME', 'shop');",
+          "define('DB_USER', 'shop');",
+          "define('DB_PASSWORD', 'FLAG{b4ckup5_n3v3r_f0rg3t}');",
+          "define('PAYMENT_MODE', 'test');"
+        ]
+      },
+      {
+        "path": "/var/www/shop/config.php.old",
+        "owner": "root",
+        "mode": "644",
+        "lines": [
+          "<?php",
+          "// DotTech Shop – settings (first version, before we moved the database)",
+          "define('DB_HOST', '192.0.2.40');",
+          "define('DB_NAME', 'shop_test');",
+          "define('DB_USER', 'test');",
+          "define('DB_PASSWORD', 'test123');"
+        ]
+      },
+      {
+        "path": "/var/www/shop/README.md",
+        "lines": [
+          "# DotTech Shop",
+          "",
+          "Settings live in config.php (readable by root only – don't change that!).",
+          "",
+          "Quick fix on the live server: sudo nano config.php",
+          "Remember to make a copy first."
+        ]
+      },
+      {
+        "path": "/var/www/shop/img/logo.png",
+        "content": "PNG (this is an image, not a text file)"
+      },
+      {
+        "path": "/home/user/notes.txt",
+        "lines": [
+          "Test scope: dottech-shop (the web shop).",
+          "Contact: Sam (developer). Written permission signed by DotTech's CTO."
+        ]
+      }
+    ]
+  }
+}

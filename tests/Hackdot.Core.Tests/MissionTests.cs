@@ -19,6 +19,7 @@ public class MissionCatalogTests
                 "first-steps",
                 "sloppy-intern", "hidden-in-the-shadows", "needle-in-the-log-stack", "behind-closed-doors",
                 "who-keeps-knocking", "encoded-not-encrypted", "footprints", "a-little-too-generous", "inside-job",
+                "leftovers", "locked-out", "clockwork", "set-user-id",
             ],
             Catalog.Missions.Select(mission => mission.Id));
     }
@@ -49,6 +50,59 @@ public class MissionCatalogTests
         Assert.Equal("cd training/", TabCompleter.Complete(terminal, "cd tr").Input);
     }
 
+    private static CommandInterpreter Play(string id) =>
+        new(new ShellSession(Catalog.CreateFileSystem(Catalog.Find(id)!)), TestTerminal.Text);
+
+    [Fact]
+    public void Leftovers_TheRealConfigIsLocked_ButTheCopyIsNot()
+    {
+        var terminal = Play("leftovers");
+
+        Assert.Equal("cat: /var/www/shop/config.php: Permission denied", terminal.Run("cat /var/www/shop/config.php"));
+        Assert.Equal("/var/www/shop/config.php.bak", terminal.Run("find / -name \"*.bak\" 2>/dev/null"));
+    }
+
+    [Fact]
+    public void LockedOut_OnlyTheOwnerCanUnlockAFile()
+    {
+        var terminal = Play("locked-out");
+
+        Assert.Equal("cat: ~/recovery_codes.txt: Permission denied", terminal.Run("cat ~/recovery_codes.txt"));
+        Assert.StartsWith("---------- 1 user", terminal.Run("ls -l ~").Split('\n').First(line => line.EndsWith("recovery_codes.txt")));
+        Assert.Equal(
+            "chmod: changing permissions of 'payroll_2026.csv': Operation not permitted",
+            RunAll(terminal, "cd ~", "chmod 600 payroll_2026.csv"));
+    }
+
+    [Fact]
+    public void Clockwork_TheCronJobLeadsToTheCopies()
+    {
+        var terminal = Play("clockwork");
+
+        Assert.Contains("root  /opt/scripts/sync-notes.sh", terminal.Run("cat /etc/crontab"));
+        Assert.Equal("cat: /root/notes/passwords.txt: Permission denied", terminal.Run("cat /root/notes/passwords.txt"));
+        Assert.Contains(".sync/", terminal.Run("ls -a /srv/share"));
+    }
+
+    [Fact]
+    public void SetUserId_FindListsTheSetUidPrograms_AndOnlyBase64LeaksFiles()
+    {
+        var terminal = Play("set-user-id");
+
+        Assert.Equal(
+            "/usr/bin/base64\n/usr/bin/passwd\n/usr/bin/su\n/usr/bin/sudo",
+            terminal.Run("find / -perm -4000 2>/dev/null"));
+        Assert.Contains("-rwsr-xr-x 1 root", terminal.Run("ls -l /usr/bin"));
+        Assert.Equal("cat: /root/signing_key.txt: Permission denied", terminal.Run("cat /root/signing_key.txt"));
+        Assert.Equal("user", terminal.Run("whoami"));
+
+        // su and sudo are set-user-ID on purpose, but still check passwords and rules themselves.
+        Assert.Equal("user is not in the sudoers file. This incident will be reported.", terminal.Run("sudo cat /root/signing_key.txt"));
+    }
+
+    private static string RunAll(CommandInterpreter terminal, params string[] inputs) =>
+        inputs.Select(terminal.Run).ToList().Last();
+
     [Theory]
     [InlineData("first-steps", "ls\ncat start_here.txt\ncd training\nls\ncat flag.txt")]
     [InlineData("sloppy-intern", "cat ~/Documents/server_setup.txt")]
@@ -60,6 +114,10 @@ public class MissionCatalogTests
     [InlineData("footprints", "base64 -d /var/tmp/.../c.b64 | grep -i canary")]
     [InlineData("a-little-too-generous", "sudo cat /var/log/../../root/flag.txt")]
     [InlineData("inside-job", "su ops\nD0t-Ops-42\nsudo base64 /var/backups/../../root/roadmap.txt | base64 -d")]
+    [InlineData("leftovers", "cat /var/www/shop/config.php.bak")]
+    [InlineData("locked-out", "chmod 600 ~/recovery_codes.txt\ncat ~/recovery_codes.txt")]
+    [InlineData("clockwork", "cat /srv/share/.sync/passwords.txt")]
+    [InlineData("set-user-id", "base64 /root/signing_key.txt | base64 -d")]
     public void EmbeddedMissions_CanBeSolvedInTheTerminal(string id, string solution)
     {
         // Each line is one submitted input (a command, or the answer to a prompt like "Password:").
@@ -181,6 +239,34 @@ public class MissionCatalogTests
 
         Assert.Empty(Catalog.Validate(withSudo));
         Assert.NotEmpty(Catalog.Validate(withoutSudo));
+    }
+
+    [Theory]
+    // The player owns the locked file, so they can chmod it.
+    [InlineData("""{ "path": "/home/user/flag.txt", "content": "FLAG{x}", "owner": "user", "mode": "000" }""", true)]
+    [InlineData("""{ "path": "/home/user/flag.txt", "content": "FLAG{x}", "owner": "root", "mode": "000" }""", false)]
+    // A set-user-ID root program that reads files makes root's files reachable.
+    [InlineData("""{ "path": "/usr/bin/cat", "content": "ELF", "owner": "root", "mode": "4755" }""", true)]
+    [InlineData("""{ "path": "/usr/bin/cat", "content": "ELF", "owner": "root", "mode": "755" }""", false)]
+    [InlineData("""{ "path": "/usr/bin/cat", "content": "ELF", "owner": "root", "mode": "4750" }""", false)]
+    // sudo is set-user-ID on purpose, but checks its own rules.
+    [InlineData("""{ "path": "/usr/bin/sudo", "content": "ELF", "owner": "root", "mode": "4755" }""", false)]
+    public void Validate_KnowsAboutChmodAndSetUidPrograms(string file, bool solvable)
+    {
+        var mission = MissionCatalog.Parse($$"""
+            {
+              "id": "perm", "title": "t", "summary": "s", "briefing": "b", "objective": "o", "debrief": "d",
+              "flag": "FLAG{x}", "hints": [ "1", "2", "3" ],
+              "fileSystem": {
+                "files": [
+                  { "path": "/root/flag.txt", "content": "FLAG{x}", "owner": "root", "mode": "600" },
+                  {{file}}
+                ]
+              }
+            }
+            """);
+
+        Assert.Equal(solvable, Catalog.Validate(mission).Count == 0);
     }
 
     [Fact]
