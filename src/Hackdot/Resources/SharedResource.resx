@@ -30,6 +30,9 @@
   <data name="Shell.LoggedInAs" xml:space="preserve"><value>Logged in as {0} on {1}</value></data>
   <data name="Shell.LogOut" xml:space="preserve"><value>Log out</value></data>
   <data name="Shell.ShowDesktop" xml:space="preserve"><value>Show desktop</value></data>
+  <data name="Shell.Version" xml:space="preserve"><value>v{0}</value></data>
+  <data name="Shell.WhatsNew" xml:space="preserve"><value>What's new</value></data>
+  <data name="Shell.Build" xml:space="preserve"><value>Build {0} – opens the changelog on GitHub</value></data>
   <data name="Window.Minimize" xml:space="preserve"><value>Minimize</value></data>
   <data name="Window.MinimizeApp" xml:space="preserve"><value>Minimize {0}</value></data>
   <data name="Window.Close" xml:space="preserve"><value>Close</value></data>

@@ -221,6 +221,28 @@
     color: var(--danger);
 }
 
+/* The version: small and faint, but still a comfortable tap target. */
+.version {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    margin-top: 0.2rem;
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-decoration: none;
+    opacity: 0.55;
+    transition: opacity 120ms ease;
+}
+
+.version:hover,
+.version:focus-visible,
+.version:active {
+    opacity: 1;
+}
+
 @media (min-width: 768px) {
     .task-label {
         display: inline;
