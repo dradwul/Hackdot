@@ -57,7 +57,7 @@ public class VirtualFileSystemTests
     public void CreateDirectory_ThroughFile_Throws()
     {
         var fs = new VirtualFileSystem();
-        fs.WriteFile("/etc/hostname", "hackos");
+        fs.WriteFile("/etc/hostname", "dotos");
 
         Assert.Throws<InvalidOperationException>(() => fs.CreateDirectory("/etc/hostname/sub"));
     }

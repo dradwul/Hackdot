@@ -5,10 +5,10 @@
   "difficulty": "hard",
   "points": 300,
   "title": "Needle in the Log Stack",
-  "summary": "Someone is trying to break into NovaTech's server. The answer is hidden in a log file with 1,500 lines.",
-  "briefing": "Alarm bells at NovaTech! Someone has been trying to log in to the main server, novatech-srv, all night long.\n\nEvery login attempt is written to the server's log file, `/var/log/auth.log`. The problem: it has 1,500 lines. Reading it line by line would take forever.\n\nIT believes the attacker slipped up and left a clue in the log. Your job is to find that one line – without reading them all.",
+  "summary": "Someone is trying to break into DotTech's server. The answer is hidden in a log file with 1,500 lines.",
+  "briefing": "Alarm bells at DotTech! Someone has been trying to log in to the main server, dottech-srv, all night long.\n\nEvery login attempt is written to the server's log file, `/var/log/auth.log`. The problem: it has 1,500 lines. Reading it line by line would take forever.\n\nIT believes the attacker slipped up and left a clue in the log. Your job is to find that one line – without reading them all.",
   "objective": "Search /var/log/auth.log and find the line that contains the flag.",
-  "debrief": "Excellent detective work! `grep` searches inside files and only shows the lines that match – it found one line among 1,500 in an instant.\n\nSecurity analysts use `grep` every day to dig through logs. Try `grep -i` to ignore case, `grep -n` to see line numbers, or a pipe: `cat /var/log/auth.log | grep Failed`.\n\nThe lesson for NovaTech: logs are gold. Keep them, and learn how to search them.",
+  "debrief": "Excellent detective work! `grep` searches inside files and only shows the lines that match – it found one line among 1,500 in an instant.\n\nSecurity analysts use `grep` every day to dig through logs. Try `grep -i` to ignore case, `grep -n` to see line numbers, or a pipe: `cat /var/log/auth.log | grep Failed`.\n\nThe lesson for DotTech: logs are gold. Keep them, and learn how to search them.",
   "flag": "FLAG{gr3p_f1nds_th3_n33dl3}",
   "hints": [
     "A log file records events, one per line. This one is far too long to read by hand – you need a tool that searches inside files.",
@@ -17,7 +17,7 @@
   ],
   "skills": [ "grep", "cat", "pipes" ],
   "fileSystem": {
-    "hostname": "novatech-srv",
+    "hostname": "dottech-srv",
     "files": [
       {
         "path": "/home/user/Documents/incident_ticket.txt",
@@ -25,7 +25,7 @@
           "TICKET #4521 – Suspicious SSH activity",
           "Priority: HIGH",
           "",
-          "Thousands of failed logins on novatech-srv since midnight.",
+          "Thousands of failed logins on dottech-srv since midnight.",
           "Log file: /var/log/auth.log",
           "",
           "Please investigate. Tip from IT: don't read the whole file – search it!"

@@ -59,7 +59,7 @@ public class MissionCatalogTests
     [InlineData("encoded-not-encrypted", "echo 'Umt4QlIzdGlOSE16TmpSZk1YTmZiakIwWHpOdVkzSjVjSFF4TUc1OQ==' | base64 -d | base64 -d")]
     [InlineData("footprints", "base64 -d /var/tmp/.../c.b64 | grep -i canary")]
     [InlineData("a-little-too-generous", "sudo cat /var/log/../../root/flag.txt")]
-    [InlineData("inside-job", "su ops\nN0va-Ops-42\nsudo base64 /var/backups/../../root/roadmap.txt | base64 -d")]
+    [InlineData("inside-job", "su ops\nD0t-Ops-42\nsudo base64 /var/backups/../../root/roadmap.txt | base64 -d")]
     public void EmbeddedMissions_CanBeSolvedInTheTerminal(string id, string solution)
     {
         // Each line is one submitted input (a command, or the answer to a prompt like "Password:").
@@ -150,9 +150,9 @@ public class MissionCatalogTests
         terminal = new CommandInterpreter(new ShellSession(Catalog.CreateFileSystem(inside)), TestTerminal.Text);
 
         Assert.Contains("may not run sudo", terminal.Run("sudo -l"));
-        Assert.Equal("N0va-Ops-42", terminal.Run("echo 'TjB2YS1PcHMtNDI=' | base64 -d"));
+        Assert.Equal("D0t-Ops-42", terminal.Run("echo 'RDB0LU9wcy00Mg==' | base64 -d"));
         terminal.Execute("su ops");
-        terminal.Execute("N0va-Ops-42");
+        terminal.Execute("D0t-Ops-42");
         Assert.Contains("/usr/bin/base64 /var/backups/*", terminal.Run("sudo -l"));
         Assert.Contains("not allowed", terminal.Run("sudo cat /root/roadmap.txt"));
     }
@@ -243,7 +243,7 @@ public class MissionCatalogTests
 
         Assert.Equal(1500, lines.Length);
         Assert.Single(lines, line => line.Contains("FLAG{"));
-        Assert.Contains("novatech-srv sshd[31337]: Invalid user FLAG{", lines[1136]);
+        Assert.Contains("dottech-srv sshd[31337]: Invalid user FLAG{", lines[1136]);
     }
 
     [Fact]
@@ -371,7 +371,7 @@ public class GameStateTests
     [InlineData("", FlagCheckResult.Empty)]
     [InlineData("password123", FlagCheckResult.WrongFormat)]
     [InlineData("FLAG{wrong}", FlagCheckResult.Incorrect)]
-    [InlineData("  flag{H3LL0_h4ck0s}  ", FlagCheckResult.Correct)]
+    [InlineData("  flag{H3LL0_d0t0s}  ", FlagCheckResult.Correct)]
     public void SubmitFlag_ChecksTheAnswer(string answer, FlagCheckResult expected)
     {
         var state = new GameState(Catalog);

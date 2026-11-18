@@ -6,10 +6,10 @@
   "points": 50,
   "title": "First Steps",
   "summary": "Never used a terminal? Start here: five small steps from your first command to your first flag.",
-  "briefing": "Welcome to HackOS! Before your first job at NovaTech, their security team has set up a practice computer for you. Nothing can break here – try anything you like.\n\nHackers mostly work in the **terminal**: you type a command, press Enter and the computer answers. Follow these steps one at a time.\n\n**1.** Tap **Open Terminal** below (or the Terminal icon on the desktop).\n\n**2.** Type `ls` and press Enter. `ls` lists what is in the folder you are in – you'll see a file called `start_here.txt`.\n\n**3.** Read it: type `cat st` and tap the **Tab** button. The terminal finishes the name for you. Press Enter.\n\n**4.** The file tells you where to go next. `cd` moves you into a folder – then run `ls` again to look around.\n\n**5.** Read the file you find there with `cat`. It contains your first flag – copy it into the box below.\n\nPrefer tapping? The **Files** app shows exactly the same files.",
+  "briefing": "Welcome to DotOS! Before your first job at DotTech, their security team has set up a practice computer for you. Nothing can break here – try anything you like.\n\nHackers mostly work in the **terminal**: you type a command, press Enter and the computer answers. Follow these steps one at a time.\n\n**1.** Tap **Open Terminal** below (or the Terminal icon on the desktop).\n\n**2.** Type `ls` and press Enter. `ls` lists what is in the folder you are in – you'll see a file called `start_here.txt`.\n\n**3.** Read it: type `cat st` and tap the **Tab** button. The terminal finishes the name for you. Press Enter.\n\n**4.** The file tells you where to go next. `cd` moves you into a folder – then run `ls` again to look around.\n\n**5.** Read the file you find there with `cat`. It contains your first flag – copy it into the box below.\n\nPrefer tapping? The **Files** app shows exactly the same files.",
   "objective": "Follow the five steps and submit the flag hidden in the training folder.",
-  "debrief": "Your first flag – welcome to the team!\n\nYou just used the three commands every hacker uses all the time: `ls` to see what's in a folder, `cd` to move into another folder and `cat` to read a file. **Tab** finishes names for you, and the ↑ button brings back earlier commands.\n\nNext up is a real job for NovaTech. If you get stuck, ask for a hint, or open the **Guide** to look up any command.\n\nTip: if you see **Install as app** at the bottom of the desktop, tap it to play Hackdot from your home screen – even offline.",
-  "flag": "FLAG{h3ll0_h4ck0s}",
+  "debrief": "Your first flag – welcome to the team!\n\nYou just used the three commands every hacker uses all the time: `ls` to see what's in a folder, `cd` to move into another folder and `cat` to read a file. **Tab** finishes names for you, and the ↑ button brings back earlier commands.\n\nNext up is a real job for DotTech. If you get stuck, ask for a hint, or open the **Guide** to look up any command.\n\nTip: if you see **Install as app** at the bottom of the desktop, tap it to play Hackdot from your home screen – even offline.",
+  "flag": "FLAG{h3ll0_d0t0s}",
   "hints": [
     "Everything you need is in your home folder: list what's there, move into the folder you find and read the file inside. Do the steps in the briefing one at a time.",
     "`ls` lists files, `cd training` moves into the training folder and `cat <file>` reads a file. Tap **Tab** to finish a name.",
@@ -41,7 +41,7 @@
           "",
           "Here is your very first flag:",
           "",
-          "    FLAG{h3ll0_h4ck0s}",
+          "    FLAG{h3ll0_d0t0s}",
           "",
           "Copy it into the Mission app (or type it – upper and lower case don't matter).",
           "Every mission ends like this: find the flag, submit it, learn something new."

@@ -87,7 +87,7 @@ public class FileExplorerTests
         var explorer = Create();
 
         Assert.Equal(ExplorerResult.Ok, explorer.OpenFile("/etc/hostname", out var hostname));
-        Assert.Equal("hackos", hostname!.Content);
+        Assert.Equal("dotos", hostname!.Content);
         Assert.Equal("cat /etc/hostname", explorer.EquivalentReadCommand(hostname));
 
         Assert.Equal(ExplorerResult.PermissionDenied, explorer.OpenFile("/root/top_secret.txt", out var secret));

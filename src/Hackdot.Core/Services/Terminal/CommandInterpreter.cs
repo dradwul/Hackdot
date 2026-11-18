@@ -83,7 +83,7 @@ public sealed class CommandInterpreter
     internal void RequestInput(string label, bool secret, Action<string, CommandOutput> onInput) =>
         _pendingInput = new PendingInput(label, secret, onInput);
 
-    /// <summary>The prompt, e.g. <c>user@hackos:~/Documents$</c>, optionally followed by a typed command.</summary>
+    /// <summary>The prompt, e.g. <c>user@dotos:~/Documents$</c>, optionally followed by a typed command.</summary>
     public OutputLine Prompt(string? input = null)
     {
         List<OutputSegment> segments =

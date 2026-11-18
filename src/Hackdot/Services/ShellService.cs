@@ -19,7 +19,7 @@ public sealed record AppInfo(AppId Id, string Accent)
 }
 
 /// <summary>
-/// Window manager for the HackOS shell. Tracks which apps are open and which one is visible.
+/// Window manager for the DotOS shell. Tracks which apps are open and which one is visible.
 /// At most one window is visible at a time (mobile-first); minimized apps stay in the dock
 /// and keep their state.
 /// </summary>

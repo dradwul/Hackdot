@@ -1,6 +1,6 @@
 # hack.
 
-**Hackdot** is a pocket-sized, educational hacking game. You get a simulated desktop OS – *HackOS* – on your phone
+**Hackdot** is a pocket-sized, educational hacking game. You get a simulated desktop OS – *DotOS* – on your phone
 and solve Capture The Flag–style missions: hunt for flags (`FLAG{...}`) by clicking around in the file explorer
 or by using real commands like `ls -la`, `cat` and `grep` in the terminal.
 
@@ -37,7 +37,7 @@ works offline. `index.html` uses a relative `<base href="./">`, so no path needs
 
 ## Status
 
-- [x] Foundation: project structure, PWA, HackOS shell (desktop, windows, dock, start menu)
+- [x] Foundation: project structure, PWA, DotOS shell (desktop, windows, dock, start menu)
 - [x] Localization infrastructure
 - [x] Virtual file system defined in JSON (users, owners, permissions)
 - [x] Terminal with command interpreter, pipes, Tab completion and shortcut buttons (ls, cd, cat, head, tail, grep, find,

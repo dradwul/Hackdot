@@ -7,7 +7,7 @@ namespace Hackdot.Core.Models.Definitions;
 /// <example>
 /// <code>
 /// {
-///   "hostname": "hackos",
+///   "hostname": "dotos",
 ///   "users": [ { "name": "user", "home": "/home/user" } ],
 ///   "defaultUser": "user",
 ///   "directories": [ { "path": "/root", "owner": "root", "mode": "700" } ],

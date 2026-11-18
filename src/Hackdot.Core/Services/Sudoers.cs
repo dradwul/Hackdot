@@ -46,7 +46,7 @@ public sealed record SudoRule(string User, string RunAs, bool NoPassword, string
 }
 
 /// <summary>
-/// Reads the simplified <c>/etc/sudoers</c> format used by HackOS:
+/// Reads the simplified <c>/etc/sudoers</c> format used by DotOS:
 /// <c>user host=(runas) [NOPASSWD:] /path/command [argument pattern], /path/other</c>.
 /// Lines starting with <c>#</c> and <c>Defaults</c> lines are ignored.
 /// </summary>

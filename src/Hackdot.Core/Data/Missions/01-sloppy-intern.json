@@ -5,10 +5,10 @@
   "difficulty": "easy",
   "points": 100,
   "title": "The Sloppy Intern",
-  "summary": "An intern at NovaTech has been careless with passwords. Find out what they left behind.",
-  "briefing": "NovaTech has hired you as an ethical hacker. Your job is to find security holes before the bad guys do – and you have written permission to look around.\n\nYou have been handed the old laptop of Max, a summer intern who set up NovaTech's new web server. Max was in a hurry and is known for writing things down… everywhere.\n\nHave a look through Max's files. If a password was written down somewhere, NovaTech needs to know.",
+  "summary": "An intern at DotTech has been careless with passwords. Find out what they left behind.",
+  "briefing": "DotTech has hired you as an ethical hacker. Your job is to find security holes before the bad guys do – and you have written permission to look around.\n\nYou have been handed the old laptop of Max, a summer intern who set up DotTech's new web server. Max was in a hurry and is known for writing things down… everywhere.\n\nHave a look through Max's files. If a password was written down somewhere, DotTech needs to know.",
   "objective": "Find the admin password Max wrote down. It is the flag.",
-  "debrief": "Well done! You found a password stored in a plain text file – one of the most common security mistakes there is.\n\nYou used `ls` to see what's in a folder, `cd` to move around and `cat` to read files. Real attackers start exactly like this: by looking for low-hanging fruit.\n\nThe lesson for NovaTech: never write passwords in files. Use a password manager instead.",
+  "debrief": "Well done! You found a password stored in a plain text file – one of the most common security mistakes there is.\n\nYou used `ls` to see what's in a folder, `cd` to move around and `cat` to read files. Real attackers start exactly like this: by looking for low-hanging fruit.\n\nThe lesson for DotTech: never write passwords in files. Use a password manager instead.",
   "flag": "FLAG{n3v3r_wr1t3_p4ssw0rds_d0wn}",
   "hints": [
     "People tend to keep their notes in the `Documents` folder. Start by looking around your home folder.",
@@ -17,7 +17,7 @@
   ],
   "skills": [ "ls", "cd", "cat" ],
   "fileSystem": {
-    "hostname": "novatech-laptop",
+    "hostname": "dottech-laptop",
     "files": [
       {
         "path": "/home/user/Documents/todo.txt",
@@ -25,7 +25,7 @@
           "TODO – Max (intern)",
           "",
           "[x] Find out how the coffee machine works",
-          "[x] Set up the new web server (novatech-web)",
+          "[x] Set up the new web server (dottech-web)",
           "[ ] Change the default admin password (later...)",
           "[ ] Delete my setup notes before I leave",
           "[ ] Return the laptop"
@@ -46,7 +46,7 @@
         "lines": [
           "Server setup notes – do NOT share!",
           "",
-          "Hostname:       novatech-web",
+          "Hostname:       dottech-web",
           "Web root:       /var/www",
           "Admin user:     admin",
           "Admin password: FLAG{n3v3r_wr1t3_p4ssw0rds_d0wn}",

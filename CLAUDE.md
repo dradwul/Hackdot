@@ -19,7 +19,7 @@ Det här är ett personligt projekt. **Alla commits ska göras av GitHub-kontot 
 ## Projektet
 
 Hackdot (logga: `hack.` / `hackdot`) är ett mobile-first, pedagogiskt CTF-/etisk hackning-spel.
-Spelaren använder ett simulerat skrivbords-OS ("HackOS") med terminal, filutforskare, uppdragsapp och guide.
+Spelaren använder ett simulerat skrivbords-OS ("DotOS") med terminal, filutforskare, uppdragsapp och guide.
 Allt körs i webbläsaren – inget riktigt nätverk eller filsystem används.
 
 - **Stack:** .NET 10 (LTS), Blazor WebAssembly Standalone, PWA. Inga tunga UI-bibliotek – egen, lättviktig CSS.
@@ -86,7 +86,7 @@ En bana = en JSON-fil i `src/Hackdot.Core/Data/Missions/` (`NN-namn.json`), mode
 - **Notes:** spelarens anteckningar sparas i `localStorage`.
 - `MissionCatalog.Validate` + testerna i `MissionTests` kontrollerar att flaggan finns i en fil som spelaren kan läsa.
   Lägg till banans lösning i `EmbeddedMissions_CanBeSolvedInTheTerminal`.
-- Allt som spelet gör är fiktivt (NovaTech, dokumentations-IP:n enligt RFC 5737). Framställ alltid hackning som
+- Allt som spelet gör är fiktivt (DotTech, dokumentations-IP:n enligt RFC 5737). Framställ alltid hackning som
   något man gör med tillstånd.
 
 ## Riktlinjer

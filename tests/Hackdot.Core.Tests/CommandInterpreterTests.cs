@@ -27,11 +27,11 @@ public class CommandInterpreterTests
     {
         var terminal = TestTerminal.Create();
 
-        Assert.Equal("user@hackos:~$ ls", terminal.Prompt("ls").Text);
+        Assert.Equal("user@dotos:~$ ls", terminal.Prompt("ls").Text);
 
         terminal.Run("cd /var/log");
 
-        Assert.Equal("user@hackos:/var/log$ ", terminal.Prompt().Text);
+        Assert.Equal("user@dotos:/var/log$ ", terminal.Prompt().Text);
     }
 
     [Fact]
@@ -39,7 +39,7 @@ public class CommandInterpreterTests
     {
         var welcome = TestTerminal.Create().Welcome();
 
-        Assert.Equal("Welcome to HackOS!", welcome[0].Text);
+        Assert.Equal("Welcome to DotOS!", welcome[0].Text);
     }
 
     [Fact]

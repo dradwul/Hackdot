@@ -69,7 +69,7 @@ public class FileSystemLoaderTests
     {
         var fs = FileSystemLoader.CreateDefault();
 
-        Assert.Equal("hackos", fs.Hostname);
+        Assert.Equal("dotos", fs.Hostname);
         Assert.Equal("user", fs.DefaultUser);
         Assert.NotNull(fs.GetFile("/home/user/.bashrc"));
         Assert.NotNull(fs.GetFile("/home/user/Documents/welcome.txt"));

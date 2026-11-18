@@ -13,7 +13,7 @@ public sealed class VirtualFileSystem
 
     private readonly List<VirtualUser> _users = [];
 
-    public VirtualFileSystem(string hostname = "hackos")
+    public VirtualFileSystem(string hostname = "dotos")
     {
         Hostname = hostname;
         Root = new VirtualDirectory(VirtualPath.Root, VirtualUser.RootName, FilePermissions.DefaultDirectory, DefaultTimestamp);

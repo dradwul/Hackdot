@@ -114,7 +114,7 @@ public class CatTests
     [Fact]
     public void Cat_PrintsFileContent()
     {
-        Assert.Equal("hackos", TestTerminal.Create().Run("cat /etc/hostname"));
+        Assert.Equal("dotos", TestTerminal.Create().Run("cat /etc/hostname"));
     }
 
     [Fact]

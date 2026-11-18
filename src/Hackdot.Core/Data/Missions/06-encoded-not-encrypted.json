@@ -5,10 +5,10 @@
   "difficulty": "hard",
   "points": 600,
   "title": "Encoded, Not Encrypted",
-  "summary": "A developer swears the admin token on NovaTech's website is safely encrypted. Is it?",
-  "briefing": "NovaTech just launched a customer portal. Robin, the developer, put the admin token right in the website's JavaScript – \"don't worry, it's **double encrypted**\", Robin says.\n\nThe CTO isn't so sure and has given you **written permission** to check. If you can turn the token back into plain text, so can every visitor: the website's files are sent to everyone's browser.\n\nThe portal lives in `/var/www/html/portal`. Find the token and find out what it really says.",
+  "summary": "A developer swears the admin token on DotTech's website is safely encrypted. Is it?",
+  "briefing": "DotTech just launched a customer portal. Robin, the developer, put the admin token right in the website's JavaScript – \"don't worry, it's **double encrypted**\", Robin says.\n\nThe CTO isn't so sure and has given you **written permission** to check. If you can turn the token back into plain text, so can every visitor: the website's files are sent to everyone's browser.\n\nThe portal lives in `/var/www/html/portal`. Find the token and find out what it really says.",
   "objective": "Find the admin token in the portal's files and decode it. The decoded token is the flag.",
-  "debrief": "Busted! The \"encryption\" was base64 – an encoding, not encryption. Encoding only changes how data is written down so it survives systems that only handle plain text. There is no key or password, so anyone can decode it with `base64 -d`. Doing it twice just means decoding twice.\n\nYou probably spotted the giveaways: only letters, digits, `+` and `/`, often ending in `=`. And the website's own `app.js` decoded the token with `atob()` – if the browser can decode it, so can anyone.\n\nThe lesson for NovaTech: secrets never belong in files that are sent to the browser. Keep them on the server, and when something really must be secret, use real encryption with a key that stays hidden.",
+  "debrief": "Busted! The \"encryption\" was base64 – an encoding, not encryption. Encoding only changes how data is written down so it survives systems that only handle plain text. There is no key or password, so anyone can decode it with `base64 -d`. Doing it twice just means decoding twice.\n\nYou probably spotted the giveaways: only letters, digits, `+` and `/`, often ending in `=`. And the website's own `app.js` decoded the token with `atob()` – if the browser can decode it, so can anyone.\n\nThe lesson for DotTech: secrets never belong in files that are sent to the browser. Keep them on the server, and when something really must be secret, use real encryption with a key that stays hidden.",
   "flag": "FLAG{b4s364_1s_n0t_3ncrypt10n}",
   "hints": [
     "Everything in a website's folder is sent to visitors' browsers, so it's public. Look for something called a token in the portal's files. Text made only of letters, digits, `+` and `/`, often ending in `=`, is usually **base64**: an encoding anyone can reverse.",
@@ -17,7 +17,7 @@
   ],
   "skills": [ "grep -r", "echo", "base64", "encoding" ],
   "fileSystem": {
-    "hostname": "novatech-web",
+    "hostname": "dottech-web",
     "directories": [
       { "path": "/var/www/html/portal/js" },
       { "path": "/var/www/html/portal/css" }
@@ -48,13 +48,13 @@
           "<!DOCTYPE html>",
           "<html lang=\"en\">",
           "  <head>",
-          "    <title>NovaTech Customer Portal</title>",
+          "    <title>DotTech Customer Portal</title>",
           "    <link rel=\"stylesheet\" href=\"css/portal.css\">",
           "    <script src=\"js/config.js\"></script>",
           "    <script src=\"js/app.js\" defer></script>",
           "  </head>",
           "  <body>",
-          "    <h1>Welcome to the NovaTech Customer Portal</h1>",
+          "    <h1>Welcome to the DotTech Customer Portal</h1>",
           "    <div id=\"app\">Loading…</div>",
           "  </body>",
           "</html>"
@@ -70,12 +70,12 @@
       {
         "path": "/var/www/html/portal/js/config.js",
         "lines": [
-          "// NovaTech Customer Portal – settings",
+          "// DotTech Customer Portal – settings",
           "// SECURITY: every secret below is DOUBLE ENCRYPTED, so it is safe to ship",
           "// to the browser. Nobody can read them. – Robin",
           "",
           "window.PORTAL_CONFIG = {",
-          "  apiUrl: \"https://api.novatech.example/v2\",",
+          "  apiUrl: \"https://api.dottech.example/v2\",",
           "  version: \"djIuNC4x\",",
           "  theme: \"TmlnaHRPd2w=\",",
           "  supportEmail: \"c3VwcG9ydEBub3ZhdGVjaC5leGFtcGxl\",",
@@ -86,7 +86,7 @@
       {
         "path": "/var/www/html/portal/js/app.js",
         "lines": [
-          "// NovaTech Customer Portal",
+          "// DotTech Customer Portal",
           "const config = window.PORTAL_CONFIG;",
           "",
           "// \"Decrypt\" the settings. atob() is the browser's base64 decoder.",

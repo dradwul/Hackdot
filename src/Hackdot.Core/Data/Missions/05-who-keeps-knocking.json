@@ -5,10 +5,10 @@
   "difficulty": "hard",
   "points": 500,
   "title": "Who Keeps Knocking?",
-  "summary": "Someone is hammering NovaTech's login page. Count the attempts and unmask the attacker.",
-  "briefing": "NovaTech's customer website, novatech-web, was slow all night. The security team suspects a **brute-force attack**: someone trying password after password on the login page.\n\nEvery visit to the website is written to `/var/log/nginx/access.log` – one line per request, starting with the visitor's IP address. A failed login gets the status code `401`. The log has 2,400 lines, so counting by hand is not an option.\n\nNovaTech also runs a **honeypot**, a trap that records what attackers do. It keeps one file per attacker in `/srv/honeypot/sessions/`, named after their IP address. That folder can't be listed – you need the exact IP of the worst offender to open their file.",
+  "summary": "Someone is hammering DotTech's login page. Count the attempts and unmask the attacker.",
+  "briefing": "DotTech's customer website, dottech-web, was slow all night. The security team suspects a **brute-force attack**: someone trying password after password on the login page.\n\nEvery visit to the website is written to `/var/log/nginx/access.log` – one line per request, starting with the visitor's IP address. A failed login gets the status code `401`. The log has 2,400 lines, so counting by hand is not an option.\n\nDotTech also runs a **honeypot**, a trap that records what attackers do. It keeps one file per attacker in `/srv/honeypot/sessions/`, named after their IP address. That folder can't be listed – you need the exact IP of the worst offender to open their file.",
   "objective": "Find the IP address with the most failed logins (status 401), then open its file in /srv/honeypot/sessions.",
-  "debrief": "Great counting! `cut` picked out the IP addresses, `sort` put identical ones next to each other, `uniq -c` counted them and `sort -n` put the biggest number last.\n\nThis pipeline answers \"who did this the most?\" for almost any log in seconds – security analysts use it all the time. Did you notice that the busiest visitor, `10.0.0.5`, was innocent? It is NovaTech's own health check. Filtering for `401` first made all the difference.\n\nYou also met a folder you could pass through but not list (`rwx--x--x`). Without read permission you can't see what is inside, but with execute permission you can still open a file – if you know its exact name.\n\nThe lesson for NovaTech: limit how many login attempts one IP address may make, and block addresses that keep failing.",
+  "debrief": "Great counting! `cut` picked out the IP addresses, `sort` put identical ones next to each other, `uniq -c` counted them and `sort -n` put the biggest number last.\n\nThis pipeline answers \"who did this the most?\" for almost any log in seconds – security analysts use it all the time. Did you notice that the busiest visitor, `10.0.0.5`, was innocent? It is DotTech's own health check. Filtering for `401` first made all the difference.\n\nYou also met a folder you could pass through but not list (`rwx--x--x`). Without read permission you can't see what is inside, but with execute permission you can still open a file – if you know its exact name.\n\nThe lesson for DotTech: limit how many login attempts one IP address may make, and block addresses that keep failing.",
   "flag": "FLAG{c0unt_th3_kn0cks}",
   "hints": [
     "In a brute-force attack, the attacker fails to log in again and again – so their IP address appears in **lots** of failed logins. Don't read the log: count failed logins per IP address. Careful, the busiest visitor is not necessarily the attacker.",
@@ -17,7 +17,7 @@
   ],
   "skills": [ "cut", "sort", "uniq", "counting", "permissions" ],
   "fileSystem": {
-    "hostname": "novatech-web",
+    "hostname": "dottech-web",
     "directories": [
       { "path": "/srv/honeypot", "owner": "root", "mode": "755" },
       { "path": "/srv/honeypot/sessions", "owner": "root", "mode": "711" }
@@ -29,7 +29,7 @@
           "TICKET #5150 – Login page under attack?",
           "Priority: HIGH",
           "",
-          "The login page of novatech-web was hit thousands of times last night.",
+          "The login page of dottech-web was hit thousands of times last night.",
           "Web server log: /var/log/nginx/access.log",
           "",
           "Format of every line:",
@@ -61,7 +61,7 @@
       {
         "path": "/srv/honeypot/README.txt",
         "lines": [
-          "NovaTech honeypot",
+          "DotTech honeypot",
           "=================",
           "",
           "The honeypot pretends to let attackers in and records everything they do.",

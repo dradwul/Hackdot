@@ -1,7 +1,7 @@
-// The shared HackOS base system. Missions add their own files on top of this layer.
+// The shared DotOS base system. Missions add their own files on top of this layer.
 {
   "schemaVersion": 1,
-  "hostname": "hackos",
+  "hostname": "dotos",
   "users": [
     { "name": "user", "home": "/home/user" }
   ],
@@ -12,18 +12,18 @@
     { "path": "/var/www/html" }
   ],
   "files": [
-    { "path": "/etc/hostname", "content": "hackos" },
+    { "path": "/etc/hostname", "content": "dotos" },
     {
       "path": "/etc/passwd",
       "lines": [
         "root:x:0:0:root:/root:/bin/bash",
-        "user:x:1000:1000:HackOS User:/home/user:/bin/bash"
+        "user:x:1000:1000:DotOS User:/home/user:/bin/bash"
       ]
     },
     {
       "path": "/etc/motd",
       "lines": [
-        "Welcome to HackOS 1.0",
+        "Welcome to DotOS 1.0",
         "Remember: only hack systems you have permission to hack."
       ]
     },
@@ -39,7 +39,7 @@
     {
       "path": "/home/user/Documents/welcome.txt",
       "lines": [
-        "Welcome to HackOS!",
+        "Welcome to DotOS!",
         "",
         "This is a safe practice computer. Nothing you do here can break anything.",
         "",
@@ -57,7 +57,7 @@
       "lines": [
         "<!DOCTYPE html>",
         "<html>",
-        "  <head><title>HackOS Web Server</title></head>",
+        "  <head><title>DotOS Web Server</title></head>",
         "  <body><h1>It works!</h1></body>",
         "</html>"
       ]
@@ -65,12 +65,12 @@
     {
       "path": "/var/log/syslog",
       "lines": [
-        "Mar 14 09:00:01 hackos systemd[1]: Starting HackOS...",
-        "Mar 14 09:00:02 hackos kernel: Memory: 4096MB available",
-        "Mar 14 09:00:03 hackos systemd[1]: Started Network Manager.",
-        "Mar 14 09:00:04 hackos sshd[412]: Server listening on 0.0.0.0 port 22.",
-        "Mar 14 09:00:05 hackos apache2[433]: Web server started.",
-        "Mar 14 09:12:00 hackos systemd[1]: Reached target Graphical Interface."
+        "Mar 14 09:00:01 dotos systemd[1]: Starting DotOS...",
+        "Mar 14 09:00:02 dotos kernel: Memory: 4096MB available",
+        "Mar 14 09:00:03 dotos systemd[1]: Started Network Manager.",
+        "Mar 14 09:00:04 dotos sshd[412]: Server listening on 0.0.0.0 port 22.",
+        "Mar 14 09:00:05 dotos apache2[433]: Web server started.",
+        "Mar 14 09:12:00 dotos systemd[1]: Reached target Graphical Interface."
       ]
     },
     {

@@ -6,9 +6,9 @@
   "points": 800,
   "title": "A Little Too Generous",
   "summary": "You're allowed to read log files as root. Only log files. Surely that can't go wrong?",
-  "briefing": "NovaTech has hired you for a **penetration test**: an agreed, written-down attempt to break in, so weaknesses are found before criminals find them.\n\nYou get a normal account on novatech-srv – with one extra. The operations team often needs to read log files that only root may open, so Sam the admin added a **sudo rule**: you may run one specific command as root.\n\nSam is sure it's safe. Your goal from the contract: read `/root/flag.txt`, a file only root can open.",
+  "briefing": "DotTech has hired you for a **penetration test**: an agreed, written-down attempt to break in, so weaknesses are found before criminals find them.\n\nYou get a normal account on dottech-srv – with one extra. The operations team often needs to read log files that only root may open, so Sam the admin added a **sudo rule**: you may run one specific command as root.\n\nSam is sure it's safe. Your goal from the contract: read `/root/flag.txt`, a file only root can open.",
   "objective": "Find out what sudo lets you run, and use that rule to read /root/flag.txt.",
-  "debrief": "Root! The rule was meant to allow `cat /var/log/*` – but in sudo rules `*` matches *any* text. `/var/log/../../root/flag.txt` starts with `/var/log/`, so sudo said yes, and the two `..` then walked straight up and into `/root`.\n\nThere was even a second way in: `sudo cat /var/log/syslog /root/flag.txt` also matches, because `*` matches the space and the extra file name too.\n\nGetting more rights than you were given is called **privilege escalation**, and too-generous sudo rules are one of its most common causes. The lesson for NovaTech: avoid wildcards in sudo rules, give people only exactly what they need – and for reading logs, add them to a log-reading group instead.",
+  "debrief": "Root! The rule was meant to allow `cat /var/log/*` – but in sudo rules `*` matches *any* text. `/var/log/../../root/flag.txt` starts with `/var/log/`, so sudo said yes, and the two `..` then walked straight up and into `/root`.\n\nThere was even a second way in: `sudo cat /var/log/syslog /root/flag.txt` also matches, because `*` matches the space and the extra file name too.\n\nGetting more rights than you were given is called **privilege escalation**, and too-generous sudo rules are one of its most common causes. The lesson for DotTech: avoid wildcards in sudo rules, give people only exactly what they need – and for reading logs, add them to a log-reading group instead.",
   "flag": "FLAG{st4r_m4tch3s_d0t_d0t}",
   "hints": [
     "`sudo` runs one command as root – but only commands that the sudo rules allow. Start with `sudo -l` to see your rule. Then read it very carefully: what exactly does it allow, and what does `*` match?",
@@ -17,7 +17,7 @@
   ],
   "skills": [ "sudo", "paths", "privilege-escalation" ],
   "fileSystem": {
-    "hostname": "novatech-srv",
+    "hostname": "dottech-srv",
     "files": [
       {
         "path": "/etc/sudoers",
@@ -36,11 +36,11 @@
         "lines": [
           "PENETRATION TEST – CONTRACT (summary)",
           "",
-          "Client:   NovaTech",
-          "Target:   novatech-srv",
+          "Client:   DotTech",
+          "Target:   dottech-srv",
           "Tester:   you",
           "",
-          "You are allowed to try to get root on novatech-srv using the account",
+          "You are allowed to try to get root on dottech-srv using the account",
           "you were given. Proof of success: the contents of /root/flag.txt.",
           "",
           "Not allowed: deleting or changing anything, or touching other servers.",
@@ -51,9 +51,9 @@
       {
         "path": "/var/log/syslog",
         "lines": [
-          "Mar 14 09:00:01 novatech-srv systemd[1]: Starting HackOS...",
-          "Mar 14 09:00:04 novatech-srv sshd[412]: Server listening on 0.0.0.0 port 22.",
-          "Mar 14 09:30:00 novatech-srv sudo[1337]: user : TTY=pts/0 ; PWD=/home/user ; USER=root ; COMMAND=/usr/bin/cat /var/log/auth.log"
+          "Mar 14 09:00:01 dottech-srv systemd[1]: Starting DotOS...",
+          "Mar 14 09:00:04 dottech-srv sshd[412]: Server listening on 0.0.0.0 port 22.",
+          "Mar 14 09:30:00 dottech-srv sudo[1337]: user : TTY=pts/0 ; PWD=/home/user ; USER=root ; COMMAND=/usr/bin/cat /var/log/auth.log"
         ]
       },
       {
@@ -61,8 +61,8 @@
         "owner": "root",
         "mode": "600",
         "lines": [
-          "Mar 14 09:30:00 novatech-srv sudo: user : TTY=pts/0 ; PWD=/home/user ; USER=root ; COMMAND=/usr/bin/cat /var/log/auth.log",
-          "Mar 14 09:30:00 novatech-srv sudo: pam_unix(sudo:session): session opened for user root(uid=0) by user(uid=1000)"
+          "Mar 14 09:30:00 dottech-srv sudo: user : TTY=pts/0 ; PWD=/home/user ; USER=root ; COMMAND=/usr/bin/cat /var/log/auth.log",
+          "Mar 14 09:30:00 dottech-srv sudo: pam_unix(sudo:session): session opened for user root(uid=0) by user(uid=1000)"
         ]
       },
       {

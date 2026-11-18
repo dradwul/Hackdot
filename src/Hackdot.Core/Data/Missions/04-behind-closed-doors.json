@@ -6,9 +6,9 @@
   "points": 400,
   "title": "Behind Closed Doors",
   "summary": "The quarterly report is locked in the admin's private folder – and the admin is on vacation.",
-  "briefing": "Panic at NovaTech: the quarterly report is due today, and it is stuck in the private home folder of Sam, the system administrator. Sam is on a beach somewhere with no phone signal.\n\nThe CEO has given you **written permission** to get into Sam's account. But `/home/admin` is locked: only the user `admin` may open it.\n\nTo get in, you need to become `admin` – and for that you need admin's password. Sam is known for writing lots of little scripts to automate things… and for taking shortcuts.",
+  "briefing": "Panic at DotTech: the quarterly report is due today, and it is stuck in the private home folder of Sam, the system administrator. Sam is on a beach somewhere with no phone signal.\n\nThe CEO has given you **written permission** to get into Sam's account. But `/home/admin` is locked: only the user `admin` may open it.\n\nTo get in, you need to become `admin` – and for that you need admin's password. Sam is known for writing lots of little scripts to automate things… and for taking shortcuts.",
   "objective": "Find admin's password, become admin and read the quarterly report in /home/admin.",
-  "debrief": "Brilliant! You found a password hard-coded in a script, used it to become another user and read a file that was locked for you.\n\n`su admin` switches user in the terminal; logging out and in again on the login screen does the same for the whole computer. Either way, the system only checks one thing: do you know the password?\n\nThis is exactly how many real break-ins start: one leaked password, and the attacker suddenly has someone else's access. The lesson for NovaTech: never put passwords in scripts, and give every account only the access it really needs.",
+  "debrief": "Brilliant! You found a password hard-coded in a script, used it to become another user and read a file that was locked for you.\n\n`su admin` switches user in the terminal; logging out and in again on the login screen does the same for the whole computer. Either way, the system only checks one thing: do you know the password?\n\nThis is exactly how many real break-ins start: one leaked password, and the attacker suddenly has someone else's access. The lesson for DotTech: never put passwords in scripts, and give every account only the access it really needs.",
   "flag": "FLAG{cr3d3nt14ls_1n_scr1pts}",
   "hints": [
     "You can't open admin's folder as yourself, so you need to become `admin`. Admins often automate things with scripts – and sometimes leave passwords inside them. Scripts usually live in folders like `/opt`.",
@@ -17,7 +17,7 @@
   ],
   "skills": [ "grep -r", "su", "switching-users" ],
   "fileSystem": {
-    "hostname": "novatech-srv",
+    "hostname": "dottech-srv",
     "users": [
       { "name": "admin", "home": "/home/admin", "password": "Summer2026!" }
     ],
@@ -31,7 +31,7 @@
         "lines": [
           "root:x:0:0:root:/root:/bin/bash",
           "admin:x:1001:1001:Sam (System Administrator):/home/admin:/bin/bash",
-          "user:x:1000:1000:HackOS User:/home/user:/bin/bash"
+          "user:x:1000:1000:DotOS User:/home/user:/bin/bash"
         ]
       },
       {
@@ -88,7 +88,7 @@
         "owner": "admin",
         "mode": "600",
         "lines": [
-          "NovaTech – Quarterly report (CONFIDENTIAL)",
+          "DotTech – Quarterly report (CONFIDENTIAL)",
           "",
           "Revenue: up 12 %",
           "Coffee consumed: up 340 %",

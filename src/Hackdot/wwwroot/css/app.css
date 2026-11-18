@@ -149,7 +149,7 @@ select {
 }
 
 .boot-text::after {
-    content: var(--blazor-load-percentage-text, "Booting HackOS…");
+    content: var(--blazor-load-percentage-text, "Booting DotOS…");
 }
 
 @keyframes dot-pulse {

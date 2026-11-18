@@ -55,7 +55,7 @@ public class SudoTests
     public void SudoL_ListsTheUsersRules()
     {
         Assert.Equal(
-            "User user may run the following commands on hackos:\n    (root) NOPASSWD: /usr/bin/cat /var/log/*\n    (root) NOPASSWD: /usr/bin/whoami",
+            "User user may run the following commands on dotos:\n    (root) NOPASSWD: /usr/bin/cat /var/log/*\n    (root) NOPASSWD: /usr/bin/whoami",
             Create().Run("sudo -l"));
     }
 
@@ -64,7 +64,7 @@ public class SudoTests
     {
         var result = Create(sudoers: null).Execute("sudo -l");
 
-        Assert.Equal("Sorry, user user may not run sudo on hackos.", result.Lines.Single().Text);
+        Assert.Equal("Sorry, user user may not run sudo on dotos.", result.Lines.Single().Text);
         Assert.False(result.Lines.Single().IsError);
     }
 
@@ -96,8 +96,8 @@ public class SudoTests
     }
 
     [Theory]
-    [InlineData("sudo cat /root/flag.txt", "Sorry, user user is not allowed to execute '/usr/bin/cat /root/flag.txt' as root on hackos. Type 'sudo -l' to see what you may run.")]
-    [InlineData("sudo ls /root", "Sorry, user user is not allowed to execute 'ls /root' as root on hackos. Type 'sudo -l' to see what you may run.")]
+    [InlineData("sudo cat /root/flag.txt", "Sorry, user user is not allowed to execute '/usr/bin/cat /root/flag.txt' as root on dotos. Type 'sudo -l' to see what you may run.")]
+    [InlineData("sudo ls /root", "Sorry, user user is not allowed to execute 'ls /root' as root on dotos. Type 'sudo -l' to see what you may run.")]
     [InlineData("sudo nmap", "sudo: nmap: command not found")]
     [InlineData("sudo", "sudo: missing operand. Try 'help sudo'.")]
     public void Sudo_RefusesWhatIsNotAllowed(string command, string error)

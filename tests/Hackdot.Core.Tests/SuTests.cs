@@ -40,7 +40,7 @@ public class SuTests
         Assert.Equal("admin", terminal.Run("whoami"));
         Assert.Equal("/tmp", terminal.Run("pwd"));
         Assert.Equal("top secret", terminal.Run("cat /home/admin/secret.txt"));
-        Assert.Equal("admin@hackos:/tmp$ ", terminal.Prompt().Text);
+        Assert.Equal("admin@dotos:/tmp$ ", terminal.Prompt().Text);
     }
 
     [Fact]
@@ -107,7 +107,7 @@ public class SuTests
         var prompt = terminal.Prompt();
 
         // Root's home is /root, so it is shown as ~ – just like on a real system.
-        Assert.Equal("root@hackos:~# ", prompt.Text);
+        Assert.Equal("root@dotos:~# ", prompt.Text);
         Assert.Equal(OutputStyle.Error, prompt.Segments[0].Style);
     }
 
