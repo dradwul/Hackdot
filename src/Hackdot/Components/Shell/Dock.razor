@@ -70,11 +70,6 @@
                 @L["Shell.LogOut"]
             </button>
         </div>
-        @* Deliberately faint: useful when you look for it, never in the way. *@
-        <a class="version" href="@AppVersion.ChangelogUrl" target="_blank" rel="noopener"
-           title="@(AppVersion.Commit is { } commit ? L["Shell.Build", commit].Value : null)">
-            @L["Shell.Version", AppVersion.Number] · @L["Shell.WhatsNew"]
-        </a>
     </div>
 }
 

@@ -22,14 +22,22 @@
             }
         </ul>
 
-        @* Kept apart from the app icons: it installs the game itself, it isn't an app inside DotOS. *@
-        @if (Install.CanInstall)
-        {
-            <button type="button" class="install-button" @onclick="Install.InstallAsync">
-                <InstallIcon Size="18" />
-                <span>@L["Install.Title"]</span>
-            </button>
-        }
+        @* About the game itself rather than DotOS, so kept apart from the app icons at the bottom of the desktop. *@
+        <div class="desktop-footer">
+            @if (Install.CanInstall)
+            {
+                <button type="button" class="install-button" @onclick="Install.InstallAsync">
+                    <InstallIcon Size="18" />
+                    <span>@L["Install.Title"]</span>
+                </button>
+            }
+
+            @* Deliberately faint: there when you look for it, never in the way. *@
+            <a class="version" href="@AppVersion.ChangelogUrl" target="_blank" rel="noopener"
+               title="@(AppVersion.Commit is { } commit ? L["Shell.Build", commit].Value : null)">
+                @L["Shell.Version", AppVersion.Number] · @L["Shell.WhatsNew"]
+            </a>
+        </div>
 
         @* Every open app is rendered but only the active one is visible, so minimized
            apps keep their state (e.g. terminal history). *@

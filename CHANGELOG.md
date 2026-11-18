@@ -1,13 +1,13 @@
 # Changelog
 
-What's new in each version of Hackdot. The version number is shown at the bottom of the start menu.
+What's new in each version of Hackdot. The version number is shown at the bottom of the desktop.
 
 Versions follow [semantic versioning](https://semver.org/): a new **minor** version (1.**4**.0) adds missions or
 features, a **patch** version (1.4.**1**) only fixes things.
 
 ## 1.4.0 – 2026-11-18
 
-- The start menu shows the version number, with a link to this changelog.
+- The version number is shown at the bottom of the desktop, with a link to this changelog.
 
 ## 1.3.0 – 2026-11-18
 

@@ -52,7 +52,7 @@ dotnet watch --project src/Hackdot      # http://localhost:5282
 
 ## Versioner och changelog
 
-- Versionen står i `<Version>` i `src/Hackdot/Hackdot.csproj` och visas längst ner i startmenyn (med länk till
+- Versionen står i `<Version>` i `src/Hackdot/Hackdot.csproj` och visas längst ner på skrivbordet, under "Install as app" (med länk till
   `CHANGELOG.md` på GitHub). Bygget lägger till git-commiten efter `+`, som visas i länkens tooltip.
 - Varje release (push till `main` som spelaren märker) får en ny version och en rad i `CHANGELOG.md`, skriven för
   spelaren på engelska: **minor** (1.4.0 → 1.5.0) för nya uppdrag/funktioner, **patch** (1.4.0 → 1.4.1) för rättningar.
