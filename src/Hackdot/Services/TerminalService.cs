@@ -42,6 +42,9 @@ public sealed class TerminalService
     /// <summary>The answer should be typed in a hidden field and never echoed or remembered.</summary>
     public bool IsSecretInput => Interpreter.PendingInputIsSecret;
 
+    /// <summary>Tab completion of the last word, limited to what the player is allowed to see.</summary>
+    public Completion Complete(string input) => TabCompleter.Complete(Interpreter, input);
+
     public event Action? Changed;
 
     public void Submit(string input)

@@ -60,6 +60,9 @@
   <data name="Terminal.Run" xml:space="preserve"><value>Run</value></data>
   <data name="Terminal.PasswordPlaceholder" xml:space="preserve"><value>Type the password (hidden)…</value></data>
   <data name="Terminal.PreviousCommand" xml:space="preserve"><value>Previous command</value></data>
+  <data name="Terminal.NextCommand" xml:space="preserve"><value>Next command</value></data>
+  <data name="Terminal.Complete" xml:space="preserve"><value>Complete the name (Tab)</value></data>
+  <data name="Terminal.Suggestions" xml:space="preserve"><value>Matching names</value></data>
   <!-- Mission app -->
   <data name="Mission.Tab.Briefing" xml:space="preserve"><value>Briefing</value></data>
   <data name="Mission.Tab.All" xml:space="preserve"><value>Missions</value></data>

@@ -40,7 +40,7 @@ works offline. `index.html` uses a relative `<base href="./">`, so no path needs
 - [x] Foundation: project structure, PWA, HackOS shell (desktop, windows, dock, start menu)
 - [x] Localization infrastructure
 - [x] Virtual file system defined in JSON (users, owners, permissions)
-- [x] Terminal with command interpreter, pipes and shortcut buttons (ls, cd, cat, head, tail, grep, find,
+- [x] Terminal with command interpreter, pipes, Tab completion and shortcut buttons (ls, cd, cat, head, tail, grep, find,
       wc, sort, uniq, cut, echo, base64, su, sudo, history, …)
 - [x] File explorer with "show hidden files", permissions and the matching terminal command
 - [x] Mission app with flag submission, three-step hints, score and saved progress

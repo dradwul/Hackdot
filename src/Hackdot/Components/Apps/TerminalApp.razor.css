@@ -77,6 +77,54 @@
     color: var(--text-muted);
 }
 
+/* Tab is the most useful key on a phone, so it stands out. */
+.chip-tab {
+    gap: 0.35rem;
+    border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+    color: var(--accent);
+    font-weight: 600;
+}
+
+/* ---------- Tab suggestions ---------- */
+
+.suggestions {
+    flex: none;
+    display: flex;
+    gap: 0.4rem;
+    padding: 0.5rem max(0.75rem, var(--safe-left)) 0;
+    overflow-x: auto;
+    border-top: 1px solid var(--border);
+    background: var(--bg-elev);
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    animation: suggestions-in 120ms ease-out;
+}
+
+.suggestions::-webkit-scrollbar {
+    display: none;
+}
+
+/* The suggestions sit right above the shortcuts, sharing one panel. */
+.suggestions + .shortcuts {
+    border-top: 0;
+}
+
+.chip-option {
+    border-color: color-mix(in srgb, var(--accent-2) 40%, var(--border));
+}
+
+.chip-option.folder {
+    color: var(--app-files);
+}
+
+@keyframes suggestions-in {
+    from { opacity: 0; transform: translateY(4px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .suggestions { animation: none; }
+}
+
 .chip:disabled {
     opacity: 0.4;
     cursor: default;

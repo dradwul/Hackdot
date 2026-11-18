@@ -1,3 +1,4 @@
+@using Hackdot.Core.Services.Terminal
 @implements IDisposable
 @inject TerminalService Terminal
 
@@ -12,12 +13,36 @@
         </div>
     </div>
 
+    @if (_options.Count > 0)
+    {
+        @* Shown when Tab finds more than one name: tapping one finishes the word. *@
+        <div class="suggestions" role="toolbar" aria-label="@L["Terminal.Suggestions"]">
+            @foreach (var option in _options)
+            {
+                <button type="button" class="chip chip-option @(option.Label.EndsWith('/') ? "folder" : null)"
+                        @onclick="() => UseOptionAsync(option)">@option.Label</button>
+            }
+        </div>
+    }
+
     <div class="shortcuts" role="toolbar" aria-label="@L["Terminal.Shortcuts"]">
+        <button type="button" class="chip chip-tab" title="@L["Terminal.Complete"]" aria-label="@L["Terminal.Complete"]"
+                disabled="@(Terminal.PendingInputLabel is not null)" @onclick="CompleteAsync">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h14M12 6l6 6-6 6M21 5v14" /></svg>
+            <span>Tab</span>
+        </button>
         <button type="button" class="chip chip-icon" title="@L["Terminal.PreviousCommand"]"
                 aria-label="@L["Terminal.PreviousCommand"]" disabled="@(Terminal.History.Count == 0)"
                 @onclick="RecallPrevious">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" /></svg>
+        </button>
+        <button type="button" class="chip chip-icon" title="@L["Terminal.NextCommand"]"
+                aria-label="@L["Terminal.NextCommand"]" disabled="@(_historyIndex < 0)"
+                @onclick="RecallNext">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7" /></svg>
         </button>
         @foreach (var shortcut in Shortcuts)
         {
@@ -26,7 +51,8 @@
         }
     </div>
 
-    <form class="input-row" @onsubmit="SubmitAsync">
+    @* Tab completes instead of moving focus away from the input (Blazor can't cancel only some keys). *@
+    <form class="input-row" @onsubmit="SubmitAsync" onkeydown="if (event.key === 'Tab' && !event.shiftKey) event.preventDefault()">
         <label class="prompt" for="terminal-input">
             @if (Terminal.PendingInputLabel is { } question)
             {
@@ -38,7 +64,7 @@
             }
         </label>
         @* While su asks for a password the field is a password field: hidden, and never saved in history. *@
-        <input id="terminal-input" @ref="_input" @bind="_command" @bind:event="oninput" @onkeydown="OnKeyDown"
+        <input id="terminal-input" @ref="_input" @bind="_command" @bind:event="oninput" @bind:after="ClearOptions" @onkeydown="OnKeyDown"
                type="@(Terminal.IsSecretInput ? "password" : "text")" autocomplete="off" autocapitalize="off" autocorrect="off"
                spellcheck="false" enterkeyhint="send" data-lpignore="true"
                placeholder="@(Terminal.IsSecretInput ? L["Terminal.PasswordPlaceholder"] : L["Terminal.InputPlaceholder"])"
@@ -73,6 +99,7 @@
     private ElementReference _input;
     private string _command = "";
     private int _historyIndex = -1;
+    private IReadOnlyList<CompletionOption> _options = [];
 
     protected override void OnInitialized() => Terminal.Changed += OnTerminalChanged;
 
@@ -85,6 +112,7 @@
 
     private void Run(string command)
     {
+        _options = [];
         _historyIndex = -1;
         Terminal.Submit(command);
     }
@@ -98,6 +126,7 @@
         }
 
         _command = shortcut.Appends ? _command.TrimEnd() + shortcut.Command : shortcut.Command;
+        _options = [];
         await _input.FocusAsync();
     }
 
@@ -111,6 +140,7 @@
 
         _historyIndex = _historyIndex < 0 ? Terminal.History.Count - 1 : Math.Max(0, _historyIndex - 1);
         _command = Terminal.History[_historyIndex];
+        _options = [];
     }
 
     private void RecallNext()
@@ -120,6 +150,7 @@
             return;
         }
 
+        _options = [];
         _historyIndex++;
 
         if (_historyIndex >= Terminal.History.Count)
@@ -143,8 +174,39 @@
             case "ArrowDown":
                 RecallNext();
                 break;
+            case "Tab" when !e.ShiftKey:
+                Complete();
+                break;
         }
     }
+
+    private async Task CompleteAsync()
+    {
+        Complete();
+        await _input.FocusAsync();
+    }
+
+    private void Complete()
+    {
+        // Never complete inside a password prompt.
+        if (Terminal.PendingInputLabel is not null)
+        {
+            return;
+        }
+
+        var completion = Terminal.Complete(_command);
+        _command = completion.Input;
+        _options = completion.Options;
+    }
+
+    private async Task UseOptionAsync(CompletionOption option)
+    {
+        _command = option.Input;
+        _options = [];
+        await _input.FocusAsync();
+    }
+
+    private void ClearOptions() => _options = [];
 
     private void OnTerminalChanged() => InvokeAsync(StateHasChanged);
 
