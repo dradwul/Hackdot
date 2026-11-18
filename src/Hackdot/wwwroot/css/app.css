@@ -107,6 +107,56 @@ select {
     color: var(--accent);
 }
 
+/* Animated logo: "hackdot" collapses to "hack." and expands again. The font is monospaced, so the
+   tail is exactly 3ch ("dot") or 1ch ("."); its width eases between them while the two cross-fade. */
+.logo-morph {
+    display: inline-grid;
+    width: 3ch;
+    overflow: hidden;
+    vertical-align: bottom;
+    animation: logo-morph-width 12s ease-in-out infinite;
+}
+
+.logo-morph > span {
+    grid-area: 1 / 1;
+}
+
+.logo-morph-short {
+    opacity: 0;
+    animation: logo-morph-short 12s ease-in-out infinite;
+}
+
+.logo-morph-full {
+    animation: logo-morph-full 12s ease-in-out infinite;
+}
+
+/* Hold "hackdot", collapse, hold "hack.", expand. */
+@keyframes logo-morph-width {
+    0%, 38% { width: 3ch; }
+    50%, 88% { width: 1ch; }
+    100% { width: 3ch; }
+}
+
+@keyframes logo-morph-full {
+    0%, 40% { opacity: 1; }
+    48%, 90% { opacity: 0; }
+    98%, 100% { opacity: 1; }
+}
+
+@keyframes logo-morph-short {
+    0%, 44% { opacity: 0; }
+    50%, 88% { opacity: 1; }
+    94%, 100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .logo-morph,
+    .logo-morph-short,
+    .logo-morph-full {
+        animation: none;
+    }
+}
+
 /* ---------- Loading screen (index.html) ---------- */
 
 .boot {

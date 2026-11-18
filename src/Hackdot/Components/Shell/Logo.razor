@@ -1,6 +1,8 @@
 @* Wordmark: "hack." (short) or "hackdot" (full). Styles are global in app.css because the
    same logo is used by the loading screen in index.html. *@
-<span class="logo @Class" role="img" aria-label="Hackdot">@if (Full)
+<span class="logo @Class" role="img" aria-label="Hackdot">@if (Animated)
+    {<span aria-hidden="true">hack<span class="logo-dot logo-morph"><span class="logo-morph-short">.</span><span class="logo-morph-full">dot</span></span></span>}
+    else if (Full)
     {<span aria-hidden="true">hack<span class="logo-dot">dot</span></span>}
     else
     {<span aria-hidden="true">hack<span class="logo-dot">.</span></span>}</span>
@@ -8,6 +10,9 @@
 @code {
     /// <summary>Show "hackdot" instead of "hack.".</summary>
     [Parameter] public bool Full { get; set; }
+
+    /// <summary>Slowly shift between "hackdot" and "hack." (respects reduced motion).</summary>
+    [Parameter] public bool Animated { get; set; }
 
     [Parameter] public string? Class { get; set; }
 }
