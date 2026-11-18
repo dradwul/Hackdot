@@ -39,6 +39,8 @@
         <a href="." class="reload">Reload</a>
         <span class="dismiss" aria-label="Dismiss">✕</span>
     </div>
+    <!-- Early, so the browser's install event isn't missed while Blazor starts. -->
+    <script src="js/install.js"></script>
     <script src="_framework/blazor.webassembly#[.{fingerprint}].js"></script>
     <script src="js/updates.js"></script>
 </body>

@@ -1,0 +1,22 @@
+@inject InstallService Install
+
+@* iOS has no install API, so this explains "Add to Home Screen" instead. *@
+<div class="scrim" @onclick="Install.CloseHelp"></div>
+<div class="install-help" role="dialog" aria-modal="true" aria-labelledby="install-help-title">
+    <div class="help-header">
+        <span class="help-icon"><InstallIcon Size="22" /></span>
+        <h2 id="install-help-title">@L["Install.Help.Title"]</h2>
+    </div>
+    <ol>
+        <li>
+            <RichText Text="@L["Install.Help.Share"]" />
+            <svg class="share" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 3v12" /><path d="m8 7 4-4 4 4" /><path d="M6 11H5v10h14V11h-1" />
+            </svg>
+        </li>
+        <li><RichText Text="@L["Install.Help.Add"]" /></li>
+        <li><RichText Text="@L["Install.Help.Done"]" /></li>
+    </ol>
+    <button type="button" class="ok" @onclick="Install.CloseHelp">@L["Install.Help.Ok"]</button>
+</div>

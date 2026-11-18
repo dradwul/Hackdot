@@ -1,6 +1,7 @@
 @implements IDisposable
 @inject ShellService Shell
 @inject GameService Game
+@inject InstallService Install
 
 <div class="os">
     <main class="workspace">
@@ -16,6 +17,16 @@
                             @onclick="() => Shell.Open(app.Id)">
                         <span class="icon-tile"><AppIcon App="app.Id" Size="30" /></span>
                         <span class="icon-label">@L[app.TitleKey]</span>
+                    </button>
+                </li>
+            }
+            @if (Install.CanInstall)
+            {
+                <li>
+                    <button type="button" class="desktop-icon" style="--app-accent: var(--accent-2)"
+                            @onclick="Install.InstallAsync">
+                        <span class="icon-tile"><InstallIcon Size="30" /></span>
+                        <span class="icon-label">@L["Install.Icon"]</span>
                     </button>
                 </li>
             }
@@ -45,6 +56,11 @@
     <LoginScreen />
 }
 
+@if (Install.IsHelpOpen)
+{
+    <InstallHelp />
+}
+
 <UpdateBanner />
 
 @code {
@@ -52,11 +68,20 @@
     {
         Shell.Changed += OnShellChanged;
         Game.Changed += OnShellChanged;
+        Install.Changed += OnShellChanged;
 
         // New players land straight in their first mission briefing.
         if (Game.IsFirstLaunch && Shell.OpenApps.Count == 0)
         {
             Shell.Open(AppId.Mission);
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await Install.InitializeAsync();
         }
     }
 
@@ -66,5 +91,6 @@
     {
         Shell.Changed -= OnShellChanged;
         Game.Changed -= OnShellChanged;
+        Install.Changed -= OnShellChanged;
     }
 }

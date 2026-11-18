@@ -1,6 +1,7 @@
 @implements IDisposable
 @inject ShellService Shell
 @inject GameService Game
+@inject InstallService Install
 
 <nav class="dock" aria-label="@L["Shell.Taskbar"]">
     <button type="button" class="start @(_menuOpen ? "open" : null)" aria-expanded="@Aria(_menuOpen)"
@@ -46,6 +47,19 @@
                     </button>
                 </li>
             }
+            @if (Install.CanInstall)
+            {
+                <li>
+                    <button type="button" role="menuitem" class="menu-item" style="--app-accent: var(--accent-2)"
+                            @onclick="InstallFromMenu">
+                        <span class="menu-icon"><InstallIcon Size="20" /></span>
+                        <span class="menu-text">
+                            <span class="menu-title">@L["Install.Title"]</span>
+                            <span class="menu-description">@L["Install.Description"]</span>
+                        </span>
+                    </button>
+                </li>
+            }
         </ul>
         <div class="menu-footer">
             <button type="button" role="menuitem" class="footer-button" @onclick="ShowDesktop">@L["Shell.ShowDesktop"]</button>
@@ -81,6 +95,12 @@
     {
         _menuOpen = false;
         Shell.Open(id);
+    }
+
+    private async Task InstallFromMenu()
+    {
+        _menuOpen = false;
+        await Install.InstallAsync();
     }
 
     private void ShowDesktop()

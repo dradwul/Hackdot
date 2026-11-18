@@ -35,6 +35,16 @@
   <data name="Window.Close" xml:space="preserve"><value>Close</value></data>
   <data name="Window.CloseApp" xml:space="preserve"><value>Close {0}</value></data>
 
+  <!-- Install as an app -->
+  <data name="Install.Icon" xml:space="preserve"><value>Install</value></data>
+  <data name="Install.Title" xml:space="preserve"><value>Install Hackdot</value></data>
+  <data name="Install.Description" xml:space="preserve"><value>Play from your home screen, even offline</value></data>
+  <data name="Install.Help.Title" xml:space="preserve"><value>Add Hackdot to your home screen</value></data>
+  <data name="Install.Help.Share" xml:space="preserve"><value>Tap the **Share** button – the square with an arrow.</value></data>
+  <data name="Install.Help.Add" xml:space="preserve"><value>Scroll down and choose **Add to Home Screen**.</value></data>
+  <data name="Install.Help.Done" xml:space="preserve"><value>Tap **Add**. Hackdot now opens like an app – even offline.</value></data>
+  <data name="Install.Help.Ok" xml:space="preserve"><value>Got it</value></data>
+
   <!-- New version (service worker update) -->
   <data name="Update.Title" xml:space="preserve"><value>A new version of Hackdot is ready</value></data>
   <data name="Update.Body" xml:space="preserve"><value>Reload to get the latest missions and fixes. Your mission progress is kept.</value></data>

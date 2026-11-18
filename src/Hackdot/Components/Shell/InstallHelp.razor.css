@@ -1,0 +1,107 @@
+/* Above everything – the update banner included – while it is open. */
+.scrim {
+    position: fixed;
+    inset: 0;
+    z-index: 120;
+    background: rgb(0 0 0 / 0.5);
+}
+
+/* A bottom sheet on phones – close to Safari's share button – and a centred card on larger screens. */
+.install-help {
+    position: fixed;
+    left: max(0.6rem, var(--safe-left));
+    right: max(0.6rem, var(--safe-right));
+    bottom: calc(0.6rem + var(--safe-bottom));
+    z-index: 121;
+    padding: 1.1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow-window);
+    animation: sheet-in 160ms ease-out;
+}
+
+.help-header {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+.help-icon {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--accent-2) 16%, transparent);
+    color: var(--accent-2);
+}
+
+h2 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+ol {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin: 1rem 0;
+    padding-left: 1.4rem;
+    color: var(--text-muted);
+}
+
+li {
+    padding-left: 0.2rem;
+}
+
+li ::deep p {
+    display: inline;
+    margin: 0;
+}
+
+li ::deep strong {
+    color: var(--text);
+}
+
+.share {
+    margin-left: 0.3rem;
+    vertical-align: -4px;
+    color: var(--accent);
+}
+
+.ok {
+    width: 100%;
+    min-height: 48px;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: var(--accent);
+    color: var(--bg);
+    font-weight: 700;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.ok:active {
+    filter: brightness(0.9);
+}
+
+@media (min-width: 768px) {
+    .install-help {
+        top: 50%;
+        bottom: auto;
+        left: 50%;
+        right: auto;
+        width: 400px;
+        transform: translate(-50%, -50%);
+        animation: none;
+    }
+}
+
+@keyframes sheet-in {
+    from { opacity: 0; transform: translateY(12px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .install-help { animation: none; }
+}
