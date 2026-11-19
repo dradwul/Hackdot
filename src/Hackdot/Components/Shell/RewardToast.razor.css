@@ -1,0 +1,59 @@
+/* A small notice at the top centre, above windows; tap to dismiss. */
+.reward-toast {
+    position: fixed;
+    top: calc(var(--safe-top) + 0.6rem);
+    left: 50%;
+    z-index: 115;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    max-width: calc(100% - 1.2rem);
+    padding: 0.6rem 1rem 0.6rem 0.65rem;
+    border: 1px solid color-mix(in srgb, var(--warning) 50%, var(--border));
+    border-radius: 999px;
+    background: var(--surface);
+    box-shadow: var(--shadow-window);
+    cursor: pointer;
+    transform: translateX(-50%);
+    animation: toast-in 220ms ease-out;
+}
+
+.icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--warning) 18%, transparent);
+    color: var(--warning);
+}
+
+.text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.25;
+}
+
+.kind {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--warning);
+}
+
+strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@keyframes toast-in {
+    from { opacity: 0; transform: translate(-50%, -10px) scale(0.96); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reward-toast { animation: none; }
+}

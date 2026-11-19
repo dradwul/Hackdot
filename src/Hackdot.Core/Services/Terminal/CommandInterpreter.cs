@@ -101,6 +101,9 @@ public sealed class CommandInterpreter
     /// <summary>How many scripts deep this shell is (0 for the terminal).</summary>
     public int ScriptDepth { get; init; }
 
+    /// <summary>The terminal ran a command line (not raised for scripts and cron jobs). Used for achievements.</summary>
+    public event Action<Missions.CommandRun>? CommandRan;
+
     /// <summary>Commands the player has typed, oldest first. Answers to questions (like passwords) are never included.</summary>
     public IReadOnlyList<string> History => _history;
 
@@ -165,6 +168,7 @@ public sealed class CommandInterpreter
                 output.Error(Text["Error.Unexpected", "?"]);
             }
 
+            CommandRan?.Invoke(new Missions.CommandRun([], Session.User.IsRoot, false, TimeSpan.Zero));
             return new CommandResult(output.Lines, clearScreen: false);
         }
 
@@ -202,11 +206,13 @@ public sealed class CommandInterpreter
         var lines = new List<OutputLine>();
         string? standardInput = null;
         var clearScreen = false;
+        var ranAsRoot = false;
 
         for (var i = 0; i < pipeline.Count; i++)
         {
             var isLast = i == pipeline.Count - 1;
             var stage = RunStage(pipeline[i], standardInput, !isLast);
+            ranAsRoot |= stage.RanAsRoot;
             var kept = Redirect(pipeline[i].Redirections, stage.Output, out var stdoutRedirected);
 
             if (isLast)
@@ -224,12 +230,17 @@ public sealed class CommandInterpreter
         if (RunsScheduledJobs)
         {
             PassTime(startTime);
+
+            var wroteFile = pipeline.SelectMany(command => command.Redirections)
+                .Any(redirection => redirection.Target is not (Redirection.Nowhere or Redirection.ToOutput));
+            CommandRan?.Invoke(new Missions.CommandRun(
+                [.. pipeline.Select(command => command.Words)], ranAsRoot || Session.User.IsRoot, wroteFile, Session.FileSystem.Now - startTime));
         }
 
         return clearScreen ? new CommandResult([], clearScreen: true) : new CommandResult(lines, clearScreen: false);
     }
 
-    private sealed record StageResult(IReadOnlyList<OutputLine> Output, bool OmitFinalNewline, bool ClearRequested);
+    private sealed record StageResult(IReadOnlyList<OutputLine> Output, bool OmitFinalNewline, bool ClearRequested, bool RanAsRoot = false);
 
     private StageResult RunStage(ParsedCommand stage, string? standardInput, bool outputIsPiped)
     {
@@ -276,7 +287,8 @@ public sealed class CommandInterpreter
             context.Output.Error(Text["Error.Unexpected", command.Name]);
         }
 
-        return new StageResult(context.Output.Lines, context.Output.OmitFinalNewline, context.ClearRequested);
+        return new StageResult(
+            context.Output.Lines, context.Output.OmitFinalNewline, context.ClearRequested, context.RanAsRoot || (session != Session && session.User.IsRoot));
     }
 
     /// <summary>

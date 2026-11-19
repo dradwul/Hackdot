@@ -206,6 +206,7 @@ public sealed class SudoCommand : ICommand
 
     private static void Run(CommandContext context, ICommand command, IReadOnlyList<string> arguments, CommandOutput output)
     {
+        context.RanAsRoot = true;
         var session = context.Session;
         var root = session.FileSystem.FindUser(VirtualUser.RootName)!;
 

@@ -2,6 +2,7 @@
   "schemaVersion": 1,
   "id": "night-shift",
   "order": 15,
+  "chapter": 3,
   "difficulty": "hard",
   "points": 1700,
   "title": "Night Shift",

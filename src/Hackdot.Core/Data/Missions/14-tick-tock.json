@@ -2,6 +2,7 @@
   "schemaVersion": 1,
   "id": "tick-tock",
   "order": 14,
+  "chapter": 3,
   "difficulty": "hard",
   "points": 1500,
   "title": "Tick Tock",

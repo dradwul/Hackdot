@@ -69,6 +69,55 @@
   <data name="Mission.Tab.Briefing" xml:space="preserve"><value>Briefing</value></data>
   <data name="Mission.Tab.All" xml:space="preserve"><value>Missions</value></data>
   <data name="Mission.Score" xml:space="preserve"><value>Score</value></data>
+  <data name="Mission.RankAndAchievements" xml:space="preserve"><value>{0} – your rank and achievements</value></data>
+
+  <!-- Ranks and achievements -->
+  <data name="Shell.Rank" xml:space="preserve"><value>{0} · {1} pts</value></data>
+  <data name="Rank.intern" xml:space="preserve"><value>Intern</value></data>
+  <data name="Rank.junior" xml:space="preserve"><value>Junior Pentester</value></data>
+  <data name="Rank.pentester" xml:space="preserve"><value>Pentester</value></data>
+  <data name="Rank.senior" xml:space="preserve"><value>Senior Pentester</value></data>
+  <data name="Rank.lead" xml:space="preserve"><value>Red Team Lead</value></data>
+  <data name="Rank.architect" xml:space="preserve"><value>Security Architect</value></data>
+  <data name="Rank.ciso" xml:space="preserve"><value>Chief Security Officer</value></data>
+  <data name="Rank.Current" xml:space="preserve"><value>Your rank</value></data>
+  <data name="Rank.Score" xml:space="preserve"><value>{0} points</value></data>
+  <data name="Rank.Next" xml:space="preserve"><value>{0} more points to {1}</value></data>
+  <data name="Rank.Top" xml:space="preserve"><value>You have reached the highest rank. Respect!</value></data>
+  <data name="Achievements.Title" xml:space="preserve"><value>Achievements</value></data>
+  <data name="Achievements.Count" xml:space="preserve"><value>{0} of {1}</value></data>
+  <data name="Achievements.Unlocked" xml:space="preserve"><value>Unlocked</value></data>
+  <data name="Achievements.Locked" xml:space="preserve"><value>Not unlocked yet</value></data>
+  <data name="Achievements.Secret" xml:space="preserve"><value>Secret achievement</value></data>
+  <data name="Achievements.SecretDescription" xml:space="preserve"><value>Keep playing to find out.</value></data>
+  <data name="Achievement.Chapter.Title" xml:space="preserve"><value>Chapter {0}</value></data>
+  <data name="Achievement.Chapter.Description" xml:space="preserve"><value>Complete every mission in chapter {0}.</value></data>
+  <data name="Achievement.first-flag.Title" xml:space="preserve"><value>First Flag</value></data>
+  <data name="Achievement.first-flag.Description" xml:space="preserve"><value>Submit your first flag.</value></data>
+  <data name="Achievement.no-hints.Title" xml:space="preserve"><value>On Your Own</value></data>
+  <data name="Achievement.no-hints.Description" xml:space="preserve"><value>Solve a mission without using a hint.</value></data>
+  <data name="Achievement.sharpshooter.Title" xml:space="preserve"><value>Sharpshooter</value></data>
+  <data name="Achievement.sharpshooter.Description" xml:space="preserve"><value>Solve 5 missions without a single wrong flag.</value></data>
+  <data name="Achievement.ghost.Title" xml:space="preserve"><value>Ghost</value></data>
+  <data name="Achievement.ghost.Description" xml:space="preserve"><value>Complete a whole chapter without a single hint.</value></data>
+  <data name="Achievement.legend.Title" xml:space="preserve"><value>Legend</value></data>
+  <data name="Achievement.legend.Description" xml:space="preserve"><value>Complete every mission in Hackdot.</value></data>
+  <data name="Achievement.first-root.Title" xml:space="preserve"><value>I Am Root</value></data>
+  <data name="Achievement.first-root.Description" xml:space="preserve"><value>Run a command as root for the first time.</value></data>
+  <data name="Achievement.scribe.Title" xml:space="preserve"><value>Scribe</value></data>
+  <data name="Achievement.scribe.Description" xml:space="preserve"><value>Write a command's output to a file with &gt;.</value></data>
+  <data name="Achievement.pipe-dream.Title" xml:space="preserve"><value>Pipe Dream</value></data>
+  <data name="Achievement.pipe-dream.Description" xml:space="preserve"><value>Connect four commands with pipes in one go.</value></data>
+  <data name="Achievement.rtfm.Title" xml:space="preserve"><value>Read the Manual</value></data>
+  <data name="Achievement.rtfm.Description" xml:space="preserve"><value>Look up a command with 'help' and its name.</value></data>
+  <data name="Achievement.tab-tab.Title" xml:space="preserve"><value>Tab Tab Tab</value></data>
+  <data name="Achievement.tab-tab.Description" xml:space="preserve"><value>Let Tab complete names 25 times.</value></data>
+  <data name="Achievement.patience.Title" xml:space="preserve"><value>Patience</value></data>
+  <data name="Achievement.patience.Description" xml:space="preserve"><value>Wait a whole hour with sleep (in total).</value></data>
+  <data name="Achievement.night-owl.Title" xml:space="preserve"><value>Night Owl</value></data>
+  <data name="Achievement.night-owl.Description" xml:space="preserve"><value>Solve a mission between midnight and five in the morning.</value></data>
+  <data name="Reward.Achievement" xml:space="preserve"><value>Achievement unlocked</value></data>
+  <data name="Reward.Rank" xml:space="preserve"><value>New rank</value></data>
   <data name="Mission.Counter" xml:space="preserve"><value>Mission {0} of {1}</value></data>
   <data name="Mission.Difficulty.Easy" xml:space="preserve"><value>Easy</value></data>
   <data name="Mission.Difficulty.Medium" xml:space="preserve"><value>Medium</value></data>

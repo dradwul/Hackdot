@@ -137,6 +137,12 @@
     color: var(--text-muted);
 }
 
+.menu-rank {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--warning);
+}
+
 .start-menu ul {
     margin: 0;
     padding: 0;

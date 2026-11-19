@@ -52,13 +52,33 @@
     color: var(--text-muted);
 }
 
+/* The score is a button: it opens the rank and achievements. */
 .score {
     display: flex;
     align-items: center;
     gap: 0.3rem;
+    min-height: 36px;
+    padding: 0 0.6rem;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    background: transparent;
     font-family: var(--font-mono);
     font-weight: 700;
     color: var(--warning);
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.score[aria-selected="true"],
+.score:active {
+    border-color: color-mix(in srgb, var(--warning) 45%, var(--border));
+    background: color-mix(in srgb, var(--warning) 12%, transparent);
+}
+
+@media (hover: hover) {
+    .score:hover {
+        border-color: color-mix(in srgb, var(--warning) 45%, var(--border));
+    }
 }
 
 .content {

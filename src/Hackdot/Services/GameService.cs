@@ -27,6 +27,12 @@ public sealed class GameService
         State = new GameState(MissionCatalog.LoadEmbedded(), snapshot);
         FileSystem = State.CreateFileSystem();
         CurrentUser = DefaultUser(FileSystem);
+
+        // Players who started before achievements existed get the ones they have already earned – quietly.
+        if (State.Achievements.CheckMissions(State, DateTime.Now).Count > 0)
+        {
+            Save();
+        }
     }
 
     public GameState State { get; }
@@ -52,6 +58,9 @@ public sealed class GameService
     /// (see <see cref="CreateSession"/>).
     /// </summary>
     public event Action? SessionChanged;
+
+    /// <summary>The player earned achievements and/or a new rank (<c>null</c> if the rank stayed the same).</summary>
+    public event Action<IReadOnlyList<Achievement>, Rank?>? Rewarded;
 
     /// <summary>A new session for the logged-in user, starting in their home folder.</summary>
     public ShellSession CreateSession() => new(FileSystem, CurrentUser.Name);
@@ -90,10 +99,35 @@ public sealed class GameService
 
     public FlagCheckResult SubmitFlag(string answer)
     {
+        var rankBefore = State.Rank;
         var result = State.SubmitFlag(answer);
+        var earned = result == FlagCheckResult.Correct
+            ? State.Achievements.CheckMissions(State, DateTime.Now, justSolved: true)
+            : [];
+
         Save();
         Changed?.Invoke();
+        Reward(earned, rankBefore);
         return result;
+    }
+
+    /// <summary>The terminal ran a command line: it may have earned an achievement.</summary>
+    public void RecordCommand(CommandRun run) => Reward(State.Achievements.RecordCommand(run), State.Rank);
+
+    /// <summary>Tab completed something in the terminal.</summary>
+    public void RecordTabCompletion() => Reward(State.Achievements.RecordTabCompletion(), State.Rank);
+
+    private void Reward(IReadOnlyList<Achievement> earned, Rank rankBefore)
+    {
+        var newRank = State.Rank != rankBefore ? State.Rank : null;
+
+        if (earned.Count == 0 && newRank is null)
+        {
+            return;
+        }
+
+        Save();
+        Rewarded?.Invoke(earned, newRank);
     }
 
     public void UnlockNextHint()

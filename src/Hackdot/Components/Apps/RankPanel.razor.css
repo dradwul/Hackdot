@@ -1,0 +1,151 @@
+.rank-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 1rem max(1rem, var(--safe-left)) 1.5rem max(1rem, var(--safe-right));
+}
+
+/* ---------- Rank ---------- */
+
+.rank-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 1.1rem;
+    border: 1px solid color-mix(in srgb, var(--warning) 35%, var(--border));
+    border-radius: var(--radius);
+    background:
+        radial-gradient(ellipse 80% 90% at 100% 0%, color-mix(in srgb, var(--warning) 14%, transparent), transparent 70%),
+        var(--surface);
+}
+
+.rank-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.rank-title {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--warning);
+}
+
+.rank-score {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--text);
+}
+
+.progress {
+    height: 8px;
+    margin-top: 0.5rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--surface-2);
+}
+
+.progress span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--warning), color-mix(in srgb, var(--warning) 60%, var(--accent-2)));
+    transition: width 400ms ease;
+}
+
+.rank-next {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+/* ---------- Achievements ---------- */
+
+.achievements-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+.achievements-header h3 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.count {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.achievements {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.achievement {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 56px;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    opacity: 0.55;
+}
+
+.achievement.unlocked {
+    border-color: color-mix(in srgb, var(--warning) 40%, var(--border));
+    opacity: 1;
+}
+
+.badge {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: var(--surface-2);
+    color: var(--text-muted);
+}
+
+.achievement.unlocked .badge {
+    background: color-mix(in srgb, var(--warning) 18%, transparent);
+    color: var(--warning);
+}
+
+.text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.title {
+    font-weight: 600;
+}
+
+.description {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+    .achievements {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}

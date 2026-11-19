@@ -39,6 +39,9 @@ public sealed class CommandContext
 
     public bool ClearRequested { get; set; }
 
+    /// <summary>The command ran something as root on the player's behalf (e.g. <c>sudo</c>), for achievements.</summary>
+    public bool RanAsRoot { get; set; }
+
     /// <summary>
     /// <c>true</c> when the output goes into another command through a pipe instead of to the screen.
     /// Like real Linux, <c>ls</c> then prints one name per line.

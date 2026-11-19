@@ -27,6 +27,9 @@ public sealed class MissionDefinition
     /// <summary>Position in the mission list; missions unlock in this order.</summary>
     public int Order { get; set; }
 
+    /// <summary>The chapter the mission belongs to (1, 2, 3, …), used for chapter achievements.</summary>
+    public int Chapter { get; set; } = 1;
+
     public MissionDifficulty Difficulty { get; set; }
 
     /// <summary>Points for solving the mission without hints.</summary>

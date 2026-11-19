@@ -2,6 +2,7 @@
   "schemaVersion": 1,
   "id": "clockwork",
   "order": 12,
+  "chapter": 2,
   "difficulty": "hard",
   "points": 1200,
   "title": "Clockwork",

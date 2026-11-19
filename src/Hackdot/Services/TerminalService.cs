@@ -43,7 +43,17 @@ public sealed class TerminalService
     public bool IsSecretInput => Interpreter.PendingInputIsSecret;
 
     /// <summary>Tab completion of the last word, limited to what the player is allowed to see.</summary>
-    public Completion Complete(string input) => TabCompleter.Complete(Interpreter, input);
+    public Completion Complete(string input)
+    {
+        var completion = TabCompleter.Complete(Interpreter, input);
+
+        if (completion.Input != input || completion.Options.Count > 0)
+        {
+            _game.RecordTabCompletion();
+        }
+
+        return completion;
+    }
 
     public event Action? Changed;
 
@@ -86,6 +96,7 @@ public sealed class TerminalService
     {
         // The same history list is handed to every new interpreter, so ↑ still works after switching missions.
         var interpreter = new CommandInterpreter(_game.CreateSession(), _text, history: _history);
+        interpreter.CommandRan += _game.RecordCommand;
 
         _lines.Clear();
         _lines.AddRange(interpreter.Welcome());

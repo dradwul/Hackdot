@@ -1,0 +1,78 @@
+@using Hackdot.Core.Services.Missions
+@implements IDisposable
+@inject GameService Game
+
+@* "Achievement unlocked" and "New rank" notices, one at a time, gone after a few seconds. *@
+@if (_current is { } reward)
+{
+    <div class="reward-toast" role="status" aria-live="polite" @key="reward" @onclick="Next">
+        <span class="icon" aria-hidden="true">
+            @if (reward.IsRank)
+            {
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round"><path d="m6 13 6-6 6 6" /><path d="m6 19 6-6 6 6" /></svg>
+            }
+            else
+            {
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z" /><path d="M17 5h3a3 3 0 0 1-3 4M7 5H4a3 3 0 0 0 3 4" /></svg>
+            }
+        </span>
+        <span class="text">
+            <span class="kind">@reward.Kind</span>
+            <strong>@reward.Title</strong>
+        </span>
+    </div>
+}
+
+@code {
+    private sealed record Reward(string Kind, string Title, bool IsRank);
+
+    private static readonly TimeSpan ShowFor = TimeSpan.FromSeconds(4);
+
+    private readonly Queue<Reward> _queue = new();
+    private Reward? _current;
+    private Timer? _timer;
+
+    protected override void OnInitialized() => Game.Rewarded += OnRewarded;
+
+    private void OnRewarded(IReadOnlyList<Achievement> achievements, Rank? rank) => InvokeAsync(() =>
+    {
+        if (rank is not null)
+        {
+            _queue.Enqueue(new Reward(L["Reward.Rank"], L[$"Rank.{rank.Id}"], IsRank: true));
+        }
+
+        foreach (var achievement in achievements)
+        {
+            var title = achievement.Chapter is { } chapter
+                ? L["Achievement.Chapter.Title", chapter]
+                : L[$"Achievement.{achievement.Id}.Title"];
+            _queue.Enqueue(new Reward(L["Reward.Achievement"], title, IsRank: false));
+        }
+
+        if (_current is null)
+        {
+            Next();
+        }
+    });
+
+    private void Next()
+    {
+        _timer?.Dispose();
+        _current = _queue.TryDequeue(out var next) ? next : null;
+
+        if (_current is not null)
+        {
+            _timer = new Timer(_ => InvokeAsync(Next), null, ShowFor, Timeout.InfiniteTimeSpan);
+        }
+
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        Game.Rewarded -= OnRewarded;
+        _timer?.Dispose();
+    }
+}

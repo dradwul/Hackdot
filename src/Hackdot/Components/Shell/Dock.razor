@@ -32,6 +32,7 @@
         <div class="menu-header">
             <Logo Animated="true" Class="menu-logo" />
             <span class="menu-subtitle">@L["Shell.LoggedInAs", Game.CurrentUser.Name, Game.FileSystem.Hostname]</span>
+            <span class="menu-rank">@L["Shell.Rank", L[$"Rank.{Game.State.Rank.Id}"], Game.State.TotalScore]</span>
         </div>
         <ul>
             @foreach (var app in Shell.Apps)

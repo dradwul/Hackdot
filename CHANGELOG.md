@@ -5,6 +5,15 @@ What's new in each version of Hackdot. The version number is shown at the bottom
 Versions follow [semantic versioning](https://semver.org/): a new **minor** version (1.**4**.0) adds missions or
 features, a **patch** version (1.4.**1**) only fixes things.
 
+## 1.6.0 – 2026-11-19
+
+- **Ranks**: your points now earn you a title – from Intern all the way to Chief Security Officer. Your rank is
+  shown in the start menu.
+- **Achievements**: 15 badges to earn, like *I Am Root*, *Pipe Dream*, *Ghost* and one secret one. Tap your score
+  (★) in the Mission app to see your rank, how far it is to the next one, and every achievement.
+- A notice pops up when you earn an achievement or a new rank.
+- If you have played before, the achievements you have already earned are waiting for you.
+
 ## 1.5.0 – 2026-11-19
 
 **Chapter 3** – two new missions:

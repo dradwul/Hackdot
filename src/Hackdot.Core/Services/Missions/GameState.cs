@@ -67,12 +67,20 @@ public sealed class GameState
             }
         }
 
+        Achievements = new AchievementTracker(catalog, snapshot?.Achievements, snapshot?.Stats);
+
         ActiveMission = snapshot?.ActiveMissionId is { } activeId && catalog.Find(activeId) is { } active && IsUnlocked(active)
             ? active
             : catalog.Missions.FirstOrDefault(mission => !Progress(mission).Completed && IsUnlocked(mission)) ?? catalog.Missions[0];
     }
 
     public MissionCatalog Catalog { get; }
+
+    /// <summary>Earned achievements and the counters behind them.</summary>
+    public AchievementTracker Achievements { get; }
+
+    /// <summary>The player's title, earned with points.</summary>
+    public Rank Rank => Ranks.For(TotalScore);
 
     public MissionDefinition ActiveMission { get; private set; }
 
@@ -215,6 +223,8 @@ public sealed class GameState
                 PointsEarned = entry.Value.PointsEarned,
                 FailedAttempts = entry.Value.FailedAttempts,
             }),
+        Achievements = [.. Achievements.Unlocked.Order(StringComparer.Ordinal)],
+        Stats = new Dictionary<string, int>(Achievements.Stats),
     };
 
     public static string SerializeSnapshot(GameProgressSnapshot snapshot) =>
@@ -253,6 +263,10 @@ public sealed class GameProgressSnapshot
     public string? ActiveMissionId { get; set; }
 
     public Dictionary<string, MissionProgressSnapshot> Missions { get; set; } = [];
+
+    public List<string> Achievements { get; set; } = [];
+
+    public Dictionary<string, int> Stats { get; set; } = [];
 }
 
 public sealed class MissionProgressSnapshot
