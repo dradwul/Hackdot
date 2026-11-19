@@ -16,6 +16,7 @@
     "The password is `Summer2026!` (found in `/opt/scripts/backup.sh`). Run `su admin`, type the password, then `cat /home/admin/quarterly_report.txt`."
   ],
   "skills": [ "grep -r", "su", "switching-users" ],
+  "techniques": [ "credential-reuse" ],
   "fileSystem": {
     "hostname": "dottech-srv",
     "users": [

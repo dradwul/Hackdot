@@ -85,6 +85,8 @@ En bana = en JSON-fil i `src/Hackdot.Core/Data/Missions/` (`NN-namn.json`), mode
 - Texter får innehålla `` `backticks` `` för kommandon/sökvägar, `**fetstil**` och tomrad för nytt stycke.
 - Uppdragets `skills` länkar till Guide-appen: ett kommandonamn (`ls -a` → `ls`) eller ett ämnes-`id` i
   `Data/Guide/topics.json` (t.ex. `pipes`). `GuideTests` kontrollerar att varje skill har en guide-post.
+- Uppdragets `techniques` är id:n på teknikkort i `Data/Guide/cards.json` (minst ett per uppdrag) – kortet samlas när
+  uppdraget klaras. `chapter` (standard 1) styr kapitelprestationerna. `TechniqueCardTests` kontrollerar kopplingarna.
 
 ## Guide-appen
 

@@ -17,6 +17,7 @@
     "Run `echo 'cat /root/flag.txt > /tmp/flag.txt' >> /opt/maintenance/cleanup.sh`, then `sleep 60`, then `cat /tmp/flag.txt`."
   ],
   "skills": [ "echo", "redirection", "scheduled-tasks", "sleep" ],
+  "techniques": [ "writable-cron-scripts" ],
   "fileSystem": {
     "hostname": "dottech-files",
     "directories": [

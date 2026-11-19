@@ -16,6 +16,7 @@
     "The flag is in `/home/user/training/flag.txt`. Run `cat ~/training/flag.txt`."
   ],
   "skills": [ "ls", "cd", "cat", "terminal-tips" ],
+  "techniques": [ "exploring" ],
   "fileSystem": {
     "hostname": "training-lab",
     "files": [

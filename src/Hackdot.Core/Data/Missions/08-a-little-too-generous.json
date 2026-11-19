@@ -16,6 +16,7 @@
     "Run `sudo cat /var/log/../../root/flag.txt`."
   ],
   "skills": [ "sudo", "paths", "privilege-escalation" ],
+  "techniques": [ "sudo-wildcards" ],
   "fileSystem": {
     "hostname": "dottech-srv",
     "files": [

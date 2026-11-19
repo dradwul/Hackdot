@@ -16,6 +16,7 @@
     "Run `base64 -d /var/tmp/.../c.b64 | grep -i canary`."
   ],
   "skills": [ "hidden-files", "history", "base64", "forensics" ],
+  "techniques": [ "shell-history" ],
   "fileSystem": {
     "hostname": "dottech-db",
     "users": [

@@ -1,0 +1,151 @@
+// Technique cards: collected by solving the missions that list them in "techniques".
+// "attack" is the matching MITRE ATT&CK technique id, if there is one (https://attack.mitre.org).
+{
+  "schemaVersion": 1,
+  "cards": [
+    {
+      "id": "exploring",
+      "title": "Exploring a system",
+      "category": "Discovery",
+      "summary": "Before anything else, an attacker looks around: which folders and files exist, who owns them, and what's inside. `ls`, `cd` and `cat` are the first tools anyone reaches for.",
+      "realWorld": "Almost every real attack starts with discovery. Penetration testers spend a large part of their time just reading: folders, config files, notes and scripts that reveal how a system works.",
+      "defense": "Keep secrets out of places where people browse, give users access only to what they need, and remember that anything a user can read, an attacker using that account can read too.",
+      "attack": "T1083"
+    },
+    {
+      "id": "plaintext-passwords",
+      "title": "Passwords in files",
+      "category": "Credential access",
+      "summary": "Passwords written down in notes, scripts or setup files. Whoever can read the file has the password – no hacking needed.",
+      "realWorld": "Passwords turn up in text files, spreadsheets, scripts, wiki pages and code shared on the internet. Attackers search for words like `password`, `passwd` and `secret` as soon as they get in.",
+      "defense": "Use a password manager for people and a secrets manager for programs. Never put passwords in files, chat or code – and change any password that has been written down.",
+      "attack": "T1552.001"
+    },
+    {
+      "id": "hidden-files",
+      "title": "Hidden files",
+      "category": "Defense evasion",
+      "summary": "On Linux, a name starting with a dot is hidden from a plain `ls`. It isn't protected in any way – `ls -a` shows it.",
+      "realWorld": "Settings live in hidden files like `.bashrc` and `.ssh`. Attackers hide their own files the same way, and forgotten hidden files on web servers (like `.git` or `.env`) often leak secrets.",
+      "defense": "Hiding is not protecting: use permissions for anything secret. When checking a system, always look with `ls -la`.",
+      "attack": "T1564.001"
+    },
+    {
+      "id": "log-analysis",
+      "title": "Reading logs",
+      "category": "Detection",
+      "summary": "Logs record what happened: logins, errors, requests. With `grep` you can find one important line among thousands.",
+      "realWorld": "Security teams find attacks by searching logs for failed logins, unusual times and strange addresses. Logs are also what investigators read afterwards to understand what an attacker did.",
+      "defense": "Collect logs in one place, keep them long enough, protect them from being changed – and actually look at them, ideally with alerts for unusual events.",
+      "attack": null
+    },
+    {
+      "id": "credential-reuse",
+      "title": "Logging in with found passwords",
+      "category": "Initial access",
+      "summary": "A found password is a key: with `su` (or a login screen) an attacker becomes that user and gets everything that user may do.",
+      "realWorld": "Stolen and reused passwords are one of the most common ways into real systems. People use the same password in many places, so one leak can open many doors.",
+      "defense": "Use a different password everywhere, turn on two-factor authentication, and lock or change accounts as soon as a password may have leaked.",
+      "attack": "T1078"
+    },
+    {
+      "id": "brute-force",
+      "title": "Brute force",
+      "category": "Credential access",
+      "summary": "Guessing passwords over and over until one works. In the logs it looks like the same address failing to log in again and again.",
+      "realWorld": "Servers on the internet get guessing attempts all day long, often from automated tools. Counting failures per address (`sort | uniq -c`) quickly shows who is trying.",
+      "defense": "Strong passwords, limits on login attempts, blocking addresses that keep failing, two-factor authentication – and alerts when someone is guessing.",
+      "attack": "T1110"
+    },
+    {
+      "id": "encoding",
+      "title": "Encoding is not encryption",
+      "category": "Defense evasion",
+      "summary": "Base64 only changes how data looks. There is no key: anyone can turn it back with `base64 -d`.",
+      "realWorld": "Base64-\"protected\" passwords show up in config files and web pages, and attackers use encoding to make their commands harder to read. Both are undone in seconds.",
+      "defense": "Use real encryption (with a key that is kept safe) or, better, don't store the secret at all. Treat encoded data as if it were plain text.",
+      "attack": "T1140"
+    },
+    {
+      "id": "shell-history",
+      "title": "Shell history",
+      "category": "Forensics",
+      "summary": "The shell remembers typed commands in `.bash_history`. It shows what someone did – including any password they typed on the command line.",
+      "realWorld": "Investigators read shell history to follow an attacker's steps, and attackers read it to find passwords. That's why careful attackers try to delete it – and why a missing history is suspicious too.",
+      "defense": "Never type passwords as part of a command, protect history files, and send important logs to another computer where they can't be erased.",
+      "attack": "T1552.003"
+    },
+    {
+      "id": "sudo-wildcards",
+      "title": "Sudo with a wildcard",
+      "category": "Privilege escalation",
+      "summary": "A sudo rule like `cat /var/log/*` looks harmless, but `*` matches `..` too – so `/var/log/../../root/flag.txt` is allowed.",
+      "realWorld": "Overly generous sudo rules are a classic way to become root. Many ordinary programs can read, write or start other programs, so allowing them as root allows much more than intended.",
+      "defense": "Write sudo rules with exact paths and arguments, avoid wildcards, and never allow programs that can read or write any file.",
+      "attack": "T1548.003"
+    },
+    {
+      "id": "attack-chains",
+      "title": "Attack chains",
+      "category": "Strategy",
+      "summary": "Small mistakes that seem harmless on their own – a password in a file, a reused password, a loose sudo rule – add up to a full takeover when chained together.",
+      "realWorld": "Real attacks are almost always chains: one foothold leads to the next. Ethical hackers test whole chains, because fixing any single link can stop the attack.",
+      "defense": "Defense in depth: several layers of protection, so one mistake isn't enough. Fix the small things too – they are the links in someone's chain.",
+      "attack": null
+    },
+    {
+      "id": "backup-files",
+      "title": "Forgotten backup files",
+      "category": "Credential access",
+      "summary": "A copy like `config.php.bak` doesn't get the original's protection. The real file is locked; the leftover copy next to it isn't.",
+      "realWorld": "Attackers try names like `.bak`, `.old` and `~` on websites, because the server sends such files as plain text instead of running them – secrets included.",
+      "defense": "Don't edit files on live servers, clean up copies, keep secrets out of the web folder, and check for leftovers with `find -name \"*.bak\"`.",
+      "attack": "T1552.001"
+    },
+    {
+      "id": "file-permissions",
+      "title": "File permissions",
+      "category": "Defense",
+      "summary": "`rwx` for the owner, the group and everyone else decides who may read, write and run a file. The owner – and root – can always change them with `chmod`.",
+      "realWorld": "Files that are readable or writable by everyone are one of the most common findings in security tests. Attackers also change permissions to keep access or hide what they did.",
+      "defense": "Private files `600`, shared readable files `644`, scripts `755` – and regularly look for files that everyone may write to.",
+      "attack": "T1222.002"
+    },
+    {
+      "id": "leaky-jobs",
+      "title": "Leaky scheduled jobs",
+      "category": "Collection",
+      "summary": "Jobs that run automatically – backups, syncs, cleanups – often run as root. If one copies secrets somewhere others can read, the protection is gone.",
+      "realWorld": "Backup and export jobs regularly leave copies of databases and keys in shared folders. Reading `/etc/crontab` and the scripts it runs is part of every Linux security review.",
+      "defense": "Protect everything a job writes just as well as the original, review job scripts like code, and give jobs only the access they need.",
+      "attack": "T1053.003"
+    },
+    {
+      "id": "suid-binaries",
+      "title": "Set-user-ID programs",
+      "category": "Privilege escalation",
+      "summary": "A set-user-ID program (`s` in `-rwsr-xr-x`) runs as its owner, whoever starts it. If a program that reads files is set-user-ID root, anyone can read root's files.",
+      "realWorld": "`find / -perm -4000` is one of the first commands attackers run on Linux. Public lists like GTFOBins describe how dozens of common programs can be abused when they are set-user-ID.",
+      "defense": "Keep the list of set-user-ID programs short and known, and remove the bit from anything that doesn't need it: `chmod u-s <program>`.",
+      "attack": "T1548.001"
+    },
+    {
+      "id": "writable-cron-scripts",
+      "title": "Writable scripts run as root",
+      "category": "Privilege escalation",
+      "summary": "If root runs a script on a schedule and you may change that script, you decide what root does next – one `>>` is enough.",
+      "realWorld": "Writable scripts in cron jobs, startup scripts and system timers are a well-known way to become root, and a common finding in security tests of Linux servers.",
+      "defense": "Scripts that run as root must be owned by root and writable only by root (`chmod 755` or `700`) – and so must the folders they are in.",
+      "attack": "T1053.003"
+    },
+    {
+      "id": "service-accounts",
+      "title": "Powerful service accounts",
+      "category": "Lateral movement",
+      "summary": "Accounts like `backup` aren't people, so nobody watches them – but they often have scheduled jobs and sudo rules. Taking over one is a step towards root.",
+      "realWorld": "Attackers move from account to account (\"lateral movement\"), looking for one with more power. Service and backup accounts are favourites because they're powerful and rarely checked.",
+      "defense": "Give service accounts only what they need, protect their scripts like root's, review their sudo rules, and watch what they do.",
+      "attack": "T1078.003"
+    }
+  ]
+}

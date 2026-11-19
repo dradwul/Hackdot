@@ -9,25 +9,27 @@
 
 .toolbar {
     flex: none;
-    padding: 0.6rem max(1rem, var(--safe-left));
+    padding: 0 max(0.75rem, var(--safe-left));
     border-bottom: 1px solid var(--border);
     background: var(--bg-elev);
 }
 
+/* Plain tabs with an underline, like in the Mission app. */
 .tabs {
-    display: inline-flex;
+    display: flex;
     gap: 0.25rem;
-    padding: 0.2rem;
-    border-radius: var(--radius-sm);
-    background: var(--surface);
+    overflow-x: auto;
+    scrollbar-width: none;
 }
 
 .tab {
-    min-height: 36px;
-    padding: 0 0.9rem;
+    flex: none;
+    min-height: 40px;
+    padding: 0 0.6rem;
     border: 0;
-    border-radius: var(--radius-sm);
+    border-radius: 0;
     background: transparent;
+    box-shadow: inset 0 -2px 0 transparent;
     color: var(--text-muted);
     font-size: 0.88rem;
     font-weight: 600;
@@ -36,8 +38,8 @@
 }
 
 .tab[aria-selected="true"] {
-    background: var(--surface-2);
     color: var(--text);
+    box-shadow: inset 0 -2px 0 var(--guide-accent);
 }
 
 .content {
@@ -209,4 +211,48 @@ textarea:focus {
     margin: 0;
     font-size: 0.8rem;
     color: var(--text-muted);
+}
+
+/* ---------- Technique cards ---------- */
+
+.card-text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 0;
+    text-align: left;
+}
+
+.card-category {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--guide-accent);
+}
+
+/* A face-down card: nothing to open yet, just where to find it. */
+.card.locked {
+    border-style: dashed;
+    opacity: 0.6;
+}
+
+.card.locked .card-category {
+    color: var(--text-muted);
+}
+
+.card.locked .item-title {
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.attack-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    margin-top: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--accent);
 }

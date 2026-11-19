@@ -48,6 +48,7 @@ What's new in each version: [CHANGELOG.md](CHANGELOG.md). What's planned: [ROADM
 - [x] File explorer with "show hidden files", permissions and the matching terminal command
 - [x] Mission app with flag submission, three-step hints, score and saved progress
 - [x] Ranks (Intern → Chief Security Officer) and 15 achievements, with a notice when you earn one
+- [x] Technique cards: one per mission – the technique, where it shows up in the real world, how to defend, MITRE ATT&CK
 - [x] A guided tutorial for first-timers, then nine missions: plain-text passwords, hidden files, log searching, su with a found password,
       counting a brute-force attack, decoding base64, following an attacker's shell history,
       abusing a sudo wildcard, and a final multi-step chain to root

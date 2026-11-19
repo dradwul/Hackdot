@@ -17,6 +17,7 @@
     "The flag is in `~/recovery_codes.txt`. Run `chmod 600 ~/recovery_codes.txt`, then `cat ~/recovery_codes.txt`."
   ],
   "skills": [ "ls -l", "chmod", "cat", "permissions" ],
+  "techniques": [ "file-permissions" ],
   "fileSystem": {
     "hostname": "dottech-hr",
     "users": [

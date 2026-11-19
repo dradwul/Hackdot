@@ -17,6 +17,7 @@
     "`/usr/bin/base64` is set-user-ID root. Run `base64 /root/signing_key.txt | base64 -d`."
   ],
   "skills": [ "find", "ls -l", "base64", "suid" ],
+  "techniques": [ "suid-binaries" ],
   "fileSystem": {
     "hostname": "dottech-build",
     "directories": [

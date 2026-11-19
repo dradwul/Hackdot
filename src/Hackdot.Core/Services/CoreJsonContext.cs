@@ -20,4 +20,5 @@ namespace Hackdot.Core.Services;
 [JsonSerializable(typeof(MissionDefinition))]
 [JsonSerializable(typeof(GameProgressSnapshot))]
 [JsonSerializable(typeof(GuideDefinition))]
+[JsonSerializable(typeof(TechniqueCardsDefinition))]
 internal sealed partial class CoreJsonContext : JsonSerializerContext;

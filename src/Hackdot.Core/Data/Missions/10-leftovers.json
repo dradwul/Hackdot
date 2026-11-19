@@ -17,6 +17,7 @@
     "The flag is in `/var/www/shop/config.php.bak`. Run `cat /var/www/shop/config.php.bak`."
   ],
   "skills": [ "ls -la", "find", "cat", "leftover-files" ],
+  "techniques": [ "backup-files" ],
   "fileSystem": {
     "hostname": "dottech-shop",
     "users": [

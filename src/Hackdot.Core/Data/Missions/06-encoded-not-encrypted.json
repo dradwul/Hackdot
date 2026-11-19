@@ -16,6 +16,7 @@
     "Run `echo 'Umt4QlIzdGlOSE16TmpSZk1YTmZiakIwWHpOdVkzSjVjSFF4TUc1OQ==' | base64 -d | base64 -d` (the value is in `/var/www/html/portal/js/config.js`)."
   ],
   "skills": [ "grep -r", "echo", "base64", "encoding" ],
+  "techniques": [ "encoding" ],
   "fileSystem": {
     "hostname": "dottech-web",
     "directories": [

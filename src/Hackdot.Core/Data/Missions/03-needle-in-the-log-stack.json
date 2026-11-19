@@ -16,6 +16,7 @@
     "Run `grep FLAG /var/log/auth.log`."
   ],
   "skills": [ "grep", "cat", "pipes" ],
+  "techniques": [ "log-analysis" ],
   "fileSystem": {
     "hostname": "dottech-srv",
     "files": [

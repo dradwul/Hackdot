@@ -61,6 +61,9 @@ public sealed class MissionDefinition
     /// <summary>Commands the mission practises, shown as chips, e.g. <c>ls</c>, <c>cat</c>.</summary>
     public List<string> Skills { get; set; } = [];
 
+    /// <summary>The technique cards (ids in <c>Data/Guide/cards.json</c>) the player collects by solving this mission.</summary>
+    public List<string> Techniques { get; set; } = [];
+
     /// <summary>Files on top of the shared base system.</summary>
     public FileSystemDefinition FileSystem { get; set; } = new();
 }

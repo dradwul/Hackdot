@@ -16,6 +16,7 @@
     "The flag is in `/home/user/Documents/server_setup.txt`. Run `cat ~/Documents/server_setup.txt`."
   ],
   "skills": [ "ls", "cd", "cat" ],
+  "techniques": [ "plaintext-passwords" ],
   "fileSystem": {
     "hostname": "dottech-laptop",
     "files": [

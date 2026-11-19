@@ -16,6 +16,7 @@
     "The flag is in `/var/www/.secret_flag`. Run `cat /var/www/.secret_flag`."
   ],
   "skills": [ "cd", "ls -a", "cat" ],
+  "techniques": [ "hidden-files" ],
   "fileSystem": {
     "hostname": "dottech-web",
     "files": [

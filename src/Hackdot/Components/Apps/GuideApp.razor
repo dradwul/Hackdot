@@ -1,7 +1,10 @@
 @using Hackdot.Core
+@using Hackdot.Core.Models.Guide
+@using Hackdot.Core.Services
 @using Hackdot.Core.Services.Terminal
 @implements IDisposable
 @inject GuideService Guide
+@inject GameService Game
 @inject TerminalService Terminal
 @inject ShellService Shell
 @inject IStringLocalizer<TerminalResources> TerminalText
@@ -85,6 +88,54 @@
                 </ul>
                 break;
 
+            case GuideTab.Cards:
+                <p class="intro">@L["Guide.CardsIntro", Game.Cards.Count(Game.IsCollected), Game.Cards.Count]</p>
+                <ul class="items">
+                    @foreach (var card in Game.Cards)
+                    {
+                        var collected = Game.IsCollected(card);
+                        var key = GuideService.CardKey(card.Id);
+                        var expanded = collected && Guide.IsExpanded(key);
+                        <li class="item card @(expanded ? "expanded" : null) @(collected ? null : "locked")">
+                            @if (collected)
+                            {
+                                <button type="button" class="item-header" aria-expanded="@Aria(expanded)" @onclick="() => Guide.Toggle(key)">
+                                    <span class="card-text">
+                                        <span class="card-category">@card.Category.Get()</span>
+                                        <span class="item-title">@card.Title.Get()</span>
+                                    </span>
+                                    <Chevron />
+                                </button>
+                            }
+                            else
+                            {
+                                @* A face-down card: it only says where to find it. *@
+                                <div class="item-header">
+                                    <span class="card-text">
+                                        <span class="card-category">@L["Guide.CardLocked"]</span>
+                                        <span class="item-title">@L["Guide.CardUnlockHint", TaughtBy(card)]</span>
+                                    </span>
+                                </div>
+                            }
+                            @if (expanded)
+                            {
+                                <div class="item-body">
+                                    <RichText Text="@card.Summary.Get()" />
+                                    <h4>@L["Guide.CardRealWorld"]</h4>
+                                    <RichText Text="@card.RealWorld.Get()" />
+                                    <h4>@L["Guide.CardDefense"]</h4>
+                                    <RichText Text="@card.Defense.Get()" />
+                                    @if (card.AttackUrl is { } url)
+                                    {
+                                        <a class="attack-link" href="@url" target="_blank" rel="noopener">@L["Guide.CardAttack", card.Attack!]</a>
+                                    }
+                                </div>
+                            }
+                        </li>
+                    }
+                </ul>
+                break;
+
             case GuideTab.Notes:
                 <div class="notes">
                     <label for="guide-notes">@L["Guide.Notes.Label"]</label>
@@ -98,7 +149,11 @@
 </div>
 
 @code {
-    protected override void OnInitialized() => Guide.Changed += OnGuideChanged;
+    protected override void OnInitialized()
+    {
+        Guide.Changed += OnGuideChanged;
+        Game.Changed += OnGuideChanged;
+    }
 
     private void Run(string command)
     {
@@ -106,7 +161,14 @@
         Shell.Open(AppId.Terminal);
     }
 
+    private string TaughtBy(TechniqueCard card) =>
+        TechniqueCatalog.TaughtBy(Game.State.Catalog, card).FirstOrDefault()?.Title.Get() ?? "?";
+
     private void OnGuideChanged() => InvokeAsync(StateHasChanged);
 
-    public void Dispose() => Guide.Changed -= OnGuideChanged;
+    public void Dispose()
+    {
+        Guide.Changed -= OnGuideChanged;
+        Game.Changed -= OnGuideChanged;
+    }
 }

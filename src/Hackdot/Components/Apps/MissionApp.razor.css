@@ -526,3 +526,44 @@ code {
         animation: none;
     }
 }
+
+/* ---------- Technique card in the debrief ---------- */
+
+.technique-card {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    width: 100%;
+    min-height: 52px;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid color-mix(in srgb, var(--app-guide) 45%, var(--border));
+    border-radius: var(--radius-sm);
+    background: var(--bg-elev);
+    color: var(--app-guide);
+    text-align: left;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.technique-card:active {
+    background: var(--surface-2);
+}
+
+.technique-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.technique-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.technique-title {
+    font-weight: 600;
+    color: var(--text);
+}

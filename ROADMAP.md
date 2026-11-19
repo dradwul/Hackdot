@@ -21,8 +21,6 @@ localizable texts (`{ "en": "…", "sv": "…" }`) in missions and guide topics.
 ### Rewards
 
 - **Themes**: terminal colours (amber, retro green, light), wallpapers – unlocked by rank.
-- **Technique cards**: every solved mission adds a card to a collection – what the technique is, where it shows
-  up in the real world, and how to defend against it.
 - **Story**: a Mail or Chat app in DotOS where DotTech's people send missions and react to what you did.
 - **Bonus missions**: harder challenges without hints, unlocked by rank or achievements.
 - **Fun commands**: easter eggs to unlock, like a `dotsay` mascot, `fortune` or a "matrix" screensaver.

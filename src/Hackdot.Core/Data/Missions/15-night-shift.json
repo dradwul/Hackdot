@@ -17,6 +17,7 @@
     "Run `echo 'sudo tail /var/log/../../root/plans.txt > /tmp/plans.txt' >> /opt/backup/run.sh`, then `sleep 10m`, then `cat /tmp/plans.txt`."
   ],
   "skills": [ "redirection", "scheduled-tasks", "sudo", "date", "privilege-escalation" ],
+  "techniques": [ "service-accounts" ],
   "fileSystem": {
     "hostname": "dottech-vault",
     "users": [

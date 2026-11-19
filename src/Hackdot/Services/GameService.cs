@@ -1,4 +1,5 @@
 using Hackdot.Core.Models;
+using Hackdot.Core.Models.Guide;
 using Hackdot.Core.Models.Missions;
 using Hackdot.Core.Services;
 using Hackdot.Core.Services.Missions;
@@ -25,6 +26,7 @@ public sealed class GameService
         var snapshot = GameState.DeserializeSnapshot(ReadStorage());
         IsFirstLaunch = snapshot is null;
         State = new GameState(MissionCatalog.LoadEmbedded(), snapshot);
+        Cards = TechniqueCatalog.LoadEmbedded();
         FileSystem = State.CreateFileSystem();
         CurrentUser = DefaultUser(FileSystem);
 
@@ -36,6 +38,11 @@ public sealed class GameService
     }
 
     public GameState State { get; }
+
+    /// <summary>Every technique card; <see cref="IsCollected"/> tells which ones the player has.</summary>
+    public IReadOnlyList<TechniqueCard> Cards { get; }
+
+    public bool IsCollected(TechniqueCard card) => TechniqueCatalog.IsCollected(State, card);
 
     public MissionDefinition ActiveMission => State.ActiveMission;
 
@@ -59,8 +66,8 @@ public sealed class GameService
     /// </summary>
     public event Action? SessionChanged;
 
-    /// <summary>The player earned achievements and/or a new rank (<c>null</c> if the rank stayed the same).</summary>
-    public event Action<IReadOnlyList<Achievement>, Rank?>? Rewarded;
+    /// <summary>The player earned something: achievements, a new rank (or <c>null</c>) and technique cards.</summary>
+    public event Action<Rewards>? Rewarded;
 
     /// <summary>A new session for the logged-in user, starting in their home folder.</summary>
     public ShellSession CreateSession() => new(FileSystem, CurrentUser.Name);
@@ -100,6 +107,7 @@ public sealed class GameService
     public FlagCheckResult SubmitFlag(string answer)
     {
         var rankBefore = State.Rank;
+        var cardsBefore = Cards.Where(IsCollected).ToList();
         var result = State.SubmitFlag(answer);
         var earned = result == FlagCheckResult.Correct
             ? State.Achievements.CheckMissions(State, DateTime.Now, justSolved: true)
@@ -107,7 +115,7 @@ public sealed class GameService
 
         Save();
         Changed?.Invoke();
-        Reward(earned, rankBefore);
+        Reward(earned, rankBefore, [.. Cards.Where(IsCollected).Except(cardsBefore)]);
         return result;
     }
 
@@ -117,17 +125,18 @@ public sealed class GameService
     /// <summary>Tab completed something in the terminal.</summary>
     public void RecordTabCompletion() => Reward(State.Achievements.RecordTabCompletion(), State.Rank);
 
-    private void Reward(IReadOnlyList<Achievement> earned, Rank rankBefore)
+    private void Reward(IReadOnlyList<Achievement> earned, Rank rankBefore, IReadOnlyList<TechniqueCard>? cards = null)
     {
         var newRank = State.Rank != rankBefore ? State.Rank : null;
+        cards ??= [];
 
-        if (earned.Count == 0 && newRank is null)
+        if (earned.Count == 0 && newRank is null && cards.Count == 0)
         {
             return;
         }
 
         Save();
-        Rewarded?.Invoke(earned, newRank);
+        Rewarded?.Invoke(new Rewards(earned, newRank, cards));
     }
 
     public void UnlockNextHint()
@@ -165,3 +174,6 @@ public sealed class GameService
         }
     }
 }
+
+/// <summary>What the player just earned.</summary>
+public sealed record Rewards(IReadOnlyList<Achievement> Achievements, Rank? NewRank, IReadOnlyList<TechniqueCard> Cards);

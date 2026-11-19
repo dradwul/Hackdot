@@ -8,6 +8,7 @@ public enum GuideTab
 {
     Learn,
     Commands,
+    Cards,
     Notes,
 }
 
@@ -102,6 +103,16 @@ public sealed class GuideService
     public static string CommandKey(string name) => "cmd:" + name;
 
     public static string TopicKey(string id) => "topic:" + id;
+
+    public static string CardKey(string id) => "card:" + id;
+
+    /// <summary>Opens the Cards tab with one card unfolded (e.g. the one a mission just gave).</summary>
+    public void FocusCard(string id)
+    {
+        Tab = GuideTab.Cards;
+        _expanded.Add(CardKey(id));
+        Changed?.Invoke();
+    }
 
     private string ReadNotes()
     {

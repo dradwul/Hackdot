@@ -16,6 +16,7 @@
     "Run `echo 'RDB0LU9wcy00Mg==' | base64 -d` (the password is `D0t-Ops-42`), then `su ops`, then `sudo base64 /var/backups/../../root/roadmap.txt | base64 -d`."
   ],
   "skills": [ "grep -r", "base64", "su", "sudo", "privilege-escalation" ],
+  "techniques": [ "attack-chains" ],
   "fileSystem": {
     "hostname": "dottech-ops",
     "users": [

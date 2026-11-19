@@ -118,6 +118,7 @@
   <data name="Achievement.night-owl.Description" xml:space="preserve"><value>Solve a mission between midnight and five in the morning.</value></data>
   <data name="Reward.Achievement" xml:space="preserve"><value>Achievement unlocked</value></data>
   <data name="Reward.Rank" xml:space="preserve"><value>New rank</value></data>
+  <data name="Reward.Card" xml:space="preserve"><value>New technique card</value></data>
   <data name="Mission.Counter" xml:space="preserve"><value>Mission {0} of {1}</value></data>
   <data name="Mission.Difficulty.Easy" xml:space="preserve"><value>Easy</value></data>
   <data name="Mission.Difficulty.Medium" xml:space="preserve"><value>Medium</value></data>
@@ -137,6 +138,7 @@
   <data name="Mission.Solved.Title" xml:space="preserve"><value>Mission complete!</value></data>
   <data name="Mission.Solved.Points" xml:space="preserve"><value>+{0} points</value></data>
   <data name="Mission.Solved.Flag" xml:space="preserve"><value>Flag</value></data>
+  <data name="Mission.Solved.Card" xml:space="preserve"><value>Technique card collected</value></data>
   <data name="Mission.Solved.Next" xml:space="preserve"><value>Next mission</value></data>
   <data name="Mission.Solved.AllDone" xml:space="preserve"><value>You have completed every mission. More are on the way!</value></data>
   <data name="Mission.Hints.Title" xml:space="preserve"><value>Need help?</value></data>
@@ -175,7 +177,14 @@
   <!-- Guide app -->
   <data name="Guide.Tab.Learn" xml:space="preserve"><value>Learn</value></data>
   <data name="Guide.Tab.Commands" xml:space="preserve"><value>Commands</value></data>
+  <data name="Guide.Tab.Cards" xml:space="preserve"><value>Cards</value></data>
   <data name="Guide.Tab.Notes" xml:space="preserve"><value>Notes</value></data>
+  <data name="Guide.CardsIntro" xml:space="preserve"><value>Every mission teaches a technique that real attackers and defenders use. Solve it to collect its card. You have {0} of {1}.</value></data>
+  <data name="Guide.CardLocked" xml:space="preserve"><value>Not collected yet</value></data>
+  <data name="Guide.CardUnlockHint" xml:space="preserve"><value>Solve “{0}” to collect this card</value></data>
+  <data name="Guide.CardRealWorld" xml:space="preserve"><value>In the real world</value></data>
+  <data name="Guide.CardDefense" xml:space="preserve"><value>How to defend</value></data>
+  <data name="Guide.CardAttack" xml:space="preserve"><value>MITRE ATT&amp;CK: {0} ↗</value></data>
   <data name="Guide.TryIt" xml:space="preserve"><value>Try it</value></data>
   <data name="Guide.CommandsIntro" xml:space="preserve"><value>Every command the terminal understands. Tap one to see how it works, then try the examples.</value></data>
   <data name="Guide.RunExample" xml:space="preserve"><value>Run {0} in the terminal</value></data>

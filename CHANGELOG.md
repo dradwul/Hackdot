@@ -5,6 +5,14 @@ What's new in each version of Hackdot. The version number is shown at the bottom
 Versions follow [semantic versioning](https://semver.org/): a new **minor** version (1.**4**.0) adds missions or
 features, a **patch** version (1.4.**1**) only fixes things.
 
+## 1.7.0 – 2026-11-19
+
+- **Technique cards**: every mission now teaches a technique that real attackers and defenders use – and solving
+  it adds a card to your collection. Each card explains the technique, where it shows up in the real world and
+  how to defend against it, with a link to MITRE ATT&CK. Find them in the new **Cards** tab in the Guide.
+- The debrief shows the card you just collected, and a notice pops up too.
+- The Guide's tabs have the same underlined look as the Mission app.
+
 ## 1.6.1 – 2026-11-19
 
 - A sharper, tighter look: smaller corner radii instead of round "pill" buttons, flat surfaces without glows,

@@ -17,6 +17,7 @@
     "The flag is in `/srv/share/.sync/passwords.txt`. Run `cat /srv/share/.sync/passwords.txt`."
   ],
   "skills": [ "cat", "ls -la", "scheduled-tasks", "hidden-files" ],
+  "techniques": [ "leaky-jobs" ],
   "fileSystem": {
     "hostname": "dottech-backup",
     "directories": [
