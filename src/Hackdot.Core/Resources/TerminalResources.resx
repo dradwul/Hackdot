@@ -43,6 +43,16 @@
   <data name="Error.FindInvalidPerm" xml:space="preserve"><value>find: invalid mode '{0}' after -perm. Try for example -perm -4000 or -perm 644.</value></data>
   <data name="Error.ChmodInvalidMode" xml:space="preserve"><value>chmod: invalid mode: '{0}'. Try a number like 600 or letters like u+r.</value></data>
   <data name="Error.ChmodNotOwner" xml:space="preserve"><value>chmod: changing permissions of '{0}': Operation not permitted</value></data>
+  <data name="Error.MissingRedirectTarget" xml:space="preserve"><value>syntax error near '&gt;': write a file name after it, e.g. 'echo hello &gt; note.txt'</value></data>
+  <data name="Error.RedirectNoSuchFile" xml:space="preserve"><value>bash: {0}: No such file or directory</value></data>
+  <data name="Error.RedirectIsADirectory" xml:space="preserve"><value>bash: {0}: Is a directory</value></data>
+  <data name="Error.RedirectPermissionDenied" xml:space="preserve"><value>bash: {0}: Permission denied</value></data>
+  <data name="Error.ScriptPermissionDenied" xml:space="preserve"><value>bash: {0}: Permission denied (a script needs x permission to run – see 'help chmod')</value></data>
+  <data name="Error.ScriptTooDeep" xml:space="preserve"><value>bash: {0}: too many scripts starting each other</value></data>
+  <data name="Error.SleepInvalid" xml:space="preserve"><value>sleep: invalid time interval '{0}'. Try 'sleep 60' or 'sleep 5m'.</value></data>
+  <data name="Error.SleepTooLong" xml:space="preserve"><value>sleep: DotOS sleeps at most one hour at a time.</value></data>
+  <data name="Error.TouchDenied" xml:space="preserve"><value>touch: cannot touch '{0}': Permission denied</value></data>
+  <data name="Error.TouchNoSuchFile" xml:space="preserve"><value>touch: cannot touch '{0}': No such file or directory</value></data>
   <data name="Error.NoInput" xml:space="preserve"><value>{0}: nothing to read. Give it a file – '{0} &lt;file&gt;' – or send text into it with a pipe: 'cat &lt;file&gt; | {0}'.</value></data>
   <data name="Error.InvalidLineCount" xml:space="preserve"><value>{0}: invalid number of lines: '{1}'</value></data>
   <data name="Error.CutNeedsFields" xml:space="preserve"><value>cut: say which fields you want with -f, e.g. 'cut -d: -f1 /etc/passwd'</value></data>
@@ -242,6 +252,26 @@ With letters: u (owner), g (group), o (others), a (all) and + (add), - (remove),
 Use 'ls -l' to see the permissions before and after.</value></data>
   <data name="Cmd.chmod.Example1" xml:space="preserve"><value>Only you may read and write the file</value></data>
   <data name="Cmd.chmod.Example2" xml:space="preserve"><value>Let yourself run it, and stop others from reading it</value></data>
+
+  <!-- touch -->
+  <data name="Cmd.touch.Summary" xml:space="preserve"><value>Create an empty file</value></data>
+  <data name="Cmd.touch.Details" xml:space="preserve"><value>Creates an empty file – or, if the file already exists, updates its time. You need write permission on the folder (or the file).
+
+To put text in a file, use &gt;: 'echo hello &gt; note.txt' replaces what is in it, 'echo again &gt;&gt; note.txt' adds a line at the end.</value></data>
+  <data name="Cmd.touch.Example1" xml:space="preserve"><value>Create an empty file in /tmp, where everyone may write</value></data>
+
+  <!-- date -->
+  <data name="Cmd.date.Summary" xml:space="preserve"><value>Show the computer's date and time</value></data>
+  <data name="Cmd.date.Details" xml:space="preserve"><value>Prints the computer's clock. In DotOS the clock moves on a minute every time you run a command – and with 'sleep' – so scheduled cron jobs get their turn.</value></data>
+  <data name="Cmd.date.Example1" xml:space="preserve"><value>What time is it on this computer?</value></data>
+
+  <!-- sleep -->
+  <data name="Cmd.sleep.Summary" xml:space="preserve"><value>Wait a while</value></data>
+  <data name="Cmd.sleep.Details" xml:space="preserve"><value>Waits before the next command. The time is in seconds, or add m for minutes or h for hours (one hour at most).
+
+In DotOS you never have to wait for real: the clock jumps ahead, and every cron job that was due in the meantime runs.</value></data>
+  <data name="Cmd.sleep.Example1" xml:space="preserve"><value>Let a minute pass</value></data>
+  <data name="Cmd.sleep.Example2" xml:space="preserve"><value>Let five minutes pass</value></data>
 
   <!-- whoami -->
   <data name="Cmd.whoami.Summary" xml:space="preserve"><value>Show which user you are logged in as</value></data>

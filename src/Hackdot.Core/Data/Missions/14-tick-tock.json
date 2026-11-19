@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "id": "tick-tock",
+  "order": 14,
+  "difficulty": "hard",
+  "points": 1500,
+  "title": "Tick Tock",
+  "summary": "Root runs a cleanup script every minute – and anyone can edit it. Make root do something for you.",
+  "briefing": "Chapter 3 begins. On the file server dottech-files, root keeps a secret in `/root/flag.txt`. You can't read it – yet.\n\nIn chapter 2 you learned that cron runs jobs on a schedule, often as root. This time one of those jobs runs a script that **everyone** may change. Whatever is in that script, root will run it – every single minute.\n\nYou now have a new tool: `>` and `>>` write a command's output into a file. `echo hello > note.txt` replaces what is in the file; `echo hello >> note.txt` adds a line at the end.\n\nIn DotOS, the clock moves on a minute every time you run a command – `date` shows the time, and `sleep 60` lets a minute pass. You have **written permission** to prove the hole is real.",
+  "objective": "Add a line to root's cleanup script that copies the flag somewhere you can read it.",
+  "debrief": "Root did your job for you! The script `/opt/maintenance/cleanup.sh` had the permissions `-rwxrwxrwx`: anyone could write to it. You added one line with `>>` – for example `cat /root/flag.txt > /tmp/flag.txt` – and a minute later cron ran the script as root, line and all.\n\nThis is one of the classic ways attackers become root on Linux: find a script that root runs automatically (in `/etc/crontab`, in systemd timers, in startup scripts) and check who may change it. Your line could just as well have given you a root shell.\n\nThe lessons for DotTech: scripts that run as root must be owned by root and writable **only** by root (`chmod 755`, or `700`). \"Everyone should be able to tweak it\" is not a permission – it is an open door.",
+  "flag": "FLAG{r00t_runs_wh4t_y0u_wr1t3}",
+  "hints": [
+    "Cron runs a script as root every minute, and that script can be changed by anyone. Anything you add to it will run as root the next time.",
+    "`cat /etc/crontab` shows the job, `ls -l` shows that its script is writable by everyone. Add a line with `echo '<command>' >> <script>` – a command that copies root's flag into `/tmp`. Then let a minute pass with `sleep 60`.",
+    "Run `echo 'cat /root/flag.txt > /tmp/flag.txt' >> /opt/maintenance/cleanup.sh`, then `sleep 60`, then `cat /tmp/flag.txt`."
+  ],
+  "skills": [ "echo", "redirection", "scheduled-tasks", "sleep" ],
+  "fileSystem": {
+    "hostname": "dottech-files",
+    "directories": [
+      { "path": "/opt/maintenance", "owner": "root", "mode": "755" }
+    ],
+    "files": [
+      {
+        "path": "/etc/crontab",
+        "lines": [
+          "# /etc/crontab: system-wide crontab",
+          "# Each line: minute hour day month weekday  user  command",
+          "",
+          "*   *  *  *  *    root  /opt/maintenance/cleanup.sh",
+          "0   3  *  *  *    root  /usr/sbin/logrotate /etc/logrotate.conf"
+        ]
+      },
+      {
+        "path": "/opt/maintenance/cleanup.sh",
+        "owner": "root",
+        "mode": "777",
+        "lines": [
+          "#!/bin/bash",
+          "# Tidies up the shared folders every minute.",
+          "# Everyone in IT should be able to tweak this, so: chmod 777  – Jonas",
+          "",
+          "touch /tmp/.last-cleanup",
+          "echo \"cleanup finished\" >> /var/log/cleanup.log"
+        ]
+      },
+      {
+        "path": "/var/log/cleanup.log",
+        "owner": "root",
+        "mode": "644",
+        "lines": [
+          "cleanup finished",
+          "cleanup finished",
+          "cleanup finished"
+        ]
+      },
+      {
+        "path": "/var/log/cron.log",
+        "owner": "root",
+        "mode": "644",
+        "lines": [
+          "Mar 14 09:09:01 dottech-files CRON[2549]: (root) CMD (/opt/maintenance/cleanup.sh)",
+          "Mar 14 09:10:01 dottech-files CRON[2550]: (root) CMD (/opt/maintenance/cleanup.sh)",
+          "Mar 14 09:11:01 dottech-files CRON[2551]: (root) CMD (/opt/maintenance/cleanup.sh)"
+        ]
+      },
+      {
+        "path": "/root/flag.txt",
+        "owner": "root",
+        "mode": "600",
+        "lines": [
+          "Root's secret: FLAG{r00t_runs_wh4t_y0u_wr1t3}"
+        ]
+      },
+      {
+        "path": "/home/user/notes.txt",
+        "lines": [
+          "dottech-files – test notes",
+          "",
+          "No sudo, no passwords, no set-user-ID surprises.",
+          "But something writes to /var/log/cleanup.log every minute... who?"
+        ]
+      }
+    ]
+  }
+}

@@ -22,6 +22,12 @@ public sealed class VirtualFileSystem
 
     public string Hostname { get; set; }
 
+    /// <summary>
+    /// The computer's clock. It starts at <see cref="DefaultTimestamp"/> and moves on a minute for every command the
+    /// player runs (and with <c>sleep</c>), which is when scheduled cron jobs get their turn.
+    /// </summary>
+    public DateTime Now { get; set; } = DefaultTimestamp;
+
     public VirtualDirectory Root { get; }
 
     public IReadOnlyList<VirtualUser> Users => _users;

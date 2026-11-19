@@ -41,7 +41,8 @@ works offline. `index.html` uses a relative `<base href="./">`, so no path needs
 - [x] Localization infrastructure
 - [x] Virtual file system defined in JSON (users, owners, permissions)
 - [x] Terminal with command interpreter, pipes, Tab completion and shortcut buttons (ls, cd, cat, head, tail, grep, find,
-      wc, sort, uniq, cut, echo, base64, chmod, su, sudo, history, …), set-user-ID programs and `2>/dev/null`
+      wc, sort, uniq, cut, echo, base64, chmod, touch, date, sleep, su, sudo, history, …), set-user-ID programs,
+      redirection (`>`, `>>`, `2>`, `2>&1`), runnable scripts and a clock that runs cron jobs
 - [x] File explorer with "show hidden files", permissions and the matching terminal command
 - [x] Mission app with flag submission, three-step hints, score and saved progress
 - [x] A guided tutorial for first-timers, then nine missions: plain-text passwords, hidden files, log searching, su with a found password,
@@ -49,5 +50,8 @@ works offline. `index.html` uses a relative `<base href="./">`, so no path needs
       abusing a sudo wildcard, and a final multi-step chain to root
 - [x] Chapter 2, four more missions: leftover backup files, chmod and file ownership, a leaky cron job,
       and a set-user-ID program that runs as root
+- [x] Chapter 3, two more missions: a root cron script anyone can edit, and a chain through another
+      user's scheduled job and sudo rules
+- [x] Version number and a link to the changelog at the bottom of the desktop
 - [x] Guide app: concepts, command reference built from the terminal, and notes
 - [x] Login screen, log out, su/exit with hidden password prompts

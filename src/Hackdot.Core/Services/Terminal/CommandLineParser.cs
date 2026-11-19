@@ -9,18 +9,39 @@ public sealed class CommandSyntaxException(string resourceKey) : Exception(resou
 }
 
 /// <summary>
+/// Sends a command's output somewhere else: <c>&gt; file</c> (stream 1, replace), <c>&gt;&gt; file</c> (append),
+/// <c>2&gt; file</c> (error messages) or <c>2&gt;&amp;1</c> (error messages go wherever the output goes).
+/// </summary>
+public sealed record Redirection(int Stream, string Target, bool Append)
+{
+    public const string ToOutput = "&1";
+
+    public const string Nowhere = "/dev/null";
+}
+
+/// <summary>One command of a pipeline: its words and where its output is redirected.</summary>
+public sealed record ParsedCommand(IReadOnlyList<string> Words, IReadOnlyList<Redirection> Redirections);
+
+/// <summary>
 /// Splits a command line into a pipeline of commands and their arguments, shell style:
 /// whitespace separates arguments, <c>'single'</c> and <c>"double"</c> quotes group them,
-/// a backslash escapes the next character and <c>|</c> pipes one command into the next.
+/// a backslash escapes the next character, <c>|</c> pipes one command into the next and
+/// <c>&gt;</c>, <c>&gt;&gt;</c>, <c>2&gt;</c> redirect output to a file.
 /// </summary>
 public static class CommandLineParser
 {
-    public static IReadOnlyList<IReadOnlyList<string>> Parse(string input)
+    /// <summary>The words of each command, without redirections.</summary>
+    public static IReadOnlyList<IReadOnlyList<string>> Parse(string input) =>
+        [.. ParseLine(input).Select(command => command.Words)];
+
+    public static IReadOnlyList<ParsedCommand> ParseLine(string input)
     {
-        var stages = new List<IReadOnlyList<string>>();
+        var stages = new List<ParsedCommand>();
         var tokens = new List<string>();
+        var redirections = new List<Redirection>();
         var current = new StringBuilder();
         var inToken = false;
+        var quoted = false;
 
         for (var i = 0; i < input.Length; i++)
         {
@@ -29,27 +50,59 @@ public static class CommandLineParser
             switch (c)
             {
                 case '\'' or '"':
-                    inToken = true;
+                    inToken = quoted = true;
                     i = ReadQuoted(input, i, current);
                     break;
 
                 case '\\':
-                    inToken = true;
+                    inToken = quoted = true;
                     if (i + 1 < input.Length)
                     {
                         current.Append(input[++i]);
                     }
                     break;
 
+                case '>':
+                    // "2>" redirects error messages; a 2 that is part of a longer word is just text.
+                    var stream = 1;
+                    if (inToken && !quoted && current.ToString() == "2")
+                    {
+                        stream = 2;
+                        current.Clear();
+                        inToken = false;
+                    }
+                    else
+                    {
+                        EndToken();
+                    }
+
+                    var append = i + 1 < input.Length && input[i + 1] == '>';
+                    if (append)
+                    {
+                        i++;
+                    }
+
+                    if (stream == 2 && input.AsSpan(i + 1).StartsWith(Redirection.ToOutput))
+                    {
+                        redirections.Add(new Redirection(2, Redirection.ToOutput, append));
+                        i += Redirection.ToOutput.Length;
+                        break;
+                    }
+
+                    var target = ReadTarget(input, ref i);
+                    redirections.Add(new Redirection(stream, target, append));
+                    break;
+
                 case '|':
                     EndToken();
-                    if (tokens.Count == 0)
+                    if (tokens.Count == 0 && redirections.Count == 0)
                     {
                         throw new CommandSyntaxException("Error.UnexpectedPipe");
                     }
 
-                    stages.Add(tokens);
+                    stages.Add(new ParsedCommand(tokens, redirections));
                     tokens = [];
+                    redirections = [];
                     break;
 
                 case var _ when char.IsWhiteSpace(c):
@@ -65,9 +118,9 @@ public static class CommandLineParser
 
         EndToken();
 
-        if (tokens.Count > 0)
+        if (tokens.Count > 0 || redirections.Count > 0)
         {
-            stages.Add(tokens);
+            stages.Add(new ParsedCommand(tokens, redirections));
         }
         else if (stages.Count > 0)
         {
@@ -84,7 +137,52 @@ public static class CommandLineParser
                 current.Clear();
                 inToken = false;
             }
+
+            quoted = false;
         }
+    }
+
+    /// <summary>Reads the file name after <c>&gt;</c>: one word, which may be quoted.</summary>
+    private static string ReadTarget(string input, ref int index)
+    {
+        var target = new StringBuilder();
+        var i = index + 1;
+
+        while (i < input.Length && char.IsWhiteSpace(input[i]))
+        {
+            i++;
+        }
+
+        for (; i < input.Length; i++)
+        {
+            var c = input[i];
+
+            if (char.IsWhiteSpace(c) || c is '|' or '>')
+            {
+                break;
+            }
+
+            if (c is '\'' or '"')
+            {
+                i = ReadQuoted(input, i, target);
+            }
+            else if (c == '\\' && i + 1 < input.Length)
+            {
+                target.Append(input[++i]);
+            }
+            else
+            {
+                target.Append(c);
+            }
+        }
+
+        if (target.Length == 0)
+        {
+            throw new CommandSyntaxException("Error.MissingRedirectTarget");
+        }
+
+        index = i - 1;
+        return target.ToString();
     }
 
     /// <returns>The index of the closing quote.</returns>

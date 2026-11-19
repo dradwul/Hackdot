@@ -224,6 +224,10 @@ public static class TabCompleter
                     End();
                     words.Clear();
                     break;
+                case '>':
+                    // A redirection: the file name after it is a new word.
+                    End();
+                    break;
                 case var _ when char.IsWhiteSpace(c):
                     End();
                     break;

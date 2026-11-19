@@ -5,6 +5,24 @@ What's new in each version of Hackdot. The version number is shown at the bottom
 Versions follow [semantic versioning](https://semver.org/): a new **minor** version (1.**4**.0) adds missions or
 features, a **patch** version (1.4.**1**) only fixes things.
 
+## 1.5.0 – 2026-11-19
+
+**Chapter 3** – two new missions:
+
+- **Tick Tock** – root runs a cleanup script every minute, and anyone can edit it.
+- **Night Shift** – make the backup account tell you what it may do, then use it.
+
+In the terminal:
+
+- `>` and `>>` write a command's output to a file; `2>` sends error messages to a file and `2>&1` sends them
+  wherever the output goes.
+- The computer has a clock: it moves on a minute with every command. New commands `date` and `sleep`
+  (`sleep 60`, `sleep 5m`).
+- Cron jobs in `/etc/crontab` really run when their time comes – as their user.
+- Scripts can be run, e.g. `./script.sh` (they need `x` permission).
+- New command `touch` creates an empty file.
+- New guide topic: writing to files.
+
 ## 1.4.1 – 2026-11-19
 
 - On phones, the "new version" banner now appears at the top, so it no longer covers the terminal's input.

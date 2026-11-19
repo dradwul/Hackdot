@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "id": "night-shift",
+  "order": 15,
+  "difficulty": "hard",
+  "points": 1700,
+  "title": "Night Shift",
+  "summary": "Every ten minutes the backup account wakes up and runs a script you can edit. What is backup allowed to do?",
+  "briefing": "DotTech's product plans are in `/root/plans.txt` on the server dottech-vault. This time root runs nothing you can touch.\n\nBut root isn't the only user with scheduled jobs. Every ten minutes, the account **backup** runs a script – and the team made that script editable for everyone. That means you can make backup do anything backup is allowed to do.\n\nSo: what is backup allowed to do? You can't read backup's sudo rules yourself… but backup can. And remember, a job that runs every ten minutes needs a little patience – `date` and `sleep` are your friends.\n\nYou have **written permission** for this final test. Chain everything together and read the plans.",
+  "objective": "Use backup's scheduled job to find out what backup may run with sudo, then use that to read /root/plans.txt.",
+  "debrief": "The whole chain, one step at a time:\n\n1. `/etc/crontab` showed a job that runs `/opt/backup/run.sh` as **backup** every ten minutes – and the script was writable by everyone.\n\n2. You couldn't read the sudo rules, so you let backup do it: `sudo -l > /tmp/rules.txt` in the script. Backup was allowed to run `tail` on `/var/log/*` as root – a wildcard.\n\n3. One more line made backup run `sudo tail /var/log/../../root/plans.txt` and write it to `/tmp`. Ten minutes later, the plans were yours.\n\nNo single mistake handed over root: an editable script, a small sudo rule and a wildcard. Together, they did. That's why ethical hackers always ask \"and what can **that** account do?\"\n\nThe lessons for DotTech: every account's scheduled scripts must be protected like root's, sudo rules need exact paths without wildcards – and \"backup\" accounts often have more power than anyone remembers.\n\nThat was the end of chapter 3, agent. Well done!",
+  "flag": "FLAG{n1ght_sh1ft_n3v3r_sl33ps}",
+  "hints": [
+    "Find the job that runs as backup and the script it starts. You can't read backup's sudo rules – but if you add `sudo -l` to that script and save its output to a file, backup will tell you.",
+    "Add `echo 'sudo -l > /tmp/rules.txt' >> /opt/backup/run.sh`, wait with `sleep 10m` and read `/tmp/rules.txt`. Backup may run `tail` on `/var/log/*` as root – and `*` matches `..` too.",
+    "Run `echo 'sudo tail /var/log/../../root/plans.txt > /tmp/plans.txt' >> /opt/backup/run.sh`, then `sleep 10m`, then `cat /tmp/plans.txt`."
+  ],
+  "skills": [ "redirection", "scheduled-tasks", "sudo", "date", "privilege-escalation" ],
+  "fileSystem": {
+    "hostname": "dottech-vault",
+    "users": [
+      { "name": "backup", "home": "/home/backup", "password": "nightly-B4ckup!" }
+    ],
+    "directories": [
+      { "path": "/home/backup", "owner": "backup", "mode": "700" },
+      { "path": "/opt/backup", "owner": "backup", "mode": "755" },
+      { "path": "/var/backups", "owner": "backup", "mode": "700" }
+    ],
+    "files": [
+      {
+        "path": "/etc/crontab",
+        "lines": [
+          "# /etc/crontab: system-wide crontab",
+          "# Each line: minute hour day month weekday  user    command",
+          "# (*/10 in the minute column means every 10 minutes)",
+          "",
+          "*/10 *  *  *  *    backup  /opt/backup/run.sh",
+          "0    3  *  *  *    root    /usr/sbin/logrotate /etc/logrotate.conf"
+        ]
+      },
+      {
+        "path": "/etc/sudoers",
+        "owner": "root",
+        "mode": "440",
+        "lines": [
+          "# Only root may read this file.",
+          "root    ALL=(ALL) ALL",
+          "backup  ALL=(root) NOPASSWD: /usr/bin/tail /var/log/*"
+        ]
+      },
+      {
+        "path": "/opt/backup/run.sh",
+        "owner": "backup",
+        "mode": "777",
+        "lines": [
+          "#!/bin/bash",
+          "# Backup job – runs every 10 minutes as the backup user.",
+          "# Shared with the whole ops team so anyone can fix it at night (chmod 777).",
+          "",
+          "touch /var/backups/last-run",
+          "echo \"backup finished\" >> /var/log/backup.log"
+        ]
+      },
+      {
+        "path": "/var/log/backup.log",
+        "owner": "backup",
+        "mode": "644",
+        "lines": [
+          "backup finished",
+          "backup finished"
+        ]
+      },
+      {
+        "path": "/var/log/cron.log",
+        "owner": "root",
+        "mode": "644",
+        "lines": [
+          "Mar 14 08:50:01 dottech-vault CRON[2530]: (backup) CMD (/opt/backup/run.sh)",
+          "Mar 14 09:00:01 dottech-vault CRON[2540]: (backup) CMD (/opt/backup/run.sh)",
+          "Mar 14 09:10:01 dottech-vault CRON[2550]: (backup) CMD (/opt/backup/run.sh)"
+        ]
+      },
+      {
+        "path": "/root/plans.txt",
+        "owner": "root",
+        "mode": "600",
+        "lines": [
+          "DotTech – product plans (CONFIDENTIAL)",
+          "",
+          "Next year: DotGlasses, DotRing, and a coffee machine that actually works.",
+          "Watermark: FLAG{n1ght_sh1ft_n3v3r_sl33ps}"
+        ]
+      },
+      {
+        "path": "/home/user/notes.txt",
+        "lines": [
+          "dottech-vault – test notes",
+          "",
+          "sudo -l -> I'm not in sudoers.",
+          "/etc/sudoers -> Permission denied.",
+          "The backup account seems to run something regularly. Check the schedule."
+        ]
+      }
+    ]
+  }
+}

@@ -59,9 +59,21 @@
     {
       "id": "scheduled-tasks",
       "title": "Scheduled tasks (cron)",
-      "body": "Computers do a lot of work on their own: backups, cleaning up logs, syncing files. On Linux a program called **cron** starts these jobs at set times.\n\nThe system schedule is in `/etc/crontab`, and everyone may read it. Each line has five time columns – minute, hour, day, month, weekday – then the **user** the job runs as, and the command. A `*` means \"every\", so `*/5 * * * *` means every five minutes.\n\nJobs often run as root. That makes them interesting to an attacker: read the script a job runs and look at what it does. Does it copy secret files somewhere others can read? Can everyone change the script? Then anyone could make root do anything.",
+      "body": "Computers do a lot of work on their own: backups, cleaning up logs, syncing files. On Linux a program called **cron** starts these jobs at set times.\n\nThe system schedule is in `/etc/crontab`, and everyone may read it. Each line has five time columns – minute, hour, day, month, weekday – then the **user** the job runs as, and the command. A `*` means \"every\", so `*/5 * * * *` means every five minutes.\n\nJobs often run as root. That makes them interesting to an attacker: read the script a job runs and look at what it does. Does it copy secret files somewhere others can read? Can everyone change the script? Then anyone could make root do anything.\n\nIn DotOS the clock moves on a minute every time you run a command. `date` shows the time, and `sleep 60` (or `sleep 5m`) lets time pass – every job that was due in the meantime runs. Many jobs write to `/var/log/cron.log`, so you can see when they ran.",
       "examples": [
-        { "command": "cat /etc/crontab", "description": "See which jobs run, when, and as which user" }
+        { "command": "cat /etc/crontab", "description": "See which jobs run, when, and as which user" },
+        { "command": "date", "description": "What time is it on this computer?" },
+        { "command": "sleep 5m", "description": "Let five minutes pass" }
+      ]
+    },
+    {
+      "id": "redirection",
+      "title": "Writing to files (> and >>)",
+      "body": "Normally a command's output appears on the screen. With `>` it goes into a file instead: `echo hello > note.txt` creates `note.txt` (or **replaces** everything in it) with the word hello. `>>` **adds** to the end instead: `echo again >> note.txt`.\n\nError messages are separate: `2>` sends them to a file, and `2>/dev/null` throws them away – `/dev/null` is a bin that swallows everything. `2>&1` sends error messages wherever the normal output goes.\n\nWriting needs permission: `w` on the file, or on the folder for a new file. `/tmp` is a folder everyone may write to.\n\nTo put a command that itself contains `>` into a file, wrap it in quotes: `echo 'cat a > b' >> script.sh` writes the line `cat a > b` into the script instead of redirecting straight away.",
+      "examples": [
+        { "command": "echo hello > /tmp/note.txt", "description": "Write a word into a new file" },
+        { "command": "ls / >> /tmp/note.txt", "description": "Add a listing to the end of a file" },
+        { "command": "ls /root 2>/dev/null", "description": "Hide the 'Permission denied' message" }
       ]
     },
     {

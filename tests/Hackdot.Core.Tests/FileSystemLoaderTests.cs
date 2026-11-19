@@ -30,7 +30,7 @@ public class FileSystemLoaderTests
         Assert.Equal("s3cret", alice.Password);
         Assert.Equal("drwx------", fs.GetNode("/srv/private")!.PermissionString);
         var log = fs.GetFile("/srv/private/log.txt")!;
-        Assert.Equal("one\ntwo", log.Content);
+        Assert.Equal("one\ntwo\n", log.Content);
         Assert.Equal("-rw-------", log.PermissionString);
         Assert.Equal("alice", log.Owner);
     }

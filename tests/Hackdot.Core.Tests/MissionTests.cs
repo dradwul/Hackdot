@@ -20,6 +20,7 @@ public class MissionCatalogTests
                 "sloppy-intern", "hidden-in-the-shadows", "needle-in-the-log-stack", "behind-closed-doors",
                 "who-keeps-knocking", "encoded-not-encrypted", "footprints", "a-little-too-generous", "inside-job",
                 "leftovers", "locked-out", "clockwork", "set-user-id",
+                "tick-tock", "night-shift",
             ],
             Catalog.Missions.Select(mission => mission.Id));
     }
@@ -85,6 +86,35 @@ public class MissionCatalogTests
     }
 
     [Fact]
+    public void TickTock_TheCleanupJobRunsEveryMinuteAsRoot()
+    {
+        var terminal = Play("tick-tock");
+
+        Assert.Contains("-rwxrwxrwx 1 root", terminal.Run("ls -l /opt/maintenance"));
+
+        // Every command is a minute, and the job appends a line each minute: 3 lines + 1 after 'ls'.
+        Assert.Equal(4, terminal.Run("cat /var/log/cleanup.log").Split('\n').Length);
+        terminal.Run("sleep 60");
+        Assert.Equal(7, terminal.Run("cat /var/log/cleanup.log").Split('\n').Length);
+        Assert.Contains("(root) CMD (/opt/maintenance/cleanup.sh)", terminal.Run("tail -n 1 /var/log/cron.log"));
+    }
+
+    [Fact]
+    public void NightShift_BackupRevealsItsOwnSudoRules_EveryTenMinutes()
+    {
+        var terminal = Play("night-shift");
+
+        Assert.Equal("cat: /etc/sudoers: Permission denied", terminal.Run("cat /etc/sudoers"));
+        terminal.Run("echo 'sudo -l > /tmp/rules.txt' >> /opt/backup/run.sh");
+        Assert.Equal("cat: /tmp/rules.txt: No such file or directory", terminal.Run("cat /tmp/rules.txt"));
+
+        terminal.Run("sleep 10m");
+
+        Assert.Contains("(root) NOPASSWD: /usr/bin/tail /var/log/*", terminal.Run("cat /tmp/rules.txt"));
+        Assert.Contains("-rw-r--r-- 1 backup", terminal.Run("ls -l /tmp/rules.txt"));
+    }
+
+    [Fact]
     public void SetUserId_FindListsTheSetUidPrograms_AndOnlyBase64LeaksFiles()
     {
         var terminal = Play("set-user-id");
@@ -118,6 +148,8 @@ public class MissionCatalogTests
     [InlineData("locked-out", "chmod 600 ~/recovery_codes.txt\ncat ~/recovery_codes.txt")]
     [InlineData("clockwork", "cat /srv/share/.sync/passwords.txt")]
     [InlineData("set-user-id", "base64 /root/signing_key.txt | base64 -d")]
+    [InlineData("tick-tock", "echo 'cat /root/flag.txt > /tmp/flag.txt' >> /opt/maintenance/cleanup.sh\nsleep 60\ncat /tmp/flag.txt")]
+    [InlineData("night-shift", "echo 'sudo tail /var/log/../../root/plans.txt > /tmp/plans.txt' >> /opt/backup/run.sh\nsleep 10m\ncat /tmp/plans.txt")]
     public void EmbeddedMissions_CanBeSolvedInTheTerminal(string id, string solution)
     {
         // Each line is one submitted input (a command, or the answer to a prompt like "Password:").

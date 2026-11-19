@@ -88,7 +88,9 @@ public static class FileSystemLoader
 
             var content = file switch
             {
-                { Lines: not null } => string.Join('\n', file.Lines),
+                // Like real text files, every line – the last one too – ends with a line break, so >> adds a new line.
+                { Lines: [_, ..] } => string.Join('\n', file.Lines) + "\n",
+                { Lines: not null } => "",
                 { Generate: not null } => ContentGenerator.Generate(file.Generate, fileSystem.Hostname),
                 _ => file.Content ?? "",
             };

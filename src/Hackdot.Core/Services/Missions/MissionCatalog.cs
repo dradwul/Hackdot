@@ -105,8 +105,9 @@ public sealed partial class MissionCatalog
 
     /// <summary>
     /// The users a player can become, step by step like a real attack: the starting user, accounts without a
-    /// password, accounts whose password appears in a file a reachable user can read, and root when a reachable
-    /// user has sudo rules. Sudo rules are assumed to be exploitable – the mission's solution test proves it.
+    /// password, accounts whose password appears in a file a reachable user can read, root when a reachable user
+    /// has sudo rules, the owner of a set-user-ID program a reachable user may run, and the user of a cron job whose
+    /// script a reachable user can change. Those are assumed to be exploitable – the mission's solution test proves it.
     /// </summary>
     private static List<ShellSession> ReachableUsers(VirtualFileSystem fileSystem, List<VirtualFile> allFiles)
     {
@@ -125,13 +126,18 @@ public sealed partial class MissionCatalog
                 .Where(program => reachable.Any(session => session.CanExecute(program)))
                 .Select(program => program.Owner)
                 .ToHashSet(StringComparer.Ordinal);
+            var cronUsers = Cron.Jobs(fileSystem)
+                .Where(job => job.ScriptPath is { } path && fileSystem.GetFile(path) is { } script
+                    && reachable.Any(session => session.CanWrite(script)))
+                .Select(job => job.User)
+                .ToHashSet(StringComparer.Ordinal);
 
             foreach (var user in fileSystem.Users.Where(user => reachable.All(session => session.User != user)))
             {
                 var passwordKnown = user.CanLogIn
                     && (!user.RequiresPassword || readableText.Any(text => ContainsSecret(text, user.Password!)));
 
-                if (passwordKnown || (user.IsRoot && canSudo) || setUidOwners.Contains(user.Name))
+                if (passwordKnown || (user.IsRoot && canSudo) || setUidOwners.Contains(user.Name) || cronUsers.Contains(user.Name))
                 {
                     reachable.Add(new ShellSession(fileSystem, user.Name));
                     foundMore = true;
