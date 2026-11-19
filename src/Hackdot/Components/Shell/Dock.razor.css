@@ -17,7 +17,7 @@
     height: 44px;
     padding: 0 0.8rem;
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
     background: var(--surface);
     font-size: 1.05rem;
     cursor: pointer;
@@ -51,7 +51,7 @@
     height: 44px;
     padding: 0 0.7rem;
     border: 0;
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
     background: transparent;
     color: var(--text-muted);
     cursor: pointer;
@@ -160,8 +160,8 @@
     align-items: center;
     gap: 0.8rem;
     width: 100%;
-    min-height: 52px;
-    padding: 0.5rem 0.75rem;
+    min-height: 46px;
+    padding: 0.35rem 0.6rem;
     border: 0;
     border-radius: var(--radius-sm);
     background: transparent;
@@ -179,9 +179,9 @@
 .menu-icon {
     display: grid;
     place-items: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: var(--radius-sm);
     background: color-mix(in srgb, var(--app-accent) 16%, transparent);
     color: var(--app-accent);
 }

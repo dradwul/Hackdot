@@ -16,7 +16,7 @@ strong {
 code {
     padding: 0.1em 0.4em;
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: var(--radius-sm);
     background: var(--terminal-bg);
     color: var(--accent);
     font-family: var(--font-mono);

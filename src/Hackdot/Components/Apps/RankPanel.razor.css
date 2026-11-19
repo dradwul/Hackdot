@@ -14,9 +14,7 @@
     padding: 1.1rem;
     border: 1px solid color-mix(in srgb, var(--warning) 35%, var(--border));
     border-radius: var(--radius);
-    background:
-        radial-gradient(ellipse 80% 90% at 100% 0%, color-mix(in srgb, var(--warning) 14%, transparent), transparent 70%),
-        var(--surface);
+    background: var(--surface);
 }
 
 .rank-label {
@@ -43,7 +41,7 @@
     height: 8px;
     margin-top: 0.5rem;
     overflow: hidden;
-    border-radius: 999px;
+    border-radius: var(--radius-sm);
     background: var(--surface-2);
 }
 
@@ -51,7 +49,7 @@
     display: block;
     height: 100%;
     border-radius: inherit;
-    background: linear-gradient(90deg, var(--warning), color-mix(in srgb, var(--warning) 60%, var(--accent-2)));
+    background: var(--warning);
     transition: width 400ms ease;
 }
 
@@ -110,7 +108,7 @@
     place-items: center;
     width: 38px;
     height: 38px;
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
     background: var(--surface-2);
     color: var(--text-muted);
 }

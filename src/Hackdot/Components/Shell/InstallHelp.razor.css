@@ -32,7 +32,7 @@
     place-items: center;
     width: 40px;
     height: 40px;
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
     background: color-mix(in srgb, var(--accent-2) 16%, transparent);
     color: var(--accent-2);
 }

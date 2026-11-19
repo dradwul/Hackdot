@@ -5,6 +5,11 @@ What's new in each version of Hackdot. The version number is shown at the bottom
 Versions follow [semantic versioning](https://semver.org/): a new **minor** version (1.**4**.0) adds missions or
 features, a **patch** version (1.4.**1**) only fixes things.
 
+## 1.6.1 – 2026-11-19
+
+- A sharper, tighter look: smaller corner radii instead of round "pill" buttons, flat surfaces without glows,
+  less empty space, underlined tabs, a slimmer dock and monospace headings – more like a real tool.
+
 ## 1.6.0 – 2026-11-19
 
 - **Ranks**: your points now earn you a title – from Intern all the way to Chief Security Officer. Your rank is

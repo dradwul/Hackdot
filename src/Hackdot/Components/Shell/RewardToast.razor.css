@@ -10,7 +10,7 @@
     max-width: calc(100% - 1.2rem);
     padding: 0.6rem 1rem 0.6rem 0.65rem;
     border: 1px solid color-mix(in srgb, var(--warning) 50%, var(--border));
-    border-radius: 999px;
+    border-radius: var(--radius-sm);
     background: var(--surface);
     box-shadow: var(--shadow-window);
     cursor: pointer;
@@ -24,7 +24,7 @@
     place-items: center;
     width: 36px;
     height: 36px;
-    border-radius: 50%;
+    border-radius: var(--radius-sm);
     background: color-mix(in srgb, var(--warning) 18%, transparent);
     color: var(--warning);
 }
