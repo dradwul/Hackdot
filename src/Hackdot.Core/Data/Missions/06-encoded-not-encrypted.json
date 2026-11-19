@@ -17,6 +17,22 @@
   ],
   "skills": [ "grep -r", "echo", "base64", "encoding" ],
   "techniques": [ "encoding" ],
+  "mails": [
+    {
+      "trigger": "assigned",
+      "from": "Robin Holm",
+      "role": "Developer",
+      "subject": "The token is perfectly safe",
+      "body": "Hi! Robin here, I built our new customer portal. Our CTO wants you to look at the admin token in the website's JavaScript.\n\nHonestly, no need – it's **double encrypted**. But go ahead, I've got nothing to hide. Mission: **Encoded, Not Encrypted**.\n\nRobin"
+    },
+    {
+      "trigger": "solved",
+      "from": "Robin Holm",
+      "role": "Developer",
+      "subject": "Re: The token is perfectly safe",
+      "body": "OK. So. Base64 is not encryption. I may have known that somewhere deep down.\n\nThe token is out of the website now and lives on the server, where it belongs. Thanks for being nice about it in the report.\n\nRobin"
+    }
+  ],
   "fileSystem": {
     "hostname": "dottech-web",
     "directories": [

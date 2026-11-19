@@ -17,6 +17,22 @@
   ],
   "skills": [ "ls", "cd", "cat" ],
   "techniques": [ "plaintext-passwords" ],
+  "mails": [
+    {
+      "trigger": "assigned",
+      "from": "Vera Lind",
+      "role": "Head of Security",
+      "subject": "Max's old laptop",
+      "body": "Your first real job. Max, our summer intern, set up our new web server and then went back to school. The laptop stayed here – and Max writes **everything** down.\n\nIf Max wrote down a password, I want to know before anyone else finds it. The mission is **The Sloppy Intern**.\n\nVera"
+    },
+    {
+      "trigger": "solved",
+      "from": "Max Ek",
+      "role": "Summer intern",
+      "subject": "sorry!!",
+      "body": "Hi,\n\nVera told me what you found in my notes. I really, REALLY meant to delete that file. I've installed a password manager now. Promise.\n\nAlso: who reads other people's server notes?? (OK, that's literally your job. Fair.)\n\nMax"
+    }
+  ],
   "fileSystem": {
     "hostname": "dottech-laptop",
     "files": [

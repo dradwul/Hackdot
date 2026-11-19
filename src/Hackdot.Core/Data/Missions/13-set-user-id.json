@@ -18,6 +18,22 @@
   ],
   "skills": [ "find", "ls -l", "base64", "suid" ],
   "techniques": [ "suid-binaries" ],
+  "mails": [
+    {
+      "trigger": "assigned",
+      "from": "Vera Lind",
+      "role": "Head of Security",
+      "subject": "The release signing key",
+      "body": "Every DotTech update is signed with a secret key in `/root/signing_key.txt` on dottech-build. If it leaks, anyone can publish fake updates in our name.\n\nThe server is locked down: no sudo, no passwords lying around. But some programs run as their owner, whoever starts them. Check them. Mission: **Set User ID**.\n\nVera"
+    },
+    {
+      "trigger": "solved",
+      "from": "Vera Lind",
+      "role": "Head of Security",
+      "subject": "Key rotated",
+      "body": "A set-user-ID `base64`, left over from a \"quick fix\". We've removed the bit and created a brand-new signing key – the old one is retired.\n\nThat's chapter 2 done. You're getting dangerously good at this.\n\nVera"
+    }
+  ],
   "fileSystem": {
     "hostname": "dottech-build",
     "directories": [

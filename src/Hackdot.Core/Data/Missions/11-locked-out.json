@@ -18,6 +18,22 @@
   ],
   "skills": [ "ls -l", "chmod", "cat", "permissions" ],
   "techniques": [ "file-permissions" ],
+  "mails": [
+    {
+      "trigger": "assigned",
+      "from": "Priya Shah",
+      "role": "HR",
+      "subject": "Nobody can open anything!",
+      "body": "Hi, Priya from HR. Last night IT ran a new \"security script\" on dottech-hr, and now NOBODY can open their own files. Not even me.\n\nYour account was hit too – your recovery codes are in there. Can you find a way back in? Mission: **Locked Out**.\n\nPriya"
+    },
+    {
+      "trigger": "solved",
+      "from": "Priya Shah",
+      "role": "HR",
+      "subject": "Re: Nobody can open anything!",
+      "body": "You did it! And you explained `chmod` so well that half the office has fixed their own files.\n\nIT has been asked, politely, to never run that script again.\n\nPriya"
+    }
+  ],
   "fileSystem": {
     "hostname": "dottech-hr",
     "users": [

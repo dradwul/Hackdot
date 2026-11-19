@@ -17,6 +17,22 @@
   ],
   "skills": [ "cd", "ls -a", "cat" ],
   "techniques": [ "hidden-files" ],
+  "mails": [
+    {
+      "trigger": "assigned",
+      "from": "Vera Lind",
+      "role": "Head of Security",
+      "subject": "The web server is \"clean\"",
+      "body": "Thanks to you, the admin password is changed. Next stop: our web server, dottech-web.\n\nOur web admin swears there is nothing secret in `/var/www` – \"I checked it myself!\" I'd like a second opinion. The mission is **Hidden in the Shadows**.\n\nVera"
+    },
+    {
+      "trigger": "solved",
+      "from": "Vera Lind",
+      "role": "Head of Security",
+      "subject": "So much for \"clean\"",
+      "body": "A hidden file, right in the web folder. Our web admin has learned that `ls` and `ls -a` are not the same thing.\n\nThe file is gone now. Good catch.\n\nVera"
+    }
+  ],
   "fileSystem": {
     "hostname": "dottech-web",
     "files": [

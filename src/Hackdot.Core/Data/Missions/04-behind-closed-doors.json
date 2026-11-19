@@ -17,6 +17,22 @@
   ],
   "skills": [ "grep -r", "su", "switching-users" ],
   "techniques": [ "credential-reuse" ],
+  "mails": [
+    {
+      "trigger": "assigned",
+      "from": "Vera Lind",
+      "role": "Head of Security",
+      "subject": "The quarterly report is stuck",
+      "body": "Panic on the top floor: the quarterly report is due today, and it's locked in the private folder of Sam, our system administrator. Sam is on a beach with no signal.\n\nThe CEO has given you **written permission** to get into Sam's account. You'll need the `admin` password. Mission: **Behind Closed Doors**.\n\nVera"
+    },
+    {
+      "trigger": "solved",
+      "from": "Sam Nilsson",
+      "role": "System administrator",
+      "subject": "Back from vacation and… oh.",
+      "body": "Hi,\n\nI'm back, tanned, and I've just read your report. Yes, that password was in a file. Yes, I know. In my defence, it was a very nice beach.\n\nI've changed the password, and this time it's only in my password manager.\n\nSam"
+    }
+  ],
   "fileSystem": {
     "hostname": "dottech-srv",
     "users": [

@@ -76,6 +76,18 @@ public sealed partial class MissionCatalog
             errors.Add("Points must be greater than zero.");
         }
 
+        foreach (var mails in mission.Mails.GroupBy(mail => mail.Trigger))
+        {
+            if (mails.Key is not (MissionMail.Assigned or MissionMail.Solved))
+            {
+                errors.Add($"Mail trigger '{mails.Key}' must be '{MissionMail.Assigned}' or '{MissionMail.Solved}'.");
+            }
+            else if (mails.Count() > 1)
+            {
+                errors.Add($"Only one '{mails.Key}' mail per mission.");
+            }
+        }
+
         VirtualFileSystem fileSystem;
 
         try

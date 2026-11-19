@@ -17,6 +17,22 @@
   ],
   "skills": [ "cut", "sort", "uniq", "counting", "permissions" ],
   "techniques": [ "brute-force" ],
+  "mails": [
+    {
+      "trigger": "assigned",
+      "from": "Vera Lind",
+      "role": "Head of Security",
+      "subject": "The website was slow all night",
+      "body": "Our customer website was crawling last night, and the logs are full of failed logins. It looks like a **brute-force attack**: someone guessing password after password.\n\nWe've set up a honeypot that recorded the attacker's sessions. Find out which address is attacking us. Mission: **Who Keeps Knocking?**\n\nVera"
+    },
+    {
+      "trigger": "solved",
+      "from": "Vera Lind",
+      "role": "Head of Security",
+      "subject": "Address blocked",
+      "body": "That address is blocked now, and we've added a limit on failed logins. Counting with `sort | uniq -c` beat reading 2,400 lines by a long way.\n\nAnd you didn't fall for the innocent health check that tops the list. Nicely done.\n\nVera"
+    }
+  ],
   "fileSystem": {
     "hostname": "dottech-web",
     "directories": [

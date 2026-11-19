@@ -64,6 +64,9 @@ public sealed class MissionDefinition
     /// <summary>The technique cards (ids in <c>Data/Guide/cards.json</c>) the player collects by solving this mission.</summary>
     public List<string> Techniques { get; set; } = [];
 
+    /// <summary>Mails for the Mail app: the job when the mission unlocks, a reaction when it is solved.</summary>
+    public List<MissionMail> Mails { get; set; } = [];
+
     /// <summary>Files on top of the shared base system.</summary>
     public FileSystemDefinition FileSystem { get; set; } = new();
 }

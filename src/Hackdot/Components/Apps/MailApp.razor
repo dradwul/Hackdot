@@ -1,0 +1,96 @@
+@using Hackdot.Core.Services.Missions
+@implements IDisposable
+@inject GameService Game
+@inject ShellService Shell
+
+@* The inbox: jobs from DotTech when a mission unlocks, and replies when it is solved. *@
+<div class="mail-app">
+    @if (Open is { } message)
+    {
+        <article class="message">
+            <div class="message-bar">
+                <button type="button" class="back" @onclick="Close">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
+                    @L["Mail.Inbox"]
+                </button>
+            </div>
+            <div class="message-body">
+                <h2>@message.Mail.Subject.Get()</h2>
+                <div class="sender">
+                    <span class="avatar" aria-hidden="true">@Initials(message.Mail.From)</span>
+                    <span class="sender-text">
+                        <strong>@message.Mail.From</strong>
+                        <span>@(message.Mail.Role?.Get() ?? "")@L["Mail.Company"]</span>
+                    </span>
+                </div>
+                <RichText Text="@message.Mail.Body.Get()" />
+                @if (message.IsAssignment && Game.State.IsUnlocked(message.Mission))
+                {
+                    <button type="button" class="button primary" @onclick="() => OpenMission(message)">
+                        <AppIcon App="AppId.Mission" Size="18" /> @L["Mail.OpenMission", message.Mission.Title.Get()]
+                    </button>
+                }
+            </div>
+        </article>
+    }
+    else
+    {
+        <div class="inbox-bar">
+            <span class="inbox-title">@L["Mail.Inbox"]</span>
+            <span class="inbox-count">@L["Mail.UnreadCount", Game.State.UnreadMailCount]</span>
+        </div>
+        <ul class="inbox">
+            @foreach (var item in Game.State.Inbox)
+            {
+                var unread = !Game.State.IsRead(item);
+                <li>
+                    <button type="button" class="row @(unread ? "unread" : null)" @onclick="() => Read(item)">
+                        <span class="avatar" aria-hidden="true">@Initials(item.Mail.From)</span>
+                        <span class="row-text">
+                            <span class="row-from">@item.Mail.From</span>
+                            <span class="row-subject">@item.Mail.Subject.Get()</span>
+                        </span>
+                        @if (unread)
+                        {
+                            <span class="dot" title="@L["Mail.New"]"></span>
+                        }
+                    </button>
+                </li>
+            }
+        </ul>
+    }
+</div>
+
+@code {
+    private string? _openId;
+
+    private MailMessage? Open => _openId is null ? null : Game.State.Inbox.FirstOrDefault(message => message.Id == _openId);
+
+    protected override void OnInitialized() => Game.Changed += OnGameChanged;
+
+    private void Read(MailMessage message)
+    {
+        _openId = message.Id;
+        Game.MarkRead(message);
+    }
+
+    private void Close() => _openId = null;
+
+    private void OpenMission(MailMessage message)
+    {
+        if (Game.ActiveMission != message.Mission)
+        {
+            Game.StartMission(message.Mission);
+        }
+
+        Shell.Open(AppId.Mission);
+    }
+
+    private static string Initials(string name) =>
+        string.Concat(name.Split(' ', StringSplitOptions.RemoveEmptyEntries).Where(word => char.IsLetter(word[0])).Take(2).Select(word => char.ToUpperInvariant(word[0])));
+
+    private void OnGameChanged() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => Game.Changed -= OnGameChanged;
+}

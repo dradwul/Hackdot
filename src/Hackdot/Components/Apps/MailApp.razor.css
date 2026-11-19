@@ -1,0 +1,196 @@
+.mail-app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    --mail-accent: var(--app-mail);
+}
+
+/* ---------- Inbox ---------- */
+
+.inbox-bar,
+.message-bar {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 40px;
+    padding: 0 max(0.75rem, var(--safe-left));
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-elev);
+}
+
+.inbox-title {
+    font-weight: 600;
+    box-shadow: inset 0 -2px 0 var(--mail-accent);
+    line-height: 40px;
+}
+
+.inbox-count {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.inbox {
+    flex: 1;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    list-style: none;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    width: 100%;
+    min-height: 60px;
+    padding: 0.55rem max(0.75rem, var(--safe-left));
+    border: 0;
+    border-bottom: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    text-align: left;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.row:active {
+    background: var(--surface);
+}
+
+@media (hover: hover) {
+    .row:hover {
+        background: var(--surface);
+    }
+}
+
+.row-text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.row-from {
+    font-size: 0.8rem;
+}
+
+.row-subject {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.row.unread .row-from,
+.row.unread .row-subject {
+    color: var(--text);
+    font-weight: 600;
+}
+
+.dot {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    background: var(--mail-accent);
+}
+
+.avatar {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid color-mix(in srgb, var(--mail-accent) 40%, var(--border));
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--mail-accent);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+/* ---------- Message ---------- */
+
+.message {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    min-height: 40px;
+    margin-left: -0.4rem;
+    padding: 0 0.4rem;
+    border: 0;
+    background: transparent;
+    color: var(--mail-accent);
+    font-weight: 600;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.message-body {
+    flex: 1;
+    min-height: 0;
+    max-width: 42rem;
+    width: 100%;
+    margin: 0 auto;
+    padding: 1rem max(1rem, var(--safe-left)) 1.75rem;
+    overflow-y: auto;
+    font-size: 0.95rem;
+}
+
+h2 {
+    margin: 0 0 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+}
+
+.sender {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.sender-text {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.sender-text strong {
+    font-size: 0.9rem;
+    color: var(--text);
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 44px;
+    margin-top: 0.75rem;
+    padding: 0 1rem;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: var(--accent);
+    color: var(--bg);
+    font-weight: 600;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.button:active {
+    filter: brightness(0.9);
+}

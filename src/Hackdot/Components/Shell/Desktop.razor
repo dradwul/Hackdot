@@ -15,7 +15,13 @@
                 <li>
                     <button type="button" class="desktop-icon" style="--app-accent: @app.Accent"
                             @onclick="() => Shell.Open(app.Id)">
-                        <span class="icon-tile"><AppIcon App="app.Id" Size="26" /></span>
+                        <span class="icon-tile">
+                            <AppIcon App="app.Id" Size="26" />
+                            @if (app.Id == AppId.Mail && Game.State.UnreadMailCount is > 0 and var unread)
+                            {
+                                <span class="badge" aria-label="@L["Mail.Unread", unread]">@unread</span>
+                            }
+                        </span>
                         <span class="icon-label">@L[app.TitleKey]</span>
                     </button>
                 </li>
@@ -46,6 +52,7 @@
             <AppWindow @key="id" App="Shell.Get(id)" Active="Shell.ActiveApp == id">
                 @switch (id)
                 {
+                    case AppId.Mail: <MailApp /> break;
                     case AppId.Mission: <MissionApp /> break;
                     case AppId.Terminal: <TerminalApp /> break;
                     case AppId.Files: <FilesApp /> break;

@@ -18,6 +18,22 @@
   ],
   "skills": [ "redirection", "scheduled-tasks", "sudo", "date", "privilege-escalation" ],
   "techniques": [ "service-accounts" ],
+  "mails": [
+    {
+      "trigger": "assigned",
+      "from": "Vera Lind",
+      "role": "Head of Security",
+      "subject": "The night shift",
+      "body": "Last job of chapter 3. Our product plans are in `/root/plans.txt` on dottech-vault, and this time root runs nothing you can touch.\n\nBut the **backup** account runs a script every ten minutes, and the ops team made it editable for everyone. What is backup allowed to do? Find out, and use it. Mission: **Night Shift**.\n\nVera"
+    },
+    {
+      "trigger": "solved",
+      "from": "Vera Lind",
+      "role": "Head of Security",
+      "subject": "That's all of them",
+      "body": "An editable script, a small sudo rule and a wildcard – and the plans were yours. Every link in that chain is fixed now.\n\nYou've closed every case we had. When new ones come in, you'll be the first to know – watch this inbox.\n\nThank you, agent.\n\nVera"
+    }
+  ],
   "fileSystem": {
     "hostname": "dottech-vault",
     "users": [

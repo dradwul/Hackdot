@@ -69,6 +69,9 @@ public sealed class GameService
     /// <summary>The player earned something: achievements, a new rank (or <c>null</c>) and technique cards.</summary>
     public event Action<Rewards>? Rewarded;
 
+    /// <summary>New mails arrived (after solving a mission: the reply and the next job).</summary>
+    public event Action<IReadOnlyList<MailMessage>>? MailArrived;
+
     /// <summary>A new session for the logged-in user, starting in their home folder.</summary>
     public ShellSession CreateSession() => new(FileSystem, CurrentUser.Name);
 
@@ -108,6 +111,7 @@ public sealed class GameService
     {
         var rankBefore = State.Rank;
         var cardsBefore = Cards.Where(IsCollected).ToList();
+        var mailBefore = State.Inbox.Select(message => message.Id).ToHashSet();
         var result = State.SubmitFlag(answer);
         var earned = result == FlagCheckResult.Correct
             ? State.Achievements.CheckMissions(State, DateTime.Now, justSolved: true)
@@ -116,7 +120,23 @@ public sealed class GameService
         Save();
         Changed?.Invoke();
         Reward(earned, rankBefore, [.. Cards.Where(IsCollected).Except(cardsBefore)]);
+
+        if (State.Inbox.Where(message => !mailBefore.Contains(message.Id)).ToList() is { Count: > 0 } arrived)
+        {
+            MailArrived?.Invoke(arrived);
+        }
+
         return result;
+    }
+
+    /// <summary>Marks a mail as read (when the player opens it).</summary>
+    public void MarkRead(MailMessage message)
+    {
+        if (State.MarkRead(message))
+        {
+            Save();
+            Changed?.Invoke();
+        }
     }
 
     /// <summary>The terminal ran a command line: it may have earned an achievement.</summary>

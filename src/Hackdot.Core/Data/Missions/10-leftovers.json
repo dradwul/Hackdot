@@ -18,6 +18,22 @@
   ],
   "skills": [ "ls -la", "find", "cat", "leftover-files" ],
   "techniques": [ "backup-files" ],
+  "mails": [
+    {
+      "trigger": "assigned",
+      "from": "Vera Lind",
+      "role": "Head of Security",
+      "subject": "Chapter 2: our new web shop",
+      "body": "Big week: DotTech has opened a web shop on dottech-shop. The database password is in `config.php`, and that file is properly locked. Good start.\n\nBut Sam edits files directly on the live server, and I've seen what text editors leave behind. Take a look. Mission: **Leftovers**.\n\nVera"
+    },
+    {
+      "trigger": "solved",
+      "from": "Sam Nilsson",
+      "role": "System administrator",
+      "subject": "About that .bak file",
+      "body": "So the original was locked and the backup copy wasn't. I made that copy to be SAFE.\n\nThe copies are gone, and we have a test server now, so nobody edits the live shop anymore. Including me.\n\nSam"
+    }
+  ],
   "fileSystem": {
     "hostname": "dottech-shop",
     "users": [

@@ -43,6 +43,7 @@ public sealed class GameState
     public static readonly IReadOnlyList<int> HintCostPercent = [10, 15, 25];
 
     private readonly Dictionary<string, MissionProgress> _progress = new(StringComparer.Ordinal);
+    private readonly HashSet<string> _readMail;
 
     public GameState(MissionCatalog catalog, GameProgressSnapshot? snapshot = null)
     {
@@ -69,6 +70,14 @@ public sealed class GameState
 
         Achievements = new AchievementTracker(catalog, snapshot?.Achievements, snapshot?.Stats);
 
+        // A save from before the Mail app existed: what has already arrived counts as read, so nobody returns to
+        // twenty unread mails.
+        _readMail = new HashSet<string>(snapshot?.ReadMail ?? [], StringComparer.Ordinal);
+        if (snapshot is not null && snapshot.ReadMail is null)
+        {
+            _readMail.UnionWith(Mailbox.Arrived(this).Select(message => message.Id));
+        }
+
         ActiveMission = snapshot?.ActiveMissionId is { } activeId && catalog.Find(activeId) is { } active && IsUnlocked(active)
             ? active
             : catalog.Missions.FirstOrDefault(mission => !Progress(mission).Completed && IsUnlocked(mission)) ?? catalog.Missions[0];
@@ -81,6 +90,16 @@ public sealed class GameState
 
     /// <summary>The player's title, earned with points.</summary>
     public Rank Rank => Ranks.For(TotalScore);
+
+    /// <summary>The mails that have arrived, newest first.</summary>
+    public IReadOnlyList<MailMessage> Inbox => Mailbox.Arrived(this);
+
+    public int UnreadMailCount => Inbox.Count(message => !IsRead(message));
+
+    public bool IsRead(MailMessage message) => _readMail.Contains(message.Id);
+
+    /// <returns><c>false</c> if it was already read.</returns>
+    public bool MarkRead(MailMessage message) => _readMail.Add(message.Id);
 
     public MissionDefinition ActiveMission { get; private set; }
 
@@ -225,6 +244,7 @@ public sealed class GameState
             }),
         Achievements = [.. Achievements.Unlocked.Order(StringComparer.Ordinal)],
         Stats = new Dictionary<string, int>(Achievements.Stats),
+        ReadMail = [.. _readMail.Order(StringComparer.Ordinal)],
     };
 
     public static string SerializeSnapshot(GameProgressSnapshot snapshot) =>
@@ -267,6 +287,9 @@ public sealed class GameProgressSnapshot
     public List<string> Achievements { get; set; } = [];
 
     public Dictionary<string, int> Stats { get; set; } = [];
+
+    /// <summary>Ids of read mails. <c>null</c> in saves from before the Mail app.</summary>
+    public List<string>? ReadMail { get; set; }
 }
 
 public sealed class MissionProgressSnapshot

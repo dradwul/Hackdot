@@ -18,6 +18,22 @@
   ],
   "skills": [ "echo", "redirection", "scheduled-tasks", "sleep" ],
   "techniques": [ "writable-cron-scripts" ],
+  "mails": [
+    {
+      "trigger": "assigned",
+      "from": "Vera Lind",
+      "role": "Head of Security",
+      "subject": "Chapter 3: the cleanup script",
+      "body": "On dottech-files, root runs a cleanup script every minute. I've just heard that IT made it editable \"so the whole team can tweak it\".\n\nIf that's true, anyone can make root do anything. You now know how to write to files with `>` and `>>` – prove it. Mission: **Tick Tock**.\n\nVera"
+    },
+    {
+      "trigger": "solved",
+      "from": "Jonas Berg",
+      "role": "IT administrator",
+      "subject": "chmod 777 was a mistake",
+      "body": "I made it `777` so the team could tweak it. The team, it turns out, includes everyone.\n\nThe script is `755` and owned by root now. Changes go through me. Thanks for not doing anything worse than copying a flag!\n\nJonas"
+    }
+  ],
   "fileSystem": {
     "hostname": "dottech-files",
     "directories": [

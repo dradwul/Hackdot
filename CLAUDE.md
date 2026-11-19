@@ -87,6 +87,10 @@ En bana = en JSON-fil i `src/Hackdot.Core/Data/Missions/` (`NN-namn.json`), mode
   `Data/Guide/topics.json` (t.ex. `pipes`). `GuideTests` kontrollerar att varje skill har en guide-post.
 - Uppdragets `techniques` är id:n på teknikkort i `Data/Guide/cards.json` (minst ett per uppdrag) – kortet samlas när
   uppdraget klaras. `chapter` (standard 1) styr kapitelprestationerna. `TechniqueCardTests` kontrollerar kopplingarna.
+- Uppdragets `mails` (Mail-appen): ett `"trigger": "assigned"`-mejl (jobbet, kommer när uppdraget låses upp) och ett
+  `"solved"`-mejl (en reaktion). `from` = namn (översätts inte), `role`/`subject`/`body` = lokaliserbar text.
+  Återkommande personer på DotTech: Vera Lind (säkerhetschef, ger uppdragen), Jonas Berg (IT), Sam Nilsson (admin),
+  Max Ek och Kim (praktikanter), Robin Holm (utvecklare), Priya Shah (HR). `MailTests` kräver båda mejlen.
 
 ## Guide-appen
 

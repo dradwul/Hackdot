@@ -17,6 +17,22 @@
   ],
   "skills": [ "grep", "cat", "pipes" ],
   "techniques": [ "log-analysis" ],
+  "mails": [
+    {
+      "trigger": "assigned",
+      "from": "Jonas Berg",
+      "role": "IT administrator",
+      "subject": "URGENT: someone is knocking",
+      "body": "Hi! Jonas from IT here. Someone has been trying to log in to dottech-srv ALL NIGHT. Every attempt is in `/var/log/auth.log`, but it's 1,500 lines and I have three other fires to put out.\n\nI think the attacker slipped up and left something in the log. Can you find it? Mission: **Needle in the Log Stack**.\n\nJonas"
+    },
+    {
+      "trigger": "solved",
+      "from": "Jonas Berg",
+      "role": "IT administrator",
+      "subject": "Re: URGENT: someone is knocking",
+      "body": "One `grep` and you found it?! I was going to scroll through it line by line tonight.\n\nI owe you a coffee. Possibly several.\n\nJonas"
+    }
+  ],
   "fileSystem": {
     "hostname": "dottech-srv",
     "files": [

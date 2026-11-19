@@ -36,7 +36,7 @@
     line-height: 1.25;
 }
 
-.kind {
+.label {
     font-size: 0.7rem;
     font-weight: 600;
     letter-spacing: 0.06em;
@@ -56,4 +56,17 @@ strong {
 
 @media (prefers-reduced-motion: reduce) {
     .reward-toast { animation: none; }
+}
+
+.reward-toast.mail {
+    border-color: color-mix(in srgb, var(--app-mail) 50%, var(--border));
+}
+
+.reward-toast.mail .icon {
+    background: color-mix(in srgb, var(--app-mail) 18%, transparent);
+    color: var(--app-mail);
+}
+
+.reward-toast.mail .label {
+    color: var(--app-mail);
 }

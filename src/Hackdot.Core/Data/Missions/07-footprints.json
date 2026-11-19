@@ -17,6 +17,22 @@
   ],
   "skills": [ "hidden-files", "history", "base64", "forensics" ],
   "techniques": [ "shell-history" ],
+  "mails": [
+    {
+      "trigger": "assigned",
+      "from": "Vera Lind",
+      "role": "Head of Security",
+      "subject": "Break-in on dottech-db",
+      "body": "Bad news: last night an attacker logged in to our database server with Kim's account – Kim is a summer intern whose password was far too easy. The account is locked, but we need to know what they did.\n\nAttackers are in a hurry and leave footprints. Follow them. Mission: **Footprints**.\n\nVera"
+    },
+    {
+      "trigger": "solved",
+      "from": "Vera Lind",
+      "role": "Head of Security",
+      "subject": "We know what they took",
+      "body": "The canary record proves the stolen copy came from our customer database. Thanks to the shell history you followed, we know exactly what the attacker touched – and we've told the customers it affects.\n\nKim's new password is a lot longer now.\n\nVera"
+    }
+  ],
   "fileSystem": {
     "hostname": "dottech-db",
     "users": [

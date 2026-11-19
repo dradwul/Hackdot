@@ -2,6 +2,7 @@ namespace Hackdot.Services;
 
 public enum AppId
 {
+    Mail,
     Mission,
     Terminal,
     Files,
@@ -29,6 +30,7 @@ public sealed class ShellService
 
     public IReadOnlyList<AppInfo> Apps { get; } =
     [
+        new(AppId.Mail, "var(--app-mail)"),
         new(AppId.Mission, "var(--app-mission)"),
         new(AppId.Terminal, "var(--app-terminal)"),
         new(AppId.Files, "var(--app-files)"),

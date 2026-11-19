@@ -17,6 +17,22 @@
   ],
   "skills": [ "sudo", "paths", "privilege-escalation" ],
   "techniques": [ "sudo-wildcards" ],
+  "mails": [
+    {
+      "trigger": "assigned",
+      "from": "Sam Nilsson",
+      "role": "System administrator",
+      "subject": "One small sudo rule",
+      "body": "Hi again! Our ops team needs to read log files that only root may open, so I gave your test account one sudo rule: `cat` on the logs. Only the logs.\n\nVera wants a penetration test of it. I'm pretty sure it's safe. Mission: **A Little Too Generous**.\n\nSam"
+    },
+    {
+      "trigger": "solved",
+      "from": "Sam Nilsson",
+      "role": "System administrator",
+      "subject": "Re: One small sudo rule",
+      "body": "`..` matches the wildcard. Of course it does. I'm going to need a minute.\n\nThe rule is gone. From now on, sudo rules get exact paths and no stars. Thanks – I'd much rather hear it from you than from an attacker.\n\nSam"
+    }
+  ],
   "fileSystem": {
     "hostname": "dottech-srv",
     "files": [

@@ -5,6 +5,16 @@ What's new in each version of Hackdot. The version number is shown at the bottom
 Versions follow [semantic versioning](https://semver.org/): a new **minor** version (1.**4**.0) adds missions or
 features, a **patch** version (1.4.**1**) only fixes things.
 
+## 1.8.0 – 2026-11-19
+
+- **Mail**: a new app in DotOS. Your missions now arrive as mails from the people at DotTech – Vera, the Head of
+  Security, Jonas from IT, Max the intern and more – and they write back when you've solved them. 32 mails tell
+  the story of all 16 missions.
+- An unread count on the Mail icon, a notice when new mail arrives, and a button in each job mail that opens the
+  mission.
+- Notices go a little faster when several arrive at once.
+- If you have played before, the mails for what you've already done are in your inbox, marked as read.
+
 ## 1.7.0 – 2026-11-19
 
 - **Technique cards**: every mission now teaches a technique that real attackers and defenders use – and solving

@@ -36,7 +36,7 @@
 .desktop-icons {
     position: relative;
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 0.75rem 0.25rem;
     margin: 0;
     padding: 1.5rem max(1rem, var(--safe-left)) 1rem max(1rem, var(--safe-right));
@@ -58,6 +58,7 @@
 }
 
 .icon-tile {
+    position: relative;
     display: grid;
     place-items: center;
     width: 52px;
@@ -67,6 +68,24 @@
     background: var(--surface);
     color: var(--app-accent);
     transition: transform 120ms ease, border-color 120ms ease;
+}
+
+/* Unread mails: a small count in the corner of the Mail icon. */
+.badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 0.3rem;
+    border-radius: var(--radius-sm);
+    background: var(--app-mail);
+    color: var(--bg);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    line-height: 18px;
+    text-align: center;
 }
 
 .icon-label {

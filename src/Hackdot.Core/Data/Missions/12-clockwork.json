@@ -18,6 +18,22 @@
   ],
   "skills": [ "cat", "ls -la", "scheduled-tasks", "hidden-files" ],
   "techniques": [ "leaky-jobs" ],
+  "mails": [
+    {
+      "trigger": "assigned",
+      "from": "Vera Lind",
+      "role": "Head of Security",
+      "subject": "What does root do at night?",
+      "body": "Our admin keeps private notes in `/root/notes` on dottech-backup. Only root can open that folder, and you won't get root's password.\n\nBut servers do plenty on their own – cron runs jobs on a schedule, often as root. Find out whether one of those jobs puts the notes somewhere less private. Mission: **Clockwork**.\n\nVera"
+    },
+    {
+      "trigger": "solved",
+      "from": "Jonas Berg",
+      "role": "IT administrator",
+      "subject": "The sync script",
+      "body": "That was my script. I just wanted the notes to be backed up! The `chmod 644` was only so the backup robot could read the copies…\n\nFixed: the copies are now as private as the original. Lesson learned – what a script copies, it has to protect.\n\nJonas"
+    }
+  ],
   "fileSystem": {
     "hostname": "dottech-backup",
     "directories": [

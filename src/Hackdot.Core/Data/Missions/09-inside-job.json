@@ -17,6 +17,22 @@
   ],
   "skills": [ "grep -r", "base64", "su", "sudo", "privilege-escalation" ],
   "techniques": [ "attack-chains" ],
+  "mails": [
+    {
+      "trigger": "assigned",
+      "from": "Vera Lind",
+      "role": "Head of Security",
+      "subject": "CONFIDENTIAL: the roadmap leaked",
+      "body": "Our secret product roadmap has appeared online. It was only ever stored in `/root/roadmap.txt` on dottech-ops, and every copy has a watermark.\n\nWe think an insider climbed from a normal account to `ops` and then to root. The board has given you **written permission** to retrace the path. This one takes everything you've learned. Mission: **Inside Job**.\n\nVera"
+    },
+    {
+      "trigger": "solved",
+      "from": "The DotTech board",
+      "role": "Management",
+      "subject": "Thank you",
+      "body": "Dear agent,\n\nYour report showed exactly how the roadmap left the building – one small mistake at a time. Every step has now been fixed, and the people involved have been spoken to.\n\nVera tells us you're ready for harder jobs. We agree.\n\nThe DotTech board"
+    }
+  ],
   "fileSystem": {
     "hostname": "dottech-ops",
     "users": [

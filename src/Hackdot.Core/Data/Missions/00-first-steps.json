@@ -17,6 +17,22 @@
   ],
   "skills": [ "ls", "cd", "cat", "terminal-tips" ],
   "techniques": [ "exploring" ],
+  "mails": [
+    {
+      "trigger": "assigned",
+      "from": "Vera Lind",
+      "role": "Head of Security",
+      "subject": "Welcome to DotTech!",
+      "body": "Welcome aboard! I'm Vera, and I run security here at DotTech. Your job: find the holes in our systems before the bad guys do. Everything you do here is with our **written permission**.\n\nBefore you touch a real server, our training computer is ready for you. Open the mission **First Steps** – five small steps from your first command to your first flag.\n\nSee you on the other side!\n\nVera"
+    },
+    {
+      "trigger": "solved",
+      "from": "Vera Lind",
+      "role": "Head of Security",
+      "subject": "Your first flag",
+      "body": "First flag already – nice work. You'll be using `ls`, `cd` and `cat` every day from now on.\n\nTip: keep an eye on this inbox. The jobs come here, and so do the people you help.\n\nVera"
+    }
+  ],
   "fileSystem": {
     "hostname": "training-lab",
     "files": [
