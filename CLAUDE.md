@@ -56,6 +56,8 @@ dotnet watch --project src/Hackdot      # http://localhost:5282
   `CHANGELOG.md` på GitHub). Bygget lägger till git-commiten efter `+`, som visas i länkens tooltip.
 - Varje release (push till `main` som spelaren märker) får en ny version och en rad i `CHANGELOG.md`, skriven för
   spelaren på engelska: **minor** (1.4.0 → 1.5.0) för nya uppdrag/funktioner, **patch** (1.4.0 → 1.4.1) för rättningar.
+- `ROADMAP.md` listar det som är bestämt – t.ex. att **svenska ska göras** (men inte förrän användaren säger till) –
+  och idéer som inte är bestämda. Flytta det som blir klart därifrån till changelogen.
 
 ## Lokalisering
 

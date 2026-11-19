@@ -37,6 +37,8 @@ works offline. `index.html` uses a relative `<base href="./">`, so no path needs
 
 ## Status
 
+What's new in each version: [CHANGELOG.md](CHANGELOG.md). What's planned: [ROADMAP.md](ROADMAP.md).
+
 - [x] Foundation: project structure, PWA, DotOS shell (desktop, windows, dock, start menu)
 - [x] Localization infrastructure
 - [x] Virtual file system defined in JSON (users, owners, permissions)
