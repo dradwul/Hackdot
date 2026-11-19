@@ -483,6 +483,11 @@ code {
     font-weight: 600;
 }
 
+/* A mission the player went past (e.g. the tutorial, added later): playable, but nothing waits for it. */
+.optional-label {
+    font-style: italic;
+}
+
 .card-summary {
     font-size: 0.86rem;
     line-height: 1.45;

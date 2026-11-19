@@ -164,10 +164,18 @@ public sealed class CommandInterpreter
             return CommandResult.Empty;
         }
 
-        // Like bash with 'ignoredups': running the same command twice in a row is remembered once.
-        if (_history.Count == 0 || _history[^1] != input)
+        // Spaces at the end (Tab completion leaves one) don't change the command, so they aren't remembered –
+        // unless the last one is escaped, like in 'cat my\ '.
+        var remembered = input.TrimEnd();
+        if (remembered.EndsWith('\\'))
         {
-            _history.Add(input);
+            remembered = input;
+        }
+
+        // Like bash with 'ignoredups': running the same command twice in a row is remembered once.
+        if (_history.Count == 0 || _history[^1] != remembered)
+        {
+            _history.Add(remembered);
         }
 
         IReadOnlyList<IReadOnlyList<string>> pipeline;

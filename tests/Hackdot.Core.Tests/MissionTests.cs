@@ -449,6 +449,7 @@ public class GameStateTests
         Assert.Same(Tutorial, Catalog.Missions[0]);
         Assert.Equal("first-steps", state.ActiveMission.Id);
         Assert.True(state.IsUnlocked(Catalog.Missions[0]));
+        Assert.False(state.IsSkipped(Tutorial));
         Assert.False(state.IsUnlocked(Catalog.Missions[1]));
         Assert.Throws<InvalidOperationException>(() => state.Activate(Catalog.Missions[1]));
     }
@@ -572,5 +573,8 @@ public class GameStateTests
         Assert.True(state.IsUnlocked(SloppyIntern));
         Assert.True(state.IsUnlocked(Catalog.Find("hidden-in-the-shadows")!));
         Assert.True(state.IsUnlocked(Tutorial));
+        Assert.True(state.IsSkipped(Tutorial));
+        Assert.False(state.IsSkipped(Catalog.Find("needle-in-the-log-stack")!));
+        Assert.False(state.IsSkipped(SloppyIntern));
     }
 }

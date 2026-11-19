@@ -5,6 +5,12 @@ What's new in each version of Hackdot. The version number is shown at the bottom
 Versions follow [semantic versioning](https://semver.org/): a new **minor** version (1.**4**.0) adds missions or
 features, a **patch** version (1.4.**1**) only fixes things.
 
+## 1.4.1 – 2026-11-19
+
+- On phones, the "new version" banner now appears at the top, so it no longer covers the terminal's input.
+- `history` no longer remembers the space that Tab completion leaves at the end of a command.
+- If you were already past the tutorial when it was added, it is marked as optional in the mission list.
+
 ## 1.4.0 – 2026-11-18
 
 - The version number is shown at the bottom of the desktop, with a link to this changelog.

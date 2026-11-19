@@ -101,6 +101,7 @@
   <data name="Mission.List.Completed" xml:space="preserve"><value>Completed · {0} pts</value></data>
   <data name="Mission.List.Locked" xml:space="preserve"><value>Finish the previous mission to unlock</value></data>
   <data name="Mission.List.Active" xml:space="preserve"><value>In progress</value></data>
+  <data name="Mission.List.Optional" xml:space="preserve"><value>Optional – you're already past this one</value></data>
   <data name="Mission.List.Footer" xml:space="preserve"><value>More missions are coming soon.</value></data>
   <!-- Files app -->
   <data name="Files.Up" xml:space="preserve"><value>Up one folder</value></data>

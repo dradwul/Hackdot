@@ -110,6 +110,14 @@ public sealed class GameState
         return index <= 0 || Progress(mission).Completed || Progress(Catalog.Missions[index - 1]).Completed;
     }
 
+    /// <summary>
+    /// The player went past this mission without solving it: it was added after they had already solved a later
+    /// one (like the tutorial for players who started before it existed). It stays playable, but it's optional.
+    /// </summary>
+    public bool IsSkipped(MissionDefinition mission) =>
+        !Progress(mission).Completed
+        && Catalog.Missions.Skip(Catalog.IndexOf(mission) + 1).Any(later => Progress(later).Completed);
+
     public void Activate(MissionDefinition mission)
     {
         if (!IsUnlocked(mission))

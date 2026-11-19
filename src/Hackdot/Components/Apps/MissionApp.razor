@@ -179,6 +179,10 @@
                                         {
                                             <span class="active-label">@L["Mission.List.Active"]</span>
                                         }
+                                        else if (State.IsSkipped(mission))
+                                        {
+                                            <span class="optional-label">@L["Mission.List.Optional"]</span>
+                                        }
                                     }
                                 </span>
                                 @if (unlocked)

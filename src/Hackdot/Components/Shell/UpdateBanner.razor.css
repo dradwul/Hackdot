@@ -1,9 +1,11 @@
-/* Sits just above the dock, on top of windows, the start menu and the login screen. */
+/* On top of windows, the start menu and the login screen. On phones it sits at the top, so it never covers
+   the terminal's input or the dock; on larger screens it is a card in the bottom-right corner. */
 .update-banner {
+    --slide-from: -8px;
     position: fixed;
+    top: calc(var(--safe-top) + 0.6rem);
     left: max(0.6rem, var(--safe-left));
     right: max(0.6rem, var(--safe-right));
-    bottom: calc(var(--dock-h) + var(--safe-bottom) + 0.5rem);
     z-index: 110;
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
@@ -81,12 +83,15 @@
 @media (min-width: 768px) {
     .update-banner {
         left: auto;
+        top: auto;
+        bottom: calc(var(--dock-h) + var(--safe-bottom) + 0.5rem);
+        --slide-from: 8px;
         width: 380px;
     }
 }
 
 @keyframes banner-in {
-    from { opacity: 0; transform: translateY(8px); }
+    from { opacity: 0; transform: translateY(var(--slide-from)); }
 }
 
 @media (prefers-reduced-motion: reduce) {

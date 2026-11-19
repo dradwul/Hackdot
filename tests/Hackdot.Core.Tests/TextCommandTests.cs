@@ -176,6 +176,18 @@ public class TextCommandTests
     }
 
     [Fact]
+    public void History_ForgetsTrailingSpaces()
+    {
+        var terminal = Create();
+
+        terminal.Run("cat numbers.txt ");
+        terminal.Run("cat numbers.txt");
+        terminal.Run(@"cat my\ ");
+
+        Assert.Equal(["cat numbers.txt", @"cat my\ "], terminal.History);
+    }
+
+    [Fact]
     public void History_CanBeSharedBetweenInterpreters()
     {
         var history = new List<string>();
